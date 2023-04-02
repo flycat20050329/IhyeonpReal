@@ -44,7 +44,7 @@
             <button class="next" @click="moveSectionDown">Next</button>
         </div>
         <div class="section">
-            <h2>어제 하늘에서 억까 실전 압축 모음 당한 사람</h2>
+            <h2>어제 만우절 기념 하늘에서 억까 실전 압축 모음 당한 사람</h2>
             <button class="prev" @click="moveSectionUp">Prev</button>
         </div>
     </full-page>
