@@ -1,28 +1,29 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Dashboard from "../views/Dashboard.vue";
-import Login from "../views/Login.vue";
+import LoginPage from "../views/LoginPage.vue";
 import Join from "../views/Join.vue";
 import Protected from "../views/Protected.vue";
 
-import store from '../store'
-
-// Vue.use(VueRouter);
-
 const routes = [
   {
-    path: '/',
-    name: '/',
-    component: Dashboard
+    path: "/",
+    name: "/",
+    redirect: "/dashboard",
   },
   {
-    path: '/login',
-    name: 'Login',
-    component: Login
+    path: "/dashboard",
+    name: "Dashboard",
+    component: Dashboard,
   },
   {
-    path: '/join',
-    name: 'Join',
-    component: Join
+    path: "/login",
+    name: "LoginPage",
+    component: LoginPage,
+  },
+  {
+    path: "/join",
+    name: "Join",
+    component: Join,
   },
   {
     path: '/protected',
@@ -32,6 +33,7 @@ const routes = [
       requiresAuth: true
     }
   },
+
 ];
 
 const router = createRouter({
@@ -40,18 +42,6 @@ const router = createRouter({
   linkActiveClass: "active",
 });
 
-router.beforeEach((to, from, next) => {
-  if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (!store.getters.isLoggedIn) {
-      next({
-        name: 'Login'
-      })
-    } else {
-      next();
-    }
-  } else {
-    next();
-  }
-});
-
 export default router;
+
+

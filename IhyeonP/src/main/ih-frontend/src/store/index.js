@@ -1,63 +1,56 @@
-import { createStore } from "vuex";
+import axios from 'axios'
+import Vue from 'vue'
+import Vuex from 'vuex'
 
-export default createStore({
-  state: {
-    hideConfigButton: false,
-    isPinned: true,
-    showConfig: false,
-    sidebarType: "bg-gradient-dark",
-    isRTL: false,
-    color: "success",
-    isNavFixed: false,
-    isAbsolute: false,
-    showNavs: true,
-    showSidenav: true,
-    showNavbar: true,
-    showFooter: true,
-    showMain: true,
-    isDarkMode: false,
-    navbarFixed:
-      "position-sticky blur shadow-blur left-auto top-1 z-index-sticky px-0 mx-4",
-    absolute: "position-absolute px-4 mx-0 w-100 z-index-2",
-  },
-  mutations: {
-    toggleConfigurator(state) {
-      state.showConfig = !state.showConfig;
-    },
-    navbarMinimize(state) {
-      const sidenav_show = document.querySelector(".g-sidenav-show");
+// Vue.use(Vuex)
 
-      if (sidenav_show.classList.contains("g-sidenav-pinned")) {
-        sidenav_show.classList.remove("g-sidenav-pinned");
-        state.isPinned = true;
-      } else {
-        sidenav_show.classList.add("g-sidenav-pinned");
-        state.isPinned = false;
-      }
+export default new Vuex.Store({
+    state: {
+        loginSuccess: false,
+        loginError: false,
+        userName: null
     },
-    navbarFixed(state) {
-      if (state.isNavFixed === false) {
-        state.isNavFixed = true;
-      } else {
-        state.isNavFixed = false;
-      }
+    mutations: {
+        loginSuccess(state, {user, password}) {
+            state.loginSuccess = true;
+            state.userName = user
+            state.password = password
+        },
+        loginError(state, {user, password}) {
+            state.loginError = true;
+            state.userName = user
+            state.userName = password
+        }
     },
-    toggleEveryDisplay(state) {
-      state.showNavbar = !state.showNavbar;
-      state.showSidenav = !state.showSidenav;
-      state.showFooter = !state.showFooter;
+    actions: {
+        async login({commit}, {user, password}) {
+            try {
+                const result = await axios.get('/api/login', {
+                    auth: {
+                        username: user,
+                        password: password
+                    }
+                });
+                if (result.status === 200) {
+                    commit('loginSuccess', {
+                        userName: user,
+                        userPass: password
+                    });
+                }
+            } catch (err) {
+                commit('loginError', {
+                  userName: user
+                });
+                throw new Error(err)
+            }
+        }
     },
-    toggleHideConfig(state) {
-      state.hideConfigButton = !state.hideConfigButton;
+    getters: {
+        isLoggedIn: state => state.loginSuccess,
+        hasLoginErrored: state => state.loginError,
+        getUserName: state => state.userName,
+        getUserPass: state => state.userPass
     },
-    color(state, payload) {
-      state.color = payload;
-    },
-  },
-  actions: {
-    setColor({ commit }, payload) {
-      commit("color", payload);
-    },
-  },
-  getters: {},
-});
+    modules: {
+    }
+})

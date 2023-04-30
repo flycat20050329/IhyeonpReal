@@ -1,4 +1,10 @@
 <template>
+  <div class="protected" v-if="loginSuccess">
+    <h5>로그인 성공!</h5>
+  </div>
+  <div class="unprotected" v-else-if="loginError">
+    <h5>로그인 실패!</h5>
+  </div>
   <div class="wrapper">
     <div id="login">
       <div class="container">
@@ -18,7 +24,7 @@
                               <i class="fa fa-user" aria-hidden="true" />
                             </span>
                           </div>
-                          <input type="text" class="form-control" placeholder="아이디(이메일)를 입력해주세요." v-model="id" />
+                          <input type="text" class="form-control" placeholder="아이디(이메일)를 입력해주세요." v-model="user" />
                         </div>
                         <div class="help-block with-errors text-danger"></div>
                       </div>
@@ -64,24 +70,36 @@
   </div>
 </template>
 <script>
+import axios from 'axios';
+
 export default {
-  name: 'Login',
+  name: 'login',
   data() {
     return {
-      id: "",
-      password: ""
+      loginSuccess: false,
+      loginError: false,
+      user: '',
+      password: '',
+      error: false
     }
   },
   methods: {
-    login() {
-      // 아이디와 패스워드 입력여부 확인
-      if (this.id && this.password) {
-        var id = this.id              // 아이디
-        var password = this.password  // 비밀번호
-        this.store.dispatch('login', { id, password }) // 로그인
-      } else {
-        alert("아이디 또는 비밀번호가 입력되지 않았습니다.")
-        return false
+    async login() {
+      const me = this;
+      try {
+        const result = await axios.get('/v1/login', {
+          auth: {
+            username: this.user,
+            password: this.password
+          }
+        });
+        if (result.status === 200) {
+          this.loginSuccess = true;
+        }
+      } catch (err) {
+        this.loginSuccess = false;
+        this.loginError = true;
+        throw new Error(err)
       }
     }
   }
