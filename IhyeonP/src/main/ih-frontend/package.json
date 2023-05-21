@@ -19,6 +19,7 @@
 		"sockjs-client": "^1.6.1",
 		"stylus": "^0.59.0",
 		"stylus-loader": "^7.1.0",
+		"vee-validate": "^4.9.4",
 		"vue": "^3.2.45",
 		"vue-fullpage.js": "^0.2.13",
 		"vue-json-viewer": "^3.0.4",

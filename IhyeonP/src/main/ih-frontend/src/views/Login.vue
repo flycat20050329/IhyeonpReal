@@ -1,112 +1,92 @@
 <template>
-  <div class="protected" v-if="loginSuccess">
-    <h5>로그인 성공!</h5>
-  </div>
-  <div class="unprotected" v-else-if="loginError">
-    <h5>로그인 실패!</h5>
-  </div>
-  <div class="wrapper">
-    <div id="login">
-      <div class="container">
-        <div class="row justify-content-center align-items-center">
-          <div class="col-sm-6">
-            <div class="card">
-              <h4 class="card-header">로그인</h4>
-              <div class="card-body">
-                <form data-toggle="validator" role="form" method="post" action="#">
-                  <div class="row">
-                    <div class="col-md-12">
-                      <div class="form-group">
-                        <label>Email</label>
-                        <div class="input-group">
-                          <div class="input-group-prepend">
-                            <span class="input-group-text">
-                              <i class="fa fa-user" aria-hidden="true" />
-                            </span>
-                          </div>
-                          <input type="text" class="form-control" placeholder="아이디(이메일)를 입력해주세요." v-model="user" />
-                        </div>
-                        <div class="help-block with-errors text-danger"></div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-12">
-                      <div class="form-group">
-                        <label>Password</label>
-                        <div class="input-group">
-                          <div class="input-group-prepend">
-                            <span class="input-group-text">
-                              <i class="fa fa-lock" aria-hidden="true" />
-                            </span>
-                          </div>
-                          <input type="password" v-model="password" placeholder="비밀번호를 입력해주세요." class="form-control" />
-                        </div>
-                        <div class="help-block with-errors text-danger"></div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-12">
-                      <button type="button" class="btn btn-primary btn-lg btn-block" @click="login()">
-                        Login
-                      </button>
-                    </div>
-                  </div>
-                </form>
-                <div class="form-group">
-                  <div class="clear"></div>
-                  <br>
-                  <i class="fa fa-user fa-fw" />처음 방문하십니까?
-                  <a href="/join">회원가입</a>
-                  <br>
-                </div>
-              </div>
-            </div>
+  <div class="col-md-12">
+    <div class="card card-container">
+      <img id="profile-img" src="//ssl.gstatic.com/accounts/ui/avatar_2x.png" class="profile-img-card" />
+      <Form @submit="handleLogin" :validation-schema="schema">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <Field name="username" type="text" class="form-control" />
+          <ErrorMessage name="username" class="error-feedback" />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <Field name="password" type="password" class="form-control" />
+          <ErrorMessage name="password" class="error-feedback" />
+        </div>
+
+        <div class="form-group">
+          <button class="btn btn-primary btn-block" :disabled="loading">
+            <span v-show="loading" class="spinner-border spinner-border-sm"></span>
+            <span>Login</span>
+          </button>
+        </div>
+
+        <div class="form-group">
+          <div v-if="message" class="alert alert-danger" role="alert">
+            {{ message }}
           </div>
         </div>
-      </div>
+      </Form>
     </div>
   </div>
 </template>
+
 <script>
-import axios from 'axios';
+import { Form, Field, ErrorMessage } from "vee-validate";
+import * as yup from "yup";
 
 export default {
-  name: 'login',
+  name: "Login",
+  components: {
+    Form,
+    Field,
+    ErrorMessage,
+  },
   data() {
+    const schema = yup.object().shape({
+      username: yup.string().required("Username is required!"),
+      password: yup.string().required("Password is required!"),
+    });
+
     return {
-      loginSuccess: false,
-      loginError: false,
-      user: '',
-      password: '',
-      error: false
+      loading: false,
+      message: "",
+      schema,
+    };
+  },
+  computed: {
+    loggedIn() {
+      return this.$store.state.auth.status.loggedIn;
+    },
+  },
+  created() {
+    if (this.loggedIn) {
+      this.$router.push("/profile");
     }
   },
   methods: {
-    async login() {
-      const me = this;
-      try {
-        const result = await axios.get('/api/login', {
-          auth: {
-            username: this.user,
-            password: this.password
-          }
-        });
-        if (result.status === 200) {
-          this.loginSuccess = true;
+    handleLogin(user) {
+      this.loading = true;
+
+      this.$store.dispatch("auth/login", user).then(
+        () => {
+          this.$router.push("/profile");
+        },
+        (error) => {
+          this.loading = false;
+          this.message =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
         }
-      } catch (err) {
-        this.loginSuccess = false;
-        this.loginError = true;
-        throw new Error(err)
-      }
-    }
-  }
-}
+      );
+    },
+  },
+};
 </script>
-<style scoped>
-#login {
-  margin-top: 150px;
-}
-</style>
+
+<!-- <style scoped>
+...
+</style> -->
