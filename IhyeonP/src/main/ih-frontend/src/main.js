@@ -1,22 +1,14 @@
-import { createApp } from "vue";
-import App from "./App.vue";
-import store from "./store";
-import router from "./router";
-// import "./assets/css/nucleo-icons.css";
-// import "./assets/css/nucleo-svg.css";
-import MaterialDashboard from "./material-dashboard";
+import { createApp } from 'vue'
+import App from './App.vue'
+import axios from 'axios'
+import Router from "./router"
 
+import 'vue-fullpage.js/dist/style.css';
+import VueFullPage from 'vue-fullpage.js'
 
-import 'gitart-vue-dialog/dist/style.css'
-import { GDialog } from 'gitart-vue-dialog'
-import { plugin as dialogPlugin } from 'gitart-vue-dialog'
-
-const appInstance = createApp(App);
-appInstance.use(store);
-appInstance.use(router);
-appInstance.use(MaterialDashboard);
-
-appInstance.component('GDialog', GDialog)
-appInstance.use(dialogPlugin)
-
-appInstance.mount("#app");
+const app = createApp(App)
+app.config.globalProperties.$axios = axios;
+axios.defaults.baseURL = "http://localhost:8080/";
+app.use(VueFullPage)
+app.use(Router)
+app.mount('#app')

@@ -1,13 +1,9 @@
 {
-	"name": "p-frontend",
-	"version": "1.0.5",
-	"private": true,
-	"author": "direa",
-	"description": "Link Starter",
+	"name": "serve",
+	"version": "0.0.1",
 	"scripts": {
-		"serve": "vue-cli-service serve --open --host localhost",
-		"build": "vue-cli-service build",
-		"lint": "vue-cli-service lint"
+		"start": "vite --port 8080 --open",
+		"build": "vite build"
 	},
 	"dependencies": {
 		"@chenfengyuan/vue-number-input": "^2.0.1",
@@ -24,10 +20,11 @@
 		"stylus": "^0.59.0",
 		"stylus-loader": "^7.1.0",
 		"vue": "^3.2.45",
+		"vue-fullpage.js": "^0.2.13",
 		"vue-json-viewer": "^3.0.4",
 		"vue-pagination-2": "^3.1.0",
 		"vue-progress-path": "^0.0.2",
-		"vue-router": "^4.1.6",
+		"vue-router": "^4.2.1",
 		"vue-select": "^4.0.0-beta.6",
 		"vue-step-progress": "^1.0.2",
 		"vue3-apexcharts": "^1.4.1",
@@ -37,32 +34,9 @@
 		"webstomp-client": "^1.2.6"
 	},
 	"devDependencies": {
-		"@vue/cli-plugin-babel": "^5.0.8",
-		"@vue/cli-plugin-eslint": "^5.0.8",
-		"@vue/cli-plugin-router": "^5.0.8",
-		"@vue/cli-service": "^5.0.8",
-		"@vue/compiler-sfc": "3.2.0",
-		"@vue/eslint-config-prettier": "6.0.0",
-		"babel-eslint": "10.1.0",
-		"eslint": "^6.7.2",
-		"eslint-plugin-prettier": "3.3.1",
-		"eslint-plugin-vue": "7.0.0",
-		"prettier": "2.2.1",
-		"sass": "1.43.3",
-		"sass-loader": "10.1.1"
+		"@vitejs/plugin-vue": "^2.1.0",
+		"@vue/compiler-sfc": "^3.0.4",
+		"vite": "^2.7.13"
 	},
-	"eslintConfig": {
-		"root": true,
-		"env": {
-			"node": true
-		},
-		"extends": [
-			"plugin:vue/vue3-essential",
-			"eslint:recommended"
-		],
-		"parserOptions": {
-			"parser": "@babel/eslint-parser"
-		},
-		"rules": {}
-	}
+	"license": "GPL-3.0"
 }

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/v1")
+@RequestMapping("/api")
 public class UserController {
 	final private static Logger LOG = Logger.getGlobal();
 	public static final String SECURED_TEXT = "Hello from the secured resource!";
