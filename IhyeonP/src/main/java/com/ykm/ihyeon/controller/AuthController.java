@@ -50,10 +50,12 @@ public class AuthController {
 
 	@Autowired
 	JwtUtils jwtUtils;
-
+	
 	@PostMapping("/signin")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-
+		
+		System.out.println("dd");
+		
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
