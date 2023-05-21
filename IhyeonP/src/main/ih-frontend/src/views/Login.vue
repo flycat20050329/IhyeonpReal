@@ -56,7 +56,7 @@ export default {
   },
   computed: {
     loggedIn() {
-      return this.$store.state.auth.status.loggedIn;
+      // return this.$store.state.auth.status.loggedIn;
     },
   },
   created() {
@@ -87,6 +87,5 @@ export default {
 };
 </script>
 
-<!-- <style scoped>
-...
-</style> -->
+<style scoped>
+</style>

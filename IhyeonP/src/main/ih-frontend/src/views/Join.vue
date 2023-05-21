@@ -22,7 +22,7 @@
                             <i class="fa fa-user" aria-hidden="true" />
                           </span>
                         </div>
-                        <input type="email" class="form-control" placeholder="이메일을 입력해주세요." v-model="email" />
+                        <input type="email" class="form-control" placeholder="이메일을 입력해주세요." v-model="userEmail" />
                       </div>
                       <div class="help-block with-errors text-danger"></div>
                     </div>
@@ -40,7 +40,7 @@
                             <i class="fa fa-lock" aria-hidden="true" />
                           </span>
                         </div>
-                        <input type="password" v-model="password" placeholder="비밀번호를 입력해주세요." class="form-control" />
+                        <input type="password" v-model="userPw" placeholder="비밀번호를 입력해주세요." class="form-control" />
                       </div>
                       <div class="help-block with-errors text-danger"></div>
                     </div>
@@ -48,7 +48,7 @@
                 </div>
 
                 <!-- 이름 -->
-                <div class="row">
+                <!-- <div class="row">
                   <div class="col-md-12">
                     <div class="form-group">
                       <label>Name</label>
@@ -63,7 +63,7 @@
                       <div class="help-block with-errors text-danger"></div>
                     </div>
                   </div>
-                </div>
+                </div> -->
 
                 <!-- 닉네임 -->
                 <div class="row">
@@ -76,7 +76,7 @@
                             <i class="fa fa-user" aria-hidden="true" />
                           </span>
                         </div>
-                        <input type="text" v-model="nickname" placeholder="닉네임을 입력해주세요." class="form-control" />
+                        <input type="text" v-model="userNickName" placeholder="닉네임을 입력해주세요." class="form-control" />
                       </div>
                       <div class="help-block with-errors text-danger"></div>
                     </div>
@@ -94,7 +94,7 @@
                             <i class="fa fa-phone" aria-hidden="true" />
                           </span>
                         </div>
-                        <input type="text" v-model="mobile" placeholder="연락처를 입력해주세요('-' 제외)" class="form-control" />
+                        <input type="text" v-model="userNumber" placeholder="연락처를 입력해주세요('-' 제외)" class="form-control" />
                       </div>
                       <div class="help-block with-errors text-danger"></div>
                     </div>
@@ -125,55 +125,34 @@
     </div>
   </div>
 </template>
+
 <script>
+import axios from 'axios';
+
 export default {
-  name: 'Join',
   data() {
     return {
-      id: "",
-      password: "",
-      name: "",
-      nickname: "",
-      mobile: ""
+      form: {
+        userEmail: '',
+        userPw: '',
+        userNickName: '',
+        userNumber: '',
+      }
     }
   },
   methods: {
-    join() {
-      const params = {
-        "email": this.id,               // 아이디
-        "password": this.password,      // 비밀번호
-        "name": this.name,              // 이름
-        "nickname": this.nickname,      // 닉네임
-        "mobile": this.mobile           // 연락처
+    async onSubmit() {
+      try {
+        await axios.post('/api/join', this.form);
+        await this.$router.push({ name: 'Login' })
+      } catch (err) {
+        throw new Error(err);
       }
-      this.axios.post("http://localhost:8080/signup", JSON.stringify(params), {
-        headers: { 'content-type': 'application/json' }
-      }).then(() => {
-        alert("회원가입이 정상적으로 완료되었습니다.")
-        // 회원가입이 정상적으로 이루어진 시점에서 해당 아이디와 비밀번호를 가지고 바로 로그인 요청
-        let loginId = this.id
-        let loginPw = this.password
-        // 로그인 API 통신요청
-        this.store.dispatch('login', { loginId, loginPw })
-          .then(() => { this.router.push(this.$routePath + "/posts") })
-          .catch(e => { alert("로그인 요청에 문제가 발생했습니다.\nmsg:" + e.response.data) })
-      }).catch(e => {
-        switch (e.response.status) {
-          case 400:
-            alert("잘못된 요청방식입니다.\nmsg: " + e.response.data['msg'])
-            break
-          case 409:
-            alert("중복된 정보가 확인됩니다.\nmsg: " + e.response.data['msg'])
-            break
-          case 500:
-            alert("서버에 문제가 발생했습니다.\nmsg: " + e.response.data['msg'])
-            break
-        }
-      })
     }
   }
 }
 </script>
+
 <style scoped>
 #login {
   margin-top: 50px;

@@ -32,7 +32,8 @@
 		"vuetify": "^2.6.12",
 		"vuex": "^4.0.2",
 		"vuex-persistedstate": "^4.1.0",
-		"webstomp-client": "^1.2.6"
+		"webstomp-client": "^1.2.6",
+		"yup": "^1.1.1"
 	},
 	"devDependencies": {
 		"@vitejs/plugin-vue": "^2.1.0",
