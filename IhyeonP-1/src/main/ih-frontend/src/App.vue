@@ -2,163 +2,16 @@
   <div id="app">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-
-    <nav id="menu">
-        <li class="col-1"></li>
-        <li class="col-2">
-          <a class="btn btn-outline-primary" href="#page1" role="button">
-            학교
-          </a>
-        </li>
-        <li class="col-2">
-          <a class="btn btn-outline-primary" href="#page2" role="button">
-            학급
-          </a>
-        </li>
-        <li class="col-2">
-          <a class="btn btn-outline-primary" href="#page3" role="button">
-            동아리
-          </a>
-        </li>
-        <li class="col-3">
-          <a class="btn btn-outline-primary" @click="Please()" role="button">
-            문의
-          </a>
-        </li>
-        <li class="col-2">
-          <div v-if="!currentUser" class="navbar-nav ml-auto">
-        <li class="nav-item">
-          <router-link to="/register" class="nav-link">
-            <font-awesome-icon icon="user-plus" /> Sign Up
-          </router-link>
-        </li>
-        <li class="nav-item">
-          <router-link to="/login" class="nav-link">
-            <font-awesome-icon icon="sign-in-alt" /> Login
-          </router-link>
-        </li>
-      </div>
-      </li>
-      <!-- <nav class="navbar navbar-expand navbar-dark bg-dark">
-    <a href="/" class="navbar-brand">IH-highschool</a>
-    <div class="navbar-nav mr-auto">
-      <li class="nav-item">
-        <router-link to="/home" class="nav-link">
-          <font-awesome-icon icon="home" /> Home
-        </router-link>
-      </li>
-      <li v-if="showAdminBoard" class="nav-item">
-        <router-link to="/admin" class="nav-link">Admin Board</router-link>
-      </li>
-      <li v-if="showModeratorBoard" class="nav-item">
-        <router-link to="/mod" class="nav-link">Moderator Board</router-link>
-      </li>
-      <li class="nav-item">
-        <router-link v-if="currentUser" to="/user" class="nav-link">User</router-link>
-      </li>
-    </div>
-
-    <div v-if="!currentUser" class="navbar-nav ml-auto">
-      <li class="nav-item">
-        <router-link to="/register" class="nav-link">
-          <font-awesome-icon icon="user-plus" /> Sign Up
-        </router-link>
-      </li>
-      <li class="nav-item">
-        <router-link to="/login" class="nav-link">
-          <font-awesome-icon icon="sign-in-alt" /> Login
-        </router-link>
-      </li>
-    </div>
-
-    <div v-if="currentUser" class="navbar-nav ml-auto">
-      <li class="nav-item">
-        <router-link to="/profile" class="nav-link">
-          <font-awesome-icon icon="user" />
-          {{ currentUser.username }}
-        </router-link>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" @click.prevent="logOut">
-          <font-awesome-icon icon="sign-out-alt" /> LogOut
-        </a>
-      </li>
-    </div>
-  </nav> -->
-    </nav>
-
-  <full-page :options="this.options" id="fullpage" ref="fullpage">
-
-    <div class="section">
-      <h1>Section 1</h1>
-    </div>
-    <div class="section">
-      <h1>Slide 2</h1>
-    </div>
-    <div class="section">
-      <h2>Section 3</h2>
-    </div>
-    <div class="section">
-      <h2>Section 4</h2>
-    </div>
-  </full-page>
-
-  <nav class="navbar navbar-expand navbar-dark bg-dark">
-    <a href="/" class="navbar-brand">IH-highschool</a>
-    <div class="navbar-nav mr-auto">
-      <li class="nav-item">
-        <router-link to="/home" class="nav-link">
-          <font-awesome-icon icon="home" /> Home
-        </router-link>
-      </li>
-      <li v-if="showAdminBoard" class="nav-item">
-        <router-link to="/admin" class="nav-link">Admin Board</router-link>
-      </li>
-      <li v-if="showModeratorBoard" class="nav-item">
-        <router-link to="/mod" class="nav-link">Moderator Board</router-link>
-      </li>
-      <li class="nav-item">
-        <router-link v-if="currentUser" to="/user" class="nav-link">User</router-link>
-      </li>
-    </div>
-
-    <div v-if="!currentUser" class="navbar-nav ml-auto">
-      <li class="nav-item">
-        <router-link to="/register" class="nav-link">
-          <font-awesome-icon icon="user-plus" /> Sign Up
-        </router-link>
-      </li>
-      <li class="nav-item">
-        <router-link to="/login" class="nav-link">
-          <font-awesome-icon icon="sign-in-alt" /> Login
-        </router-link>
-      </li>
-    </div>
-
-    <div v-if="currentUser" class="navbar-nav ml-auto">
-      <li class="nav-item">
-        <router-link to="/profile" class="nav-link">
-          <font-awesome-icon icon="user" />
-          {{ currentUser.username }}
-        </router-link>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" @click.prevent="logOut">
-          <font-awesome-icon icon="sign-out-alt" /> LogOut
-        </a>
-      </li>
-    </div>
-  </nav>
-
-  <!-- <div class="container">
+  <div class="container">
     <router-view />
-  </div> -->
+  </div>
   </div>
 </template>
 
 <script>
 import 'vue-fullpage.js/dist/style.css'
 import VueFullPage from 'vue-fullpage.js'
+import AuthService from './services/auth.service.js'
 import axios from 'axios';
 
 
@@ -182,11 +35,11 @@ export default {
       }
     }
   }, mounted() {
-    console.log("mounted");
+    // console.log("mounted");
   },
   methods: {
     afterLoad() {
-      console.log('After load')
+      // console.log('After load')
     },
 
     addSection(e) {
@@ -245,12 +98,20 @@ export default {
       this.options.scrollBar = !this.options.scrollBar
     },
     Please() {
-      console.log("a")
-
-      axios.get("/api/auth/aaaaa/")
-        .then(res => {
-          console.log("응답 데이터 : " + res.data);
-        })
+      AuthService.please().then(
+      (response) => {
+        this.content = response.data;
+        console.log(this.content);
+      },
+      (error) => {
+        this.content =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+      }
+    );
     },
     logOut() {
     this.$store.dispatch('auth/logout');

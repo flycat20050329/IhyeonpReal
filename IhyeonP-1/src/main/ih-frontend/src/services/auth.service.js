@@ -29,6 +29,12 @@ class AuthService {
       password: user.password
     });
   }
+
+  please() {
+    return axios.get(API_URL + 'aaaaa', {
+    });
+  };
+
 }
 
 export default new AuthService();
