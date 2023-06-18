@@ -30,13 +30,24 @@ export default defineConfig({
         },
         banner: licenseContent
       },
+      server: {
+        proxy: {
+          '/api': {
+            target: 'http://localhost:8080',
+            rewrite: (path) => path.replace(/^\/api/, ''),
+            ws: true,
+            changeOrigin: true,
+            secure: false
+          }
+        }
+      }
     },
     server: {
       proxy: {
         '/api': {
           target: 'http://localhost:8080',
           changeOrigin: true,
-          // rewrite: (path) => path.replace(/^\/api/, ''),
+          rewrite: (path) => path.replace(/^\/api/, ''),
           secure: false,
           ws: true
         }
