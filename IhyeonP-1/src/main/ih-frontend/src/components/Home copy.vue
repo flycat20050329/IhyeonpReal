@@ -101,6 +101,8 @@
 </template>
 
 <script>
+import AuthService from '../services/auth.service';
+
 
 export default {
   name: "Home",
