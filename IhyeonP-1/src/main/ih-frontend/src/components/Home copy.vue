@@ -1,5 +1,5 @@
 <template>
-  <nav id="menu">
+  <!-- <nav id="menu">
     <li class="col-1"></li>
     <li class="col-2">
       <a class="btn btn-outline-secondary text-dark" href="#page1" role="button">
@@ -35,11 +35,11 @@
     </li>
     </div>
     </li>
-  </nav>
+  </nav> -->
   <full-page :options="this.options" id="fullpage" ref="fullpage">
 
     <div class="section">
-      <h1>Section 1</h1>
+      <h1>홍보</h1>
     </div>
     <div class="section">
       <h1>Slide 2</h1>
@@ -49,6 +49,9 @@
     </div>
     <div class="section">
       <h2>Section 4</h2>
+    </div>
+    <div class="section">
+      <h2>Section 5</h2>
     </div>
   </full-page>
 

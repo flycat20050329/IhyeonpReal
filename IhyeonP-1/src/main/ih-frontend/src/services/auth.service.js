@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const API_URL = 'http://localhost:8080/api/auth/';
+const API_URL2 = 'http://localhost:8080/api/lunch/';
 
 class AuthService {
   login(user) {
@@ -35,6 +36,10 @@ class AuthService {
     });
   };
 
+  getLunchList() {
+    return axios.get(API_URL2 + 'getInfo', {
+    });
+  }
 }
 
 export default new AuthService();
