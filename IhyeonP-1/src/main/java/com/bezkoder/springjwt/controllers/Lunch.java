@@ -33,7 +33,7 @@ public class Lunch {
 
 	public static String getCurMonday() {
 
-		java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat("yyyy.MM.dd");
+		java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat("yyyyMMdd");
 
 		Calendar c = Calendar.getInstance();
 
@@ -51,7 +51,7 @@ public class Lunch {
 			return null;
 		return nValue.getNodeValue();
 	}
-
+ 
 	public List<List<String>> getLunchInfo() {
 		try {
 			// parsing할 url 지정(API 키 포함해서)
@@ -62,6 +62,8 @@ public class Lunch {
 			String schoolCode = "7530983";
 			String type = "xml";
 			String date = Lunch.getCurMonday();
+			
+			System.out.println(date);
 			
 			List<List<String>> lunchList = new ArrayList<List<String>>();
 

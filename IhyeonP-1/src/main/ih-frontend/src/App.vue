@@ -1,8 +1,8 @@
 <template>
   <div id="app">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <nav id="menu">
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"> -->
+    <nav id="menu" class="">
       <li class="col-1"></li>
       <li class="col-1">
         <a class="btn text-dark" href="/" role="button">
@@ -35,27 +35,26 @@
         </a>
       </li>
       <li class="col-2" v-if="!currentUser">
-          <a class="btn text-dark" href="/login">Login</a>
+        <a class="btn text-dark" href="/login">Login</a>
       </li>
       <!-- <li class="col-2" v-if="!currentUser">
         <router-link to="/login" class="nav-link text-dark">
           <font-awesome-icon icon="sign-in-alt" /> Login
         </router-link>
       </li> -->
-    <li class="col-1" v-if="currentUser">
-      <router-link to="/profile" class="nav-link btn text-dark">
-        <font-awesome-icon icon="user" />
-        {{ currentUser.username }}
-      </router-link>
-    </li>
-    <li class="col-1" v-if="currentUser">
-      <a class="nav-link btn text-dark" @click.prevent="logOut">
-        <font-awesome-icon icon="sign-out-alt" /> LogOut
-      </a>
-    </li>
-  </nav>
+      <li class="col-1" v-if="currentUser">
+        <router-link to="/profile" class="nav-link btn text-dark">
+          <font-awesome-icon icon="user" />
+          {{ currentUser.username }}
+        </router-link>
+      </li>
+      <li class="col-1" v-if="currentUser">
+        <a class="nav-link btn text-dark" @click.prevent="logOut">
+          <font-awesome-icon icon="sign-out-alt" /> LogOut
+        </a>
+      </li>
+    </nav>
   </div>
-
   <div class="container">
     <router-view />
   </div>
@@ -79,7 +78,7 @@ export default {
       options: {
         licenseKey: 'YOUR_KEY_HERE',
         afterLoad: this.afterLoad,
-        scrollOverflow: true,
+        scrollOverflow: false,
         scrollBar: false,
         menu: '#menu',
         navigation: false,
@@ -175,7 +174,7 @@ export default {
     currentUser() {
       return this.$store.state.auth.user;
     },
-    currentPage(){
+    currentPage() {
 
     },
     showAdminBoard() {
@@ -197,9 +196,15 @@ export default {
 </script>
 
 <style>
-#menu{
+#menu {
   border-bottom: 2px solid rgb(0, 0, 0);
+  background-color: white;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  /* height: 7%; */
 }
+
 ul {
   list-style-type: none;
   padding: 0;

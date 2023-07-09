@@ -10,12 +10,16 @@ import axios from 'axios'
 import 'vue-fullpage.js/dist/style.css'
 import VueFullPage from 'vue-fullpage.js'
 
+import { CardSwipe, CardSwipeItem } from "@eshengsky/vue-card-swipe";
+
 createApp(App)
   .use(router)
   .use(store)
   .use(VueFullPage)
   .component("font-awesome-icon", FontAwesomeIcon)
+  .component('card-swipe', CardSwipe)
+  .component('card-swipe-item', CardSwipeItem)
   .mount("#app");
 
-App.config.globalProperties.$axios = axios
-axios.defaults.baseURL = "http://localhost:8080/";
+// App.config.globalProperties.$axios = axios
+// axios.defaults.baseURL = "http://localhost:8080/";
