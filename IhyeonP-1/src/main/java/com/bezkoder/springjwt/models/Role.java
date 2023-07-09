@@ -3,7 +3,7 @@ package com.bezkoder.springjwt.models;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "roles")
+@Table(name = "ih_roles")
 public class Role {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

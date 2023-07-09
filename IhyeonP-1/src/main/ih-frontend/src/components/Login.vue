@@ -19,6 +19,10 @@
         </div>
 
         <div class="form-group">
+         회원가입이 필요하시면 <a href="/register">여기</a>
+        </div>
+
+        <div class="form-group">
           <button class="btn btn-primary btn-block" :disabled="loading">
             <span
               v-show="loading"
@@ -109,7 +113,7 @@ label {
   background-color: #f7f7f7;
   padding: 20px 25px 30px;
   margin: 0 auto 25px;
-  margin-top: 50px;
+  margin-top: 100px;
   -moz-border-radius: 2px;
   -webkit-border-radius: 2px;
   border-radius: 2px;
