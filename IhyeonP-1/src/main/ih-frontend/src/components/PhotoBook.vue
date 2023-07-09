@@ -38,7 +38,11 @@ export default {
       }
     },
     saveImage(image) {
-      console.log(this.currentUser.id);
+      // console.log(this.currentUser.id);
+      axios.post('/api/auth/uploadImage', { image: image, user: this.currentUser.id, like: 0, text: "" })
+        .then(res => {
+          console.log(res.data)
+        })
     }
   }
 }

@@ -1,5 +1,6 @@
 package com.bezkoder.springjwt.controllers;
 
+import java.sql.Blob;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -65,9 +66,8 @@ public class AuthController {
 	}
 	
 	@PostMapping("/uploadImage")
-	public void uploadImage() {
-		Photo photo = new Photo();
-//		photoRepository.save()
+	public void uploadImage(@RequestBody Photo photo) {
+		photoRepository.save(photo);
 	}
 
 	@PostMapping("/signin")
