@@ -2,9 +2,7 @@
   <full-page :options="this.options" id="fullpage" ref="fullpage">
     <div class="section">
       <div class="text-center">
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-  Launch demo modal
-</button>
+        <h1>home</h1>
       </div>
     </div>
     <div class="section">

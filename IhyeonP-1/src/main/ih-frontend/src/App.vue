@@ -35,7 +35,9 @@
         </a>
       </li>
       <li class="col-2" v-if="!currentUser">
-        <a class="btn text-dark" href="/login">Login</a>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="float: right;">
+  login
+</button>
       </li>
       <!-- <li class="col-2" v-if="!currentUser">
         <router-link to="/login" class="nav-link text-dark">
