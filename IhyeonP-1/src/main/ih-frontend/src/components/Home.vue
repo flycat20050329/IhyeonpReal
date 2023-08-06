@@ -10,7 +10,7 @@
         <h1>홍보</h1>
       </div>
       <div class="slide">
-        <h1>시간표</h1>
+        <TimeSchedule />
       </div>
       <div class="slide">
         <h1>학급일정</h1>
@@ -77,12 +77,14 @@
 <script>
 import AuthService from '../services/auth.service';
 import PhotoBook from "./PhotoBook.vue";
+import TimeSchedule from './TimeSchedule.vue';
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 
 export default {
   name: "Home",
   components: {
+    TimeSchedule,
     PhotoBook,
     Form,
     Field,
@@ -112,6 +114,7 @@ export default {
     };
   },
   mounted() {
+    //this.flycat();
   },
   methods: {
     handleLogin(user) {
@@ -132,8 +135,13 @@ export default {
         }
       );
     },
+    flycat() {
+      AuthService.getTimeSchedule().then(res => {
+        console.log(res.data);
+      })
+    },
     afterLoad() {
-      // console.log('After load')
+      console.log('After load')
     },
 
     addSection(e) {

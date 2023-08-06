@@ -89,11 +89,11 @@ export default {
       }
     }
   }, mounted() {
-    // console.log("mounted");
+    console.log("mounted");
   },
   methods: {
     afterLoad() {
-      // console.log('After load')
+      console.log('After load')
     },
 
     addSection(e) {
