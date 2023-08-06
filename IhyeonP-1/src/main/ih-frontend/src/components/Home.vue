@@ -1,9 +1,9 @@
 <template>
   <full-page :options="this.options" id="fullpage" ref="fullpage">
-    <div class="section">
+    <div class="section text-center">
       <h1>홍보</h1>
     </div>
-    <div class="section">
+    <div class="section" v-if="currentUser">
       <div class="slide">
         <h1>급식표</h1>
       </div>
@@ -14,13 +14,13 @@
         <h1>학급일정</h1>
       </div>
     </div>
-    <div class="section">
+    <div class="section" v-if="currentUser">
       <PhotoBook />
     </div>
-    <div class="section">
+    <div class="section" v-if="currentUser">
       <h2>Section 4</h2>
     </div>
-    <div class="section">
+    <div class="section" v-if="currentUser">
       <h2>Section 5</h2>
     </div>
   </full-page>
@@ -46,9 +46,8 @@ export default {
         menu: '#menu',
         navigation: false,
         anchors: ['page1', 'page2', 'page3', 'page4', 'page5'],
-        sectionsColor: ['#ffffff', '#ffffff', '#ffffff', '#ffffff', '#1bcee6', '#ee1a59', '#2c3e4f', '#ba5be9', '#b4b8ab',]
+        sectionsColor: ['#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ee1a59', '#2c3e4f', '#ba5be9', '#b4b8ab',]
       },
-      data: ["hi", "I'm", "super", "star", "nice", "to", "meet", "you"]
     };
   },
   mounted() {

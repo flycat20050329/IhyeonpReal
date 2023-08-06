@@ -1,10 +1,13 @@
 package com.bezkoder.springjwt.controllers;
 
 import java.sql.Blob;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import javax.sql.rowset.serial.SerialBlob;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,21 +21,24 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bezkoder.springjwt.models.ERole;
-import com.bezkoder.springjwt.models.Photo;
+import com.bezkoder.springjwt.models.Image;
 import com.bezkoder.springjwt.models.Role;
 import com.bezkoder.springjwt.models.User;
 import com.bezkoder.springjwt.payload.request.LoginRequest;
 import com.bezkoder.springjwt.payload.request.SignupRequest;
 import com.bezkoder.springjwt.payload.response.JwtResponse;
 import com.bezkoder.springjwt.payload.response.MessageResponse;
-import com.bezkoder.springjwt.repository.PhotoRepository;
+import com.bezkoder.springjwt.repository.ImageRepository;
 import com.bezkoder.springjwt.repository.RoleRepository;
 import com.bezkoder.springjwt.repository.UserRepository;
 import com.bezkoder.springjwt.security.jwt.JwtUtils;
 import com.bezkoder.springjwt.security.services.UserDetailsImpl;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import jakarta.validation.Valid;
 
@@ -48,26 +54,47 @@ public class AuthController {
 
 	@Autowired
 	RoleRepository roleRepository;
-	
+
 	@Autowired
-	PhotoRepository photoRepository;
+	ImageRepository photoRepository;
 
 	@Autowired
 	PasswordEncoder encoder;
 
 	@Autowired
 	JwtUtils jwtUtils;
-	
-	
+
 	@GetMapping("/aaaaa")
 	public String aaa() {
 		System.out.println("axios test");
 		return "axios 호출됨";
 	}
-	
+
+	@GetMapping("/getImage")
+	public List<Image> getImage() {
+		return photoRepository.findAll();
+	}
+
 	@PostMapping("/uploadImage")
-	public void uploadImage(@RequestBody Photo photo) {
+	public void uploadImage(@RequestParam() String data) {
+		String json = data;
+		JsonObject convertedObject = new Gson().fromJson(json, JsonObject.class);
+		User user = new User(convertedObject.get("user").getAsLong());
+//		Image photo = new Image(convertedObject.get("image").toString().getBytes(),
+//				user, convertedObject.get("heart").getAsInt(),
+//				convertedObject.get("text").toString());
+
+		Image photo = new Image(convertedObject.get("image").toString().getBytes(), null, 1);
+
 		photoRepository.save(photo);
+	}
+	
+	@PostMapping("/uploadImagePost")
+	public void uploadImagePost(@RequestParam() String data) {
+		String json = data;
+		JsonObject convertedObject = new Gson().fromJson(json, JsonObject.class);
+		
+		System.out.println(convertedObject.get("user").getAsLong());
 	}
 
 	@PostMapping("/signin")

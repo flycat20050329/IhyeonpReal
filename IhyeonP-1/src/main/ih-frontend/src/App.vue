@@ -2,10 +2,10 @@
   <div id="app">
     <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
       integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"> -->
-    <nav id="menu" class="">
+    <nav id="menu">
       <li class="col-1"></li>
       <li class="col-1">
-        <a class="btn text-dark" href="/" role="button">
+        <a class="btn text-dark " href="/" role="button">
           Home
         </a>
       </li>
@@ -196,6 +196,8 @@ export default {
 </script>
 
 <style>
+@import url(https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap);
+
 #menu {
   border-bottom: 2px solid rgb(0, 0, 0);
   background-color: white;
@@ -205,6 +207,16 @@ export default {
   /* height: 7%; */
 }
 
+#menu a{
+  padding: 1.1em;
+  font-size: large;
+}
+
+div #app {
+  font-family: 'Do Hyeon', sans-serif;
+  font-size: 100%;
+}
+
 ul {
   list-style-type: none;
   padding: 0;
@@ -212,10 +224,10 @@ ul {
 
 li {
   display: inline-block;
-  margin: 0 10px;
+  margin: 0;
 }
 
-a {
-  color: #42b983;
+p {
+  margin: auto;
 }
 </style>

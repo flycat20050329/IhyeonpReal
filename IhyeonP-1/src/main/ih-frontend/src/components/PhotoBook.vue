@@ -1,49 +1,79 @@
 <template>
   <div>
-    <div class="imagePreviewWrapper" :style="{ 'background-image': `url(${previewImage})` }" @click="selectImage">
+    <div v-for="(image, index) in images">
+      <div class="imagePreviewWrapper" :style="{ 'background-image': `url(${image})` }" v-text="index + 1" @click="getImage"/>
+      <!-- <button @click="removeImage(index)">Remove image</button> -->
     </div>
-    <input ref="fileInput" type="file" @input="pickFile">
+    <!-- <div class="imagePreviewWrapper" :style="{ 'background-image': `url(${previewImage})` }" @click="getImage" />
+    <div class="imagePreviewWrapper" :style="{ 'background-image': `url(${uploadImage})` }" /> -->
+    <input class="form-control" type="file" @input="pickFile" multiple>
   </div>
 </template>
  
 <script>
 import axios from 'axios';
+import AuthService from '../services/auth.service';
+import { Form } from 'vee-validate';
 
 export default {
+  components: {
+  },
   data() {
     return {
-      previewImage: null
+      previewImage: null,
+      uploadImage: null,
+      text: null,
+      imgData: null,
+      images: [],
     };
   },
   computed: {
     currentUser() {
       return this.$store.state.auth.user;
-    }
+    },
   },
   methods: {
-    selectImage() {
-      this.$refs.fileInput.click()
+    // ===========================================
+    removeImage(index) {
+      this.images.splice(index, 1)
     },
-    pickFile() {
-      let input = this.$refs.fileInput
-      let file = input.files
-      if (file && file[0]) {
-        let reader = new FileReader
-        reader.onload = e => {
-          this.previewImage = e.target.result
-          this.saveImage(this.previewImage);
+    getImage() {
+      // console.log(this.images);
+      AuthService.getImage().then((result) => {
+        console.log(result.data);
+        this.uploadImage = atob(result.data[0].image);
+
+        // "data:image/png;base64," + 
+      });
+    },
+    pickFile(e) {
+      var files = e.target.files || e.dataTransfer.files;
+      if (files && files[0]) {
+        for (var i = 0; i < files.length; i++) {
+          let reader = new FileReader;
+          reader.onload = e => {
+            this.previewImage = e.target.result;
+            this.images.push(e.target.result);
+            // this.saveImage();
+          }
+          reader.readAsDataURL(files[i])
         }
-        reader.readAsDataURL(file[0])
-        this.$emit('input', file[0])
+
+        this.saveImage();
+        // this.$emit('input', file[0])
+        // this.imgData = files[0];
       }
     },
-    saveImage(image) {
-      // console.log(this.currentUser.id);
-      axios.post('/api/auth/uploadImage', { image: image, user: this.currentUser.id, like: 0, text: "" })
-        .then(res => {
-          console.log(res.data)
-        })
-    }
+    async saveImage() {
+      var postData = {"user" : this.currentUser.id, "heart": 0, "text": this.text};
+      const frm = new FormData();
+      frm.append("data", JSON.stringify(postData));
+      AuthService.saveImagePost(frm);
+      // var data = { "image": images };
+      // const frm2 = new FormData();
+      // frm.append("data", JSON.stringify(data));
+      // AuthService.saveImage(frm2);
+    },
   }
 }
 </script>
@@ -51,7 +81,7 @@ export default {
 <style scoped lang="scss">
 .imagePreviewWrapper {
   width: 250px;
-  height: 100px;
+  height: 250px;
   display: block;
   cursor: pointer;
   margin: 0 auto 30px;
