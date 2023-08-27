@@ -1,13 +1,10 @@
 package com.bezkoder.springjwt.controllers;
 
-import java.sql.Blob;
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import javax.sql.rowset.serial.SerialBlob;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,22 +20,23 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.bezkoder.springjwt.models.ERole;
 import com.bezkoder.springjwt.models.Image;
+import com.bezkoder.springjwt.models.ImagePost;
 import com.bezkoder.springjwt.models.Role;
 import com.bezkoder.springjwt.models.User;
 import com.bezkoder.springjwt.payload.request.LoginRequest;
 import com.bezkoder.springjwt.payload.request.SignupRequest;
 import com.bezkoder.springjwt.payload.response.JwtResponse;
 import com.bezkoder.springjwt.payload.response.MessageResponse;
+import com.bezkoder.springjwt.repository.ImagePostRepository;
 import com.bezkoder.springjwt.repository.ImageRepository;
 import com.bezkoder.springjwt.repository.RoleRepository;
 import com.bezkoder.springjwt.repository.UserRepository;
 import com.bezkoder.springjwt.security.jwt.JwtUtils;
 import com.bezkoder.springjwt.security.services.UserDetailsImpl;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import jakarta.validation.Valid;
 
@@ -56,7 +54,10 @@ public class AuthController {
 	RoleRepository roleRepository;
 
 	@Autowired
-	ImageRepository photoRepository;
+	ImageRepository imageRepository;
+
+	@Autowired
+	ImagePostRepository imagePostRepository;
 
 	@Autowired
 	PasswordEncoder encoder;
@@ -72,29 +73,47 @@ public class AuthController {
 
 	@GetMapping("/getImage")
 	public List<Image> getImage() {
-		return photoRepository.findAll();
+		return imageRepository.findAll();
 	}
 
 	@PostMapping("/uploadImage")
-	public void uploadImage(@RequestParam() String data) {
-		String json = data;
-		JsonObject convertedObject = new Gson().fromJson(json, JsonObject.class);
-		User user = new User(convertedObject.get("user").getAsLong());
-//		Image photo = new Image(convertedObject.get("image").toString().getBytes(),
-//				user, convertedObject.get("heart").getAsInt(),
-//				convertedObject.get("text").toString());
-
-		Image photo = new Image(convertedObject.get("image").toString().getBytes(), null, 1);
-
-		photoRepository.save(photo);
-	}
-	
-	@PostMapping("/uploadImagePost")
-	public void uploadImagePost(@RequestParam() String data) {
-		String json = data;
-		JsonObject convertedObject = new Gson().fromJson(json, JsonObject.class);
+	public void uploadImage(@RequestParam() List<MultipartFile> images, @RequestParam() Long postId) throws IOException {
+		ImagePost imagePost = new ImagePost(postId);
 		
-		System.out.println(convertedObject.get("user").getAsLong());
+		for (int i = 0; i < images.size(); i++) {
+			Image image = new Image(images.get(i).getBytes(), imagePost, i + 1);
+
+			imageRepository.save(image);
+		}
+	}
+
+//	@PostMapping("/uploadImage")
+//	public void uploadImage(@RequestParam() String data) {
+//		String json = data;
+//		JsonObject convertedObject = new Gson().fromJson(json, JsonObject.class);
+////		Image photo = new Image(convertedObject.get("image").toString().getBytes(),
+////				user, convertedObject.get("heart").getAsInt(),
+////				convertedObject.get("text").toString());
+//		
+//		JsonArray imagesArray = convertedObject.get("images").getAsJsonArray();
+//		for(int i=0; i<imagesArray.size(); i++) {
+//			Image photo = new Image(imagesArray.get(i).toString().getBytes(), null, i);
+//		}
+//
+////		Image photo = new Image(convertedObject.get("images").toString().getBytes(), null, 1);
+////
+////		photoRepository.save(photo);
+//	}
+
+	@PostMapping("/uploadImagePost")
+	public Long uploadImagePost(@RequestParam() Long id, @RequestParam() int heart, @RequestParam() String text) {
+		User user = new User(id);
+
+		ImagePost imagePost = new ImagePost(user, heart, text);
+
+		imagePostRepository.save(imagePost);
+
+		return imagePost.getId();
 	}
 
 	@PostMapping("/signin")

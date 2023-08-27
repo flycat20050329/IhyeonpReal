@@ -40,8 +40,8 @@ public class ImagePost {
 //	@Size(max = 250)
 	private String text;
 
-	@NotNull
-	@Column(columnDefinition = "TIMESTAMP")
+//	@NotNull
+	@Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	private java.util.Date uploaded_on;
 
 	@JsonIgnore
@@ -50,7 +50,11 @@ public class ImagePost {
 
 	public ImagePost() {
 	}
-
+	
+	public ImagePost(Long id) {
+		this.id = id;
+	}
+	
 	public ImagePost(User user, int heart, String text) {
 		this.user = user;
 		this.heart = heart;

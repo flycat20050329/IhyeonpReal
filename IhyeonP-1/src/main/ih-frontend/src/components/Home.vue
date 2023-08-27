@@ -4,13 +4,13 @@
       <h1>홍보</h1>
     </div>
     <div class="section" v-if="currentUser">
-      <div class="slide">
+      <div class="slide text-center">
         <h1>급식표</h1>
       </div>
-      <div class="slide">
+      <div class="slide text-center">
         <h1>시간표</h1>
       </div>
-      <div class="slide">
+      <div class="slide text-center">
         <h1>학급일정</h1>
       </div>
     </div>
@@ -29,12 +29,13 @@
 <script>
 import AuthService from '../services/auth.service';
 import PhotoBook from "./PhotoBook.vue";
-
+import Vodal from 'vodal';
 
 export default {
   name: "Home",
   components: {
     PhotoBook,
+    Vodal
   },
   data() {
     return {
@@ -46,7 +47,7 @@ export default {
         menu: '#menu',
         navigation: false,
         anchors: ['page1', 'page2', 'page3', 'page4', 'page5'],
-        sectionsColor: ['#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ee1a59', '#2c3e4f', '#ba5be9', '#b4b8ab',]
+        sectionsColor: ['#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ee1a59', '#2c3e4f', '#ba5be9', '#b4b8ab',],
       },
     };
   },
@@ -131,7 +132,7 @@ export default {
     logOut() {
       this.$store.dispatch('auth/logout');
       this.$router.push('/login');
-    }
+    },
   },
   computed: {
     currentUser() {
