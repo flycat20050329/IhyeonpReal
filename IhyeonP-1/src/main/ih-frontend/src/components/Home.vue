@@ -1,5 +1,6 @@
 <template>
   <full-page :options="this.options" id="fullpage" ref="fullpage">
+
     <div class="section">
       <div class="text-center">
         <h1>home</h1>
@@ -11,18 +12,28 @@
       </div>
       <div class="slide">
         <TimeSchedule />
+
+    <div class="section text-center">
+      <h1>홍보</h1>
+    </div>
+    <div class="section" v-if="currentUser">
+      <div class="slide text-center">
+        <h1>급식표</h1>
       </div>
-      <div class="slide">
+      <div class="slide text-center">
+        <h1>시간표</h1>
+      </div>
+      <div class="slide text-center">
         <h1>학급일정</h1>
       </div>
     </div>
-    <div class="section">
+    <div class="section" v-if="currentUser">
       <PhotoBook />
     </div>
-    <div class="section">
+    <div class="section" v-if="currentUser">
       <h2>Section 4</h2>
     </div>
-    <div class="section">
+    <div class="section" v-if="currentUser">
       <h2>Section 5</h2>
     </div>
   </full-page>
@@ -77,18 +88,26 @@
 <script>
 import AuthService from '../services/auth.service';
 import PhotoBook from "./PhotoBook.vue";
+
 import TimeSchedule from './TimeSchedule.vue';
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
+
+import Vodal from 'vodal';
+
 
 export default {
   name: "Home",
   components: {
     TimeSchedule,
     PhotoBook,
+
     Form,
     Field,
     ErrorMessage,
+
+    Vodal
+
   },
   data() {
     const schema = yup.object().shape({
@@ -105,8 +124,9 @@ export default {
         menu: '#menu',
         navigation: false,
         anchors: ['page1', 'page2', 'page3', 'page4', 'page5'],
-        sectionsColor: ['#ffffff', '#ffffff', '#ffffff', '#ffffff', '#1bcee6', '#ee1a59', '#2c3e4f', '#ba5be9', '#b4b8ab',]
+        sectionsColor: ['#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ee1a59', '#2c3e4f', '#ba5be9', '#b4b8ab',],
       },
+
       data: ["hi", "I'm", "super", "star", "nice", "to", "meet", "you"],
       loading: false,
       message: "",
@@ -218,7 +238,7 @@ export default {
     logOut() {
       this.$store.dispatch('auth/logout');
       this.$router.push('/login');
-    }
+    },
   },
   computed: {
     currentUser() {

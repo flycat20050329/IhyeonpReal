@@ -46,6 +46,27 @@ class AuthService {
     return axios.get(API_URL3 + 'getInfo', {
     });
   }
+
+  async saveImagePost(frm) {
+    return axios.post(API_URL + 'uploadImagePost', frm, {
+      hearder: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+  }
+
+  async saveImage(frm) {
+    return axios.post(API_URL + 'uploadImage', frm, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+  }
+
+  getImage() {
+    return axios.get(API_URL + 'getImage')
+  }
+
 }
 
 export default new AuthService();

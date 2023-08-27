@@ -2,10 +2,12 @@
   <div id="app">
     <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
       integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"> -->
-    <nav id="menu" class="">
+
+    <!-- nav bar -->
+    <nav id="menu">
       <li class="col-1"></li>
       <li class="col-1">
-        <a class="btn text-dark" href="/" role="button">
+        <a class="btn text-dark " href="/" role="button">
           Home
         </a>
       </li>
@@ -16,7 +18,7 @@
       </li>
       <li class="col-1">
         <a class="btn text-dark" href="#page3" role="button">
-          학급
+          Photo
         </a>
       </li>
       <li class="col-1">
@@ -57,6 +59,7 @@
       </li>
     </nav>
   </div>
+
   <div class="container">
     <router-view />
   </div>
@@ -73,25 +76,21 @@ export default {
   name: 'app',
   components: {
     VueFullPage,
-    axios
+    axios,
   },
   data() {
     return {
-      options: {
-        licenseKey: 'YOUR_KEY_HERE',
-        afterLoad: this.afterLoad,
-        scrollOverflow: false,
-        scrollBar: false,
-        menu: '#menu',
-        navigation: false,
-        anchors: ['page1', 'page2', 'page3', 'page4', 'page5'],
-        sectionsColor: ['#41b883', '#ff5f45', '#0798ec', '#fec401', '#1bcee6', '#ee1a59', '#2c3e4f', '#ba5be9', '#b4b8ab']
-      }
     }
   }, mounted() {
+
     console.log("mounted");
   },
   methods: {
+    changePopState() {
+      this.popState = !this.popState;
+    },
+
+
     afterLoad() {
       console.log('After load')
     },
@@ -169,7 +168,8 @@ export default {
     },
     logOut() {
       this.$store.dispatch('auth/logout');
-      this.$router.push('/login');
+      // this.$router.push('/login');
+      this.changePopState();
     }
   },
   computed: {
@@ -198,6 +198,8 @@ export default {
 </script>
 
 <style>
+@import url(https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap);
+
 #menu {
   border-bottom: 2px solid rgb(0, 0, 0);
   background-color: white;
@@ -207,6 +209,16 @@ export default {
   /* height: 7%; */
 }
 
+#menu a {
+  padding: 1.1em;
+  font-size: large;
+}
+
+div #app {
+  font-family: 'Do Hyeon', sans-serif;
+  font-size: 100%;
+}
+
 ul {
   list-style-type: none;
   padding: 0;
@@ -214,10 +226,10 @@ ul {
 
 li {
   display: inline-block;
-  margin: 0 10px;
+  margin: 0;
 }
 
-a {
-  color: #42b983;
+p {
+  margin: auto;
 }
 </style>
