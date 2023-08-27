@@ -63,8 +63,10 @@ public class Lunch {
 			String type = "xml";
 			String date = Lunch.getCurMonday();
 			
-			List<List<String>> lunchList = new ArrayList<List<String>>();
+			System.out.println(date);
 			
+			List<List<String>> lunchList = new ArrayList<List<String>>();
+
 			Document documentInfo = DocumentBuilderFactory.newInstance().newDocumentBuilder()
 					.parse(url + "?KEY=" + decodeServiceKey + "&ATPT_OFCDC_SC_CODE=" + atptCode + "&SD_SCHUL_CODE="
 							+ schoolCode + "&TYPE=" + type + "&MLSV_FROM_YMD=" + date);

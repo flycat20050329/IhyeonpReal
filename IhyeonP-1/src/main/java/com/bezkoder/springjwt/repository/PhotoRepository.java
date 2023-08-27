@@ -3,9 +3,10 @@ package com.bezkoder.springjwt.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.bezkoder.springjwt.models.ImagePost;
+import com.bezkoder.springjwt.models.Image;
 
 @Repository
-public interface ImagePostRepository extends JpaRepository<ImagePost, Long>{
+public interface PhotoRepository extends JpaRepository<Image, Long>{
+	
 	
 }

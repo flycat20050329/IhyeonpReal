@@ -18,7 +18,7 @@
           <ErrorMessage name="password" class="error-feedback" />
         </div>
 
-        <div class="form-group ps-2">
+        <div class="form-group">
          회원가입이 필요하시면 <a href="/register">여기</a>
         </div>
 

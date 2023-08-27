@@ -2,6 +2,7 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:8080/api/auth/';
 const API_URL2 = 'http://localhost:8080/api/lunch/';
+const API_URL3 = 'http://localhost:8080/api/schedule/';
 
 class AuthService {
   login(user) {
@@ -39,28 +40,12 @@ class AuthService {
   getLunchList() {
     return axios.get(API_URL2 + 'getInfo', {
     });
-  }
+  };
 
-  async saveImagePost(frm) {
-    return axios.post(API_URL + 'uploadImagePost', frm, {
-      hearder: {
-        'Content-Type': 'multipart/form-data'
-      }
-    })
+  getTimeSchedule() {
+    return axios.get(API_URL3 + 'getInfo', {
+    });
   }
-
-  async saveImage(frm) {
-    return axios.post(API_URL + 'uploadImage', frm, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    })
-  }
-
-  getImage() {
-    return axios.get(API_URL + 'getImage')
-  }
-
 }
 
 export default new AuthService();

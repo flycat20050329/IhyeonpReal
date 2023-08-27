@@ -23,7 +23,7 @@ const routes = [
   {
     path: "/login",
     name: "login",
-    component: Login,
+    component: Home,
   },
   {
     path: "/register",
@@ -34,7 +34,7 @@ const routes = [
     path: "/profile",
     name: "profile",
     // lazy-loaded
-    component: Profile,
+    component: Home,
   },
   {
     path: "/admin",

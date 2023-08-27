@@ -1,43 +1,101 @@
 <template>
   <full-page :options="this.options" id="fullpage" ref="fullpage">
-    <div class="section text-center">
-      <h1>홍보</h1>
+    <div class="section">
+      <div class="text-center">
+        <h1>home</h1>
+      </div>
     </div>
-    <div class="section" v-if="currentUser">
-      <div class="slide text-center">
-        <h1>급식표</h1>
+    <div class="section">
+      <div class="slide">
+        <h1>홍보</h1>
       </div>
-      <div class="slide text-center">
-        <h1>시간표</h1>
+      <div class="slide">
+        <TimeSchedule />
       </div>
-      <div class="slide text-center">
+      <div class="slide">
         <h1>학급일정</h1>
       </div>
     </div>
-    <div class="section" v-if="currentUser">
+    <div class="section">
       <PhotoBook />
     </div>
-    <div class="section" v-if="currentUser">
+    <div class="section">
       <h2>Section 4</h2>
     </div>
-    <div class="section" v-if="currentUser">
+    <div class="section">
       <h2>Section 5</h2>
     </div>
   </full-page>
+
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-center" id="exampleModalLabel">Sign in</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <Form @submit="handleLogin" :validation-schema="schema">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <Field name="username" type="text" class="form-control" />
+          <ErrorMessage name="username" class="error-feedback" />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <Field name="password" type="password" class="form-control" />
+          <ErrorMessage name="password" class="error-feedback" />
+        </div>
+
+        <div class="form-group">
+         회원가입이 필요하시면 <a href="/register">여기</a>
+        </div>
+
+        <div class="form-group">
+          <button class="btn btn-primary btn-block" :disabled="loading" data-bs-dismiss="modal"  style="float: right;">
+            <span
+              v-show="loading"
+              class="spinner-border spinner-border-sm"
+            ></span>
+            <span>Login</span>
+          </button>
+        </div>
+
+        <div class="form-group">
+          <div v-if="message" class="alert alert-danger" role="alert">
+            {{ message }}
+          </div>
+        </div>
+      </Form>
+      </div>
+    </div>
+  </div>
+</div>
+
 </template>
 
 <script>
 import AuthService from '../services/auth.service';
 import PhotoBook from "./PhotoBook.vue";
-import Vodal from 'vodal';
+import TimeSchedule from './TimeSchedule.vue';
+import { Form, Field, ErrorMessage } from "vee-validate";
+import * as yup from "yup";
 
 export default {
   name: "Home",
   components: {
+    TimeSchedule,
     PhotoBook,
-    Vodal
+    Form,
+    Field,
+    ErrorMessage,
   },
   data() {
+    const schema = yup.object().shape({
+      username: yup.string().required("Username is required!"),
+      password: yup.string().required("Password is required!"),
+    });
+
     return {
       options: {
         licenseKey: 'YOUR_KEY_HERE',
@@ -47,15 +105,43 @@ export default {
         menu: '#menu',
         navigation: false,
         anchors: ['page1', 'page2', 'page3', 'page4', 'page5'],
-        sectionsColor: ['#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ee1a59', '#2c3e4f', '#ba5be9', '#b4b8ab',],
+        sectionsColor: ['#ffffff', '#ffffff', '#ffffff', '#ffffff', '#1bcee6', '#ee1a59', '#2c3e4f', '#ba5be9', '#b4b8ab',]
       },
+      data: ["hi", "I'm", "super", "star", "nice", "to", "meet", "you"],
+      loading: false,
+      message: "",
+      schema,
     };
   },
   mounted() {
+    this.flycat();
   },
   methods: {
+    handleLogin(user) {
+      this.loading = true;
+
+      this.$store.dispatch("auth/login", user).then(
+        () => {
+          this.$router.push("/profile");
+        },
+        (error) => {
+          this.loading = false;
+          this.message =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
+        }
+      );
+    },
+    flycat() {
+      AuthService.getTimeSchedule().then(res => {
+        console.log(res.data);
+      })
+    },
     afterLoad() {
-      // console.log('After load')
+      console.log('After load')
     },
 
     addSection(e) {
@@ -132,7 +218,7 @@ export default {
     logOut() {
       this.$store.dispatch('auth/logout');
       this.$router.push('/login');
-    },
+    }
   },
   computed: {
     currentUser() {
@@ -151,9 +237,55 @@ export default {
       }
 
       return false;
+    },
+    loggedIn() {
+      return this.$store.state.auth.status.loggedIn;
+    },
+    created() {
+    if (this.loggedIn) {
+      this.$router.push("/profile");
     }
-  }
+  },
+  },
 };
 </script>
 
-<style></style>
+<style scoped>
+label {
+  display: block;
+  margin-top: 10px;
+}
+
+
+.card-container.card {
+  max-width: 350px !important;
+  padding: 40px 40px;
+}
+
+.card {
+  background-color: #f7f7f7;
+  padding: 20px 25px 30px;
+  margin: 0 auto 25px;
+  margin-top: 100px;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+  -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+}
+
+.profile-img-card {
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 10px;
+  display: block;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+}
+
+.error-feedback {
+  color: red;
+}
+</style>
