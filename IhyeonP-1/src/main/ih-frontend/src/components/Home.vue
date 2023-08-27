@@ -11,6 +11,17 @@
       </div>
       <div class="slide">
         <TimeSchedule />
+<<<<<<< Updated upstream
+=======
+      </div>
+    </div>
+    <div class="section text-center">
+      <h1>홍보</h1>
+    </div>
+    <div class="section" v-if="currentUser">
+      <div class="slide text-center">
+        <h1>급식표</h1>
+>>>>>>> Stashed changes
       </div>
       <div class="slide">
         <h1>학급일정</h1>
@@ -81,6 +92,10 @@ import TimeSchedule from './TimeSchedule.vue';
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 export default {
   name: "Home",
   components: {
@@ -89,6 +104,10 @@ export default {
     Form,
     Field,
     ErrorMessage,
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
   },
   data() {
     const schema = yup.object().shape({
