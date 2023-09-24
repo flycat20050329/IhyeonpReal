@@ -23,5 +23,5 @@ createApp(App)
   .component("font-awesome-icon", FontAwesomeIcon)
   .mount("#app");
 
-// App.config.globalProperties.$axios = axios
-// axios.defaults.baseURL = "http://localhost:8080/";
+App.config.globalProperties.$axios = axios
+axios.defaults.baseURL = "http://localhost:8080/";
