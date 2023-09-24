@@ -10,6 +10,11 @@ import axios from 'axios'
 import 'vue-fullpage.js/dist/style.css'
 import VueFullPage from 'vue-fullpage.js'
 
+import "@egjs/vue3-flicking/dist/flicking.css";
+// Or, if you have to support IE9
+import "@egjs/vue3-flicking/dist/flicking-inline.css";
+
+
 
 createApp(App)
   .use(router)

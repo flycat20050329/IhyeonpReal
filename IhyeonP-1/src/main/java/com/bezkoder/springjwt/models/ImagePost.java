@@ -50,11 +50,11 @@ public class ImagePost {
 
 	public ImagePost() {
 	}
-	
+
 	public ImagePost(Long id) {
 		this.id = id;
 	}
-	
+
 	public ImagePost(User user, int heart, String text) {
 		this.user = user;
 		this.heart = heart;

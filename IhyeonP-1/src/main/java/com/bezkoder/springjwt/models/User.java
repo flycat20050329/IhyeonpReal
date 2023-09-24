@@ -19,13 +19,32 @@ import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
+/*
+id
+
+아이디 (로그인) - username
+비번 - password
+이메일 - email
+
+닉네임 (한글) - nickname
+성별 - gender
+	0 : 남성, 1 : 여성, 2 : None
+생년월일 - birth
+
+
+학교 코드 - s_id
+학년 - s_grade
+반 - s_class
+번호 - s_number
+ */
+
 @Entity
-@Table(name = "ih_users", uniqueConstraints = { @UniqueConstraint(columnNames = "username"),
-		@UniqueConstraint(columnNames = "email") })
+@Table(name = "ih_users", uniqueConstraints = { @UniqueConstraint(columnNames = { "username", "email" }) })
 @Getter
 @Setter
 public class User {
@@ -35,18 +54,47 @@ public class User {
 	@Column(name = "user")
 	private Long id;
 
-	@NotBlank
+	@NotNull
 	@Size(max = 20)
 	private String username;
 
-	@NotBlank
+	@NotNull
 	@Size(max = 50)
 	@Email
 	private String email;
 
-	@NotBlank
+	@NotNull
 	@Size(max = 120)
 	private String password;
+
+//	@NotNull
+//	@Size(max = 20)
+//	@Column(unique = true)
+//	private String nickname;
+//
+//	@NotBlank
+//	@Size(max = 1)
+//	private Integer gender;
+//
+//	@NotBlank
+//	@Size(max = 6)
+//	private Long s_id;
+//
+//	@NotBlank
+//	@Size(max = 1)
+//	private Integer s_grade;
+//
+//	@NotBlank
+//	@Size(max = 2)
+//	private Integer s_class;
+//
+//	@NotBlank
+//	@Size(max = 3)
+//	private Integer s_number;
+//
+//	@NotBlank
+//	@Column(name = "birth", nullable = false)
+//	private java.sql.Date birth;
 
 	@JsonIgnore
 	@ManyToMany(fetch = FetchType.LAZY)

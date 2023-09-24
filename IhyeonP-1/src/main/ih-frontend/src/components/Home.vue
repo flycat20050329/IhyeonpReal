@@ -15,7 +15,9 @@
       </div>
     </div>
     <div class="section" v-if="currentUser">
-      <PhotoBook />
+      <Suspense>
+        <PhotoBook :key="componentKey" @setInput="forceRerender" :mainimages="mainimages" />
+      </Suspense>
     </div>
     <div class="section" v-if="currentUser">
       <h2>Section 4</h2>
@@ -29,13 +31,21 @@
 <script>
 import AuthService from '../services/auth.service';
 import PhotoBook from "./PhotoBook.vue";
-import Vodal from 'vodal';
+import { ref } from "vue";
 
 export default {
   name: "Home",
   components: {
     PhotoBook,
-    Vodal
+  },
+  setup() {
+    const componentKey = ref(0);
+    const mainimages = ref([]);
+
+    return {
+      componentKey,
+      mainimages,
+    }
   },
   data() {
     return {
@@ -51,12 +61,23 @@ export default {
       },
     };
   },
-  mounted() {
-  },
   methods: {
-    afterLoad() {
-      // console.log('After load')
+
+    forceRerender() {
+
+      const mainimages = [];
+
+      AuthService.getImage().then((result) => {
+        for (var i = 0; i < result.data.length; i++) {
+          result.data[i].image = "data:image/png;base64," + result.data[i].image
+        }
+        mainimages.value = result.data;
+      });
+
+      this.mainimages = mainimages;
+      this.componentKey += 1;
     },
+
 
     addSection(e) {
       e.preventDefault()
