@@ -5,7 +5,7 @@ import Register from "./components/Register.vue";
 import Lunch from "./components/PhotoBook.vue";
 
 // lazy-loaded
-const Profile = () => import("./components/Profile.vue")
+// const Profile = () => import("./components/Profile.vue")
 const BoardAdmin = () => import("./components/BoardAdmin.vue")
 const BoardModerator = () => import("./components/BoardModerator.vue")
 const BoardUser = () => import("./components/BoardUser.vue")
@@ -23,7 +23,7 @@ const routes = [
   {
     path: "/login",
     name: "login",
-    component: Login,
+    component: Home,
   },
   {
     path: "/register",
@@ -34,7 +34,7 @@ const routes = [
     path: "/profile",
     name: "profile",
     // lazy-loaded
-    component: Profile,
+    component: Home,
   },
   {
     path: "/admin",
