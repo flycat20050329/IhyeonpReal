@@ -1,9 +1,32 @@
 <template>
+<<<<<<< HEAD
   <full-page :options="this.options" id="fullpage" ref="fullpage">
+=======
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+
+  <full-page :options="this.options" id="fullpage" ref="fullpage">
+    <div class="section">
+      <div class="text-center">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#signUpModal">
+          Launch demo modal
+        </button>
+      </div>
+    </div>
+    <div class="section">
+      <div class="slide">
+        <Register/>
+      </div>
+      <div class="slide">
+        <TimeSchedule />
+
+      </div>
+    </div>
+>>>>>>> 73defca7c993aa14b01e1876332c9705f89aeffc
     <div class="section text-center">
       <h1>홍보</h1>
     </div>
-    <div class="section" v-if="currentUser">
+    <div class="section">
       <div class="slide text-center">
         <h1>급식표</h1>
       </div>
@@ -14,29 +37,160 @@
         <h1>학급일정</h1>
       </div>
     </div>
-    <div class="section" v-if="currentUser">
+    <div class="section">
       <Suspense>
         <PhotoBook :key="componentKey" @setInput="forceRerender" :mainimages="mainimages" />
       </Suspense>
     </div>
-    <div class="section" v-if="currentUser">
+    <div class="section">
       <h2>Section 4</h2>
     </div>
-    <div class="section" v-if="currentUser">
+    <div class="section">
       <h2>Section 5</h2>
     </div>
   </full-page>
+<<<<<<< HEAD
+=======
+
+  <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-center" id="loginModalLabel">Sign in</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <Form @submit="handleLogin" :validation-schema="loginSchema">
+            <div class="form-group">
+              <label for="username">Username</label>
+              <Field name="username" type="text" class="form-control" />
+              <ErrorMessage name="username" class="error-feedback" />
+            </div>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <Field name="password" type="password" class="form-control" />
+              <ErrorMessage name="password" class="error-feedback" />
+            </div>
+
+            <div class="form-group">
+              회원가입이 필요하시면 <a href="/register">여기</a>
+            </div>
+
+            <div class="form-group">
+              <button class="btn btn-primary btn-block" :disabled="loading" data-bs-dismiss="modal" style="float: right;">
+                <span v-show="loading" class="spinner-border spinner-border-sm"></span>
+                <span>Login</span>
+              </button>
+            </div>
+
+            <div class="form-group">
+              <div v-if="message" class="alert alert-danger" role="alert">
+                {{ message }}
+              </div>
+            </div>
+          </Form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="signUpModal" tabindex="-1" aria-labelledby="signUpModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="col-md-12">
+          <Form @submit="handleRegister" :validation-schema="signupSchema">
+            <div v-if="!successful">
+              <div class="form-group">
+                <label for="username">Username</label>
+                <Field name="username" type="text" class="form-control" />
+                <ErrorMessage name="username" class="error-feedback" />
+              </div>
+              <div class="form-group">
+                <label for="email">Email</label>
+                <Field name="email" type="email" class="form-control" />
+                <ErrorMessage name="email" class="error-feedback" />
+              </div>
+              <div class="form-group">
+                <label for="password">Password</label>
+                <Field name="password" type="password" class="form-control" />
+                <ErrorMessage name="password" class="error-feedback" />
+              </div>
+              <div class="form-group">
+                <label for="schoolCode">schoolCode</label>
+                <Field name="schoolCode" type="schoolCode" class="form-control" />
+                <ErrorMessage name="schoolCode" class="error-feedback" />
+              </div>
+              <div class="form-group">
+                <label for="grade">grade</label>
+                <Field name="grade" type="grade" class="form-control" />
+                <ErrorMessage name="grade" class="error-feedback" />
+              </div>
+              <div class="form-group">
+                <label for="ban">ban</label>
+                <Field name="ban" type="ban" class="form-control" />
+                <ErrorMessage name="ban" class="error-feedback" />
+              </div>
+              <div class="row">
+                <div class="col-1">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
+                    <label class="form-check-label" for="flexRadioDefault1">
+                      학생
+                    </label>
+                  </div>
+                </div>
+                <div class="col-1">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
+                    <label class="form-check-label" for="flexRadioDefault2">
+                      교사
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <button class="btn btn-primary btn-block" :disabled="loading">
+                  <span v-show="loading" class="spinner-border spinner-border-sm"></span>
+                  Sign Up
+                </button>
+              </div>
+            </div>
+          </Form>
+
+          <div v-if="message" class="alert" :class="successful ? 'alert-success' : 'alert-danger'">
+            {{ message }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+>>>>>>> 73defca7c993aa14b01e1876332c9705f89aeffc
 </template>
 
 <script>
 import AuthService from '../services/auth.service';
 import PhotoBook from "./PhotoBook.vue";
 import { ref } from "vue";
+<<<<<<< HEAD
+=======
+import TimeSchedule from './TimeSchedule.vue';
+import Register from './Register.vue';
+import { Form, Field, ErrorMessage } from "vee-validate";
+import * as yup from "yup";
+
+>>>>>>> 73defca7c993aa14b01e1876332c9705f89aeffc
 
 export default {
   name: "Home",
   components: {
     PhotoBook,
+<<<<<<< HEAD
+=======
+    Form,
+    Field,
+    ErrorMessage,
+    Register,
+>>>>>>> 73defca7c993aa14b01e1876332c9705f89aeffc
   },
   setup() {
     const componentKey = ref(0);
@@ -48,6 +202,47 @@ export default {
     }
   },
   data() {
+<<<<<<< HEAD
+=======
+    const loginSchema = yup.object().shape({
+      username: yup.string().required("Username is required!"),
+      password: yup.string().required("Password is required!"),
+    });
+
+    const signupSchema = yup.object().shape({
+      username: yup
+        .string()
+        .required("Username is required!")
+        .min(3, "Must be at least 3 characters!")
+        .max(20, "Must be maximum 20 characters!"),
+      email: yup
+        .string()
+        .required("Email is required!")
+        .email("Email is invalid!")
+        .max(50, "Must be maximum 50 characters!"),
+      password: yup
+        .string()
+        .required("Password is required!")
+        .min(6, "Must be at least 6 characters!")
+        .max(40, "Must be maximum 40 characters!"),
+      schoolCode: yup
+        .string()
+        .required("Password is required!")
+        .min(6, "Must be at least 6 characters!")
+        .max(40, "Must be maximum 40 characters!"),
+      grade: yup
+        .string()
+        .required("Password is required!")
+        .min(6, "Must be at least 6 characters!")
+        .max(40, "Must be maximum 40 characters!"),
+      ban: yup
+        .string()
+        .required("Password is required!")
+        .min(6, "Must be at least 6 characters!")
+        .max(40, "Must be maximum 40 characters!"),
+    });
+
+>>>>>>> 73defca7c993aa14b01e1876332c9705f89aeffc
     return {
       options: {
         licenseKey: 'YOUR_KEY_HERE',
@@ -59,10 +254,27 @@ export default {
         anchors: ['page1', 'page2', 'page3', 'page4', 'page5'],
         sectionsColor: ['#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ee1a59', '#2c3e4f', '#ba5be9', '#b4b8ab',],
       },
+<<<<<<< HEAD
     };
   },
   methods: {
 
+=======
+
+      data: ["hi", "I'm", "super", "star", "nice", "to", "meet", "you"],
+      loading: false,
+      successful: false,
+      message: "",
+      loginSchema,
+      signupSchema,
+      currentTab: 0,
+      schoolName: "",
+      location: "",
+      grade: "",
+      ban: "",
+    };
+  },
+>>>>>>> 73defca7c993aa14b01e1876332c9705f89aeffc
     forceRerender() {
 
       const mainimages = [];
@@ -77,99 +289,105 @@ export default {
       this.mainimages = mainimages;
       this.componentKey += 1;
     },
-
-
-    addSection(e) {
-      e.preventDefault()
-      var newSectionNumber = document.querySelectorAll('.fp-section').length + 1
-
-      // creating the section div
-      var section = document.createElement('div')
-      section.className = 'section'
-      section.innerHTML = `<h3>Section ${newSectionNumber}</h3>`
-
-      // adding section
-      document.querySelector('#fullpage').appendChild(section)
-
-      // creating the section menu element
-      var sectionMenuItem = document.createElement('li')
-      sectionMenuItem.setAttribute('data-menuanchor', 'page' + newSectionNumber)
-      sectionMenuItem.innerHTML = `<a href="#page${newSectionNumber}">Section${newSectionNumber}</a>`
-
-      // adding it to the sections menu
-      var sectionsMenuItems = document.querySelector('#menu')
-      sectionsMenuItems.appendChild(sectionMenuItem)
-
-      // adding anchor for the section
-      this.options.anchors.push(`page${newSectionNumber}`)
-
-      // we have to call `update` manually as DOM changes won't fire updates
-      // requires the use of the attribute ref="fullpage" on the
-      // component element, in this case, <full-page>
-      // ideally, use an ID element for that element too
-      this.$refs.fullpage.build()
+<<<<<<< HEAD
+=======
+    mounted() {
+      this.flycat();
     },
+    methods: {
+      handleRegister(user) {
+        this.message = "";
+        this.successful = false;
+        this.loading = true;
 
-    removeSection() {
-      var sections = document.querySelector('#fullpage').querySelectorAll('.fp-section')
-      var lastSection = sections[sections.length - 1]
+        this.$store.dispatch("auth/register", user).then(
+          (data) => {
+            this.message = data.message;
+            this.successful = true;
+            this.loading = false;
+          },
+          (error) => {
+            this.message =
+              (error.response &&
+                error.response.data &&
+                error.response.data.message) ||
+              error.message ||
+              error.toString();
+            this.successful = false;
+            this.loading = false;
+          }
+        );
+      },
+      handleLogin(user) {
+        this.loading = true;
 
-      // removing the last section
-      lastSection.parentNode.removeChild(lastSection)
-
-      // removing the last anchor
-      this.options.anchors.pop();
-
-      // removing the last item on the sections menu
-      var sectionsMenuItems = document.querySelectorAll('#menu li')
-      var lastItem = sectionsMenuItems[sectionsMenuItems.length - 1]
-      lastItem.parentNode.removeChild(lastItem)
+        this.$store.dispatch("auth/login", user).then(
+          () => {
+            this.$router.push("/profile");
+          },
+          (error) => {
+            this.loading = false;
+            this.message =
+              (error.response &&
+                error.response.data &&
+                error.response.data.message) ||
+              error.message ||
+              error.toString();
+          }
+        );
+      },
+      flycat() {
+        AuthService.getTimeSchedule().then(res => {
+          console.log(res.data);
+        })
+      },
+      afterLoad() {
+        console.log('After load')
+      },
+      Please() {
+        AuthService.please().then(
+          (response) => {
+            this.content = response.data;
+            console.log(this.content);
+          },
+          (error) => {
+            this.content =
+              (error.response &&
+                error.response.data &&
+                error.response.data.message) ||
+              error.message ||
+              error.toString();
+          }
+        );
+      },
+      logOut() {
+        this.$store.dispatch('auth/logout');
+        this.$router.push('/login');
+      },
     },
-
-    toggleNavigation() {
-      this.options.navigation = !this.options.navigation
-    },
-
-    toggleScrollbar() {
-      console.log('Changing scrollbar...')
-      this.options.scrollBar = !this.options.scrollBar
-    },
-    Please() {
-      AuthService.please().then(
-        (response) => {
-          this.content = response.data;
-          console.log(this.content);
-        },
-        (error) => {
-          this.content =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString();
+    computed: {
+      currentUser() {
+        return this.$store.state.auth.user;
+      },
+      showAdminBoard() {
+        if (this.currentUser && this.currentUser['roles']) {
+          return this.currentUser['roles'].includes('ROLE_ADMIN');
         }
-      );
-    },
-    logOut() {
-      this.$store.dispatch('auth/logout');
-      this.$router.push('/login');
-    },
-  },
-  computed: {
-    currentUser() {
-      return this.$store.state.auth.user;
-    },
-    showAdminBoard() {
-      if (this.currentUser && this.currentUser['roles']) {
-        return this.currentUser['roles'].includes('ROLE_ADMIN');
-      }
+>>>>>>> 73defca7c993aa14b01e1876332c9705f89aeffc
 
-      return false;
-    },
-    showModeratorBoard() {
-      if (this.currentUser && this.currentUser['roles']) {
-        return this.currentUser['roles'].includes('ROLE_TEACHER');
+        return false;
+      },
+      showModeratorBoard() {
+        if (this.currentUser && this.currentUser['roles']) {
+          return this.currentUser['roles'].includes('ROLE_TEACHER');
+        }
+
+        return false;
+      },
+      loggedIn() {
+        return this.$store.state.auth.status.loggedIn;
       }
+<<<<<<< HEAD
 
       return false;
     }
@@ -178,3 +396,125 @@ export default {
 </script>
 
 <style></style>
+=======
+    }
+  }
+</script>
+<style scoped>
+label {
+  display: block;
+  margin-top: 10px;
+}
+
+
+.card-container.card {
+  max-width: 350px !important;
+  padding: 40px 40px;
+}
+
+.card {
+  background-color: #f7f7f7;
+  padding: 20px 25px 30px;
+  margin: 0 auto 25px;
+  margin-top: 100px;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+  -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+}
+
+.profile-img-card {
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 10px;
+  display: block;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+}
+
+.error-feedback {
+  color: red;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #f1f1f1;
+}
+
+#regForm {
+  background-color: #ffffff;
+  margin: 100px auto;
+  font-family: Raleway;
+  padding: 40px;
+  width: 70%;
+  min-width: 300px;
+}
+
+h1 {
+  text-align: center;
+}
+
+input {
+  padding: 10px;
+  width: 100%;
+  font-size: 17px;
+  font-family: Raleway;
+  border: 1px solid #aaaaaa;
+}
+
+/* Mark input boxes that gets an error on validation: */
+input.invalid {
+  background-color: #ffdddd;
+}
+
+/* Hide all steps by default: */
+.tab {
+  display: none;
+}
+
+button {
+  background-color: #04AA6D;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 17px;
+  font-family: Raleway;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.8;
+}
+
+#prevBtn {
+  background-color: #bbbbbb;
+}
+
+/* Make circles that indicate the steps of the form: */
+.step {
+  height: 15px;
+  width: 15px;
+  margin: 0 2px;
+  background-color: #bbbbbb;
+  border: none;
+  border-radius: 50%;
+  display: inline-block;
+  opacity: 0.5;
+}
+
+.step.active {
+  opacity: 1;
+}
+
+/* Mark the steps that are finished and valid: */
+.step.finish {
+  background-color: #04AA6D;
+}
+</style>
+>>>>>>> 73defca7c993aa14b01e1876332c9705f89aeffc
