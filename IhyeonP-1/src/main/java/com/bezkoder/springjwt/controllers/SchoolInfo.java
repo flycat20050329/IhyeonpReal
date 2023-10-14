@@ -17,15 +17,15 @@ public class SchoolInfo {
 		try {
 			String url = cite + "?KEY=" + key + "?SCHUL_NM=" + initName;
 			List<String> nameList = new ArrayList<String>();
-			
+
 			Document doc = Jsoup.connect(url).get();
 			Elements elements = doc.select("row");
 			Elements names = elements.select("SCHUL_NM");
-			
-			for(Element name : names) {
+
+			for (Element name : names) {
 				nameList.add(name.text());
 			}
-			
+
 			return nameList;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
