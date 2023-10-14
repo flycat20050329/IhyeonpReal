@@ -49,7 +49,7 @@ public class Schedule {
 		String sun = dateBound.get(0);
 		String sat = dateBound.get(1);
 		try {
-			String url = cite + "?KEY=" + key + "&ATPT_OFCDC_SC_CODE=J10&SD_SCHUL_CODE=7530983&AY=2023&SEM=2&GRADE=3&CLASS_NM=1&TI_FROM_YMD"
+			String url = cite + "?KEY=" + key + "&ATPT_OFCDC_SC_CODE=J10&SD_SCHUL_CODE=7530112&AY=2023&SEM=2&GRADE=3&CLASS_NM=1&TI_FROM_YMD"
 					+ "=" + sun + "&TI_TO_YMD=" + sat;
 			
 			System.out.println(url);
