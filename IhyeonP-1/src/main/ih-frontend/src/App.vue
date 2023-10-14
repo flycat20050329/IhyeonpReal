@@ -37,9 +37,7 @@
         </a>
       </li>
       <li class="col-2" v-if="!currentUser">
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="float: right;">
-  login
-</button>
+        <a class="btn text-dark" href="/login">Login</a>
       </li>
       <!-- <li class="col-2" v-if="!currentUser">
         <router-link to="/login" class="nav-link text-dark">
@@ -82,8 +80,6 @@ export default {
     return {
     }
   }, mounted() {
-
-    console.log("mounted");
   },
   methods: {
     changePopState() {
@@ -92,7 +88,7 @@ export default {
 
 
     afterLoad() {
-      console.log('After load')
+      // console.log('After load')
     },
 
     addSection(e) {
