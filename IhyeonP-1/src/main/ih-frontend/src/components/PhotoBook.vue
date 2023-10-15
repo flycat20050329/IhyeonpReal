@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div v-if="!uploadImages">
-      <div class="topBar container">
+    <div v-if="!uploadImages" style="padding-top: 500px;">
+      <div class="topBar">
         <div class="row justify-content-between">
           <div class="col-4">
             <button type="button" class="btn btn-outline-dark" @click="chooseFiles()">
@@ -26,7 +26,7 @@
       </div>
     </div>
     <!-- image upload -->
-    <div class="container">
+    <div class="container" style="padding-top: 100px;">
       <div class="row" v-if="uploadImages">
         <div class="col-5">
           <!-- imagePreview -->

@@ -1,4 +1,4 @@
-package com.bezkoder.springjwt.models;
+package com.bezkoder.springjwt.controllers;
 
 import java.net.URLDecoder;
 import java.text.ParseException;

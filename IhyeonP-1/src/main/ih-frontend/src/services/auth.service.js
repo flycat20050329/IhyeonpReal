@@ -2,6 +2,7 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:8080/api/auth/';
 const API_URL2 = 'http://localhost:8080/api/lunch/';
+const API_URL3 = 'http://localhost:8080/api/schedule/';
 
 class AuthService {
   login(user) {
@@ -59,6 +60,11 @@ class AuthService {
 
   getImage() {
     return axios.get(API_URL + 'getImage')
+  }
+
+  getTimeSchedule() {
+    return axios.get(API_URL3 + 'getInfo', {
+    });
   }
 
 }

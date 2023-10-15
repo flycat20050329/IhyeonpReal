@@ -1,23 +1,36 @@
 <template>
   <full-page :options="this.options" id="fullpage" ref="fullpage">
-    <div class="section text-center">
-      <h1>홍보</h1>
+    <div class="section">
+      <div class="text-center">
+        <h1>home</h1>
+      </div>
     </div>
     <div class="section" v-if="currentUser">
       <div class="slide text-center">
         <h1>급식표</h1>
       </div>
-      <div class="slide text-center">
-        <h1>시간표</h1>
-      </div>
-      <div class="slide text-center">
+      <div class="slide">
         <h1>학급일정</h1>
       </div>
     </div>
-    <div class="section" v-if="currentUser">
+    <!-- Photo -->
+    <div class="section" v-if="currentUser" style="height:fit-content">
       <Suspense>
         <PhotoBook :key="componentKey" @setInput="forceRerender" :mainimages="mainimages" />
       </Suspense>
+    </div>
+    <div class="section">
+      <div class="slide">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#signUpModal">
+          Launch demo modal
+        </button>
+      </div>
+      <div class="slide">
+        <TimeSchedule />
+      </div>
+    </div>
+    <div class="section text-center">
+      <Register />
     </div>
     <div class="section" v-if="currentUser">
       <h2>Section 4</h2>
@@ -26,17 +39,165 @@
       <h2>Section 5</h2>
     </div>
   </full-page>
+
+  <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-center" id="loginModalLabel">Sign in</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <Form @submit="handleLogin" :validation-schema="loginSchema">
+            <div class="form-group">
+              <label for="username">Username</label>
+              <Field name="username" type="text" class="form-control" />
+              <ErrorMessage name="username" class="error-feedback" />
+            </div>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <Field name="password" type="password" class="form-control" />
+              <ErrorMessage name="password" class="error-feedback" />
+            </div>
+
+            <div class="form-group">
+              회원가입이 필요하시면 <a href="/register">여기</a>
+            </div>
+
+            <div class="form-group">
+              <button class="btn btn-primary btn-block" :disabled="loading" data-bs-dismiss="modal" style="float: right;">
+                <span v-show="loading" class="spinner-border spinner-border-sm"></span>
+                <span>Login</span>
+              </button>
+            </div>
+
+            <div class="form-group">
+              <div v-if="message" class="alert alert-danger" role="alert">
+                {{ message }}
+              </div>
+            </div>
+          </Form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- <div class="modal fade" id="signUpModal" tabindex="-1" aria-labelledby="signUpModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form @submit="handleRegister" :validation-schema="signupSchema">
+          <div v-if="!successful">
+            <div class="form-group">
+              <label for="username">Username</label>
+              <Field name="username" type="text" class="form-control" />
+              <ErrorMessage name="username" class="error-feedback" />
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <Field name="email" type="email" class="form-control" />
+              <ErrorMessage name="email" class="error-feedback" />
+            </div>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <Field name="password" type="password" class="form-control" />
+              <ErrorMessage name="password" class="error-feedback" />
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div> -->
+
+  <div class="modal fade" id="signUpModal" tabindex="-1" aria-labelledby="signUpModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="col-md-12">
+          <Form @submit="handleRegister" :validation-schema="signupSchema">
+            <div v-if="!successful">
+              <div class="form-group">
+                <label for="username">Username</label>
+                <Field name="username" type="text" class="form-control" />
+                <ErrorMessage name="username" class="error-feedback" />
+              </div>
+              <div class="form-group">
+                <label for="email">Email</label>
+                <Field name="email" type="email" class="form-control" />
+                <ErrorMessage name="email" class="error-feedback" />
+              </div>
+              <div class="form-group">
+                <label for="password">Password</label>
+                <Field name="password" type="password" class="form-control" />
+                <ErrorMessage name="password" class="error-feedback" />
+              </div>
+              <div class="form-group">
+                <label for="schoolCode">schoolCode</label>
+                <Field name="schoolCode" type="schoolCode" class="form-control" />
+                <ErrorMessage name="schoolCode" class="error-feedback" />
+              </div>
+              <div class="form-group">
+                <label for="grade">grade</label>
+                <Field name="grade" type="grade" class="form-control" />
+                <ErrorMessage name="grade" class="error-feedback" />
+              </div>
+              <div class="form-group">
+                <label for="ban">ban</label>
+                <Field name="ban" type="ban" class="form-control" />
+                <ErrorMessage name="ban" class="error-feedback" />
+              </div>
+              <div class="row">
+                <div class="col-1">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
+                    <label class="form-check-label" for="flexRadioDefault1">
+                      학생
+                    </label>
+                  </div>
+                </div>
+                <div class="col-1">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
+                    <label class="form-check-label" for="flexRadioDefault2">
+                      교사
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <button class="btn btn-primary btn-block" :disabled="loading">
+                  <span v-show="loading" class="spinner-border spinner-border-sm"></span>
+                  Sign Up
+                </button>
+              </div>
+            </div>
+          </Form>
+
+          <div v-if="message" class="alert" :class="successful ? 'alert-success' : 'alert-danger'">
+            {{ message }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
 import AuthService from '../services/auth.service';
 import PhotoBook from "./PhotoBook.vue";
+import TimeSchedule from './TimeSchedule.vue';
+import Register from './Register.vue';
+import { Form, Field, ErrorMessage } from "vee-validate";
+import * as yup from "yup";
 import { ref } from "vue";
 
 export default {
   name: "Home",
   components: {
+    TimeSchedule,
     PhotoBook,
+    Register,
+    Form,
+    Field,
+    ErrorMessage,
   },
   setup() {
     const componentKey = ref(0);
@@ -48,6 +209,44 @@ export default {
     }
   },
   data() {
+    const loginSchema = yup.object().shape({
+      username: yup.string().required("Username is required!"),
+      password: yup.string().required("Password is required!"),
+    });
+
+    const signupSchema = yup.object().shape({
+      username: yup
+        .string()
+        .required("Username is required!")
+        .min(3, "Must be at least 3 characters!")
+        .max(20, "Must be maximum 20 characters!"),
+      email: yup
+        .string()
+        .required("Email is required!")
+        .email("Email is invalid!")
+        .max(50, "Must be maximum 50 characters!"),
+      password: yup
+        .string()
+        .required("Password is required!")
+        .min(6, "Must be at least 6 characters!")
+        .max(40, "Must be maximum 40 characters!"),
+      schoolCode: yup
+        .string()
+        .required("Password is required!")
+        .min(6, "Must be at least 6 characters!")
+        .max(40, "Must be maximum 40 characters!"),
+      grade: yup
+        .string()
+        .required("Password is required!")
+        .min(6, "Must be at least 6 characters!")
+        .max(40, "Must be maximum 40 characters!"),
+      ban: yup
+        .string()
+        .required("Password is required!")
+        .min(6, "Must be at least 6 characters!")
+        .max(40, "Must be maximum 40 characters!"),
+    });
+
     return {
       options: {
         licenseKey: 'YOUR_KEY_HERE',
@@ -59,10 +258,71 @@ export default {
         anchors: ['page1', 'page2', 'page3', 'page4', 'page5'],
         sectionsColor: ['#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ee1a59', '#2c3e4f', '#ba5be9', '#b4b8ab',],
       },
+      loading: false,
+      successful: false,
+      message: "",
+      loginSchema,
+      signupSchema,
+      currentTab: 0,
+      schoolName: "",
+      location: "",
+      grade: "",
+      ban: "",
     };
   },
+  mounted() {
+    this.flycat();
+  },
   methods: {
+    handleRegister(user) {
+      this.message = "";
+      this.successful = false;
+      this.loading = true;
 
+      this.$store.dispatch("auth/register", user).then(
+        (data) => {
+          this.message = data.message;
+          this.successful = true;
+          this.loading = false;
+        },
+        (error) => {
+          this.message =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
+          this.successful = false;
+          this.loading = false;
+        }
+      );
+    },
+    handleLogin(user) {
+      this.loading = true;
+
+      this.$store.dispatch("auth/login", user).then(
+        () => {
+          this.$router.push("/");
+        },
+        (error) => {
+          this.loading = false;
+          this.message =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
+        }
+      );
+    },
+    flycat() {
+      AuthService.getTimeSchedule().then(res => {
+        console.log(res.data);
+      })
+    },
+    afterLoad() {
+      console.log('After load')
+    },
     forceRerender() {
 
       const mainimages = [];
@@ -129,4 +389,42 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped>
+label {
+  display: block;
+  margin-top: 10px;
+}
+
+.error-feedback {
+  color: red;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #f1f1f1;
+}
+
+#regForm {
+  background-color: #ffffff;
+  margin: 100px auto;
+  font-family: Raleway;
+  padding: 40px;
+  width: 70%;
+  min-width: 300px;
+}
+
+h1 {
+  text-align: center;
+}
+
+input {
+  padding: 10px;
+  width: 100%;
+  font-size: 17px;
+  font-family: Raleway;
+  border: 1px solid #aaaaaa;
+}
+</style>

@@ -23,18 +23,12 @@ const routes = [
   {
     path: "/login",
     name: "login",
-    component: Login,
+    component: Home,
   },
   {
     path: "/register",
     name: "register",
     component: Register,
-  },
-  {
-    path: "/profile",
-    name: "profile",
-    // lazy-loaded
-    component: Profile,
   },
   {
     path: "/admin",
