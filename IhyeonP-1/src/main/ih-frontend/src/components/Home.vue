@@ -303,6 +303,7 @@ export default {
       this.$store.dispatch("auth/login", user).then(
         () => {
           this.$router.push("/");
+          this.$router.go();
         },
         (error) => {
           this.loading = false;

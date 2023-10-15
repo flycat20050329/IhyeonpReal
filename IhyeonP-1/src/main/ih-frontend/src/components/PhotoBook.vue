@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="height:fit-content">
     <div v-if="!uploadImages" style="padding-top: 500px;">
       <div class="topBar">
         <div class="row justify-content-between">
