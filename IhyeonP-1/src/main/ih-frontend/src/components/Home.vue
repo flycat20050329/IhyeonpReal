@@ -7,7 +7,10 @@
     </div>
     <div class="section" v-if="currentUser">
       <div class="slide text-center">
-        <h1>급식표</h1>
+        <input type="text" :value="searchTerm" @input="setSearchTerm" />
+        <ul>
+    <li v-for="num in filteredList">{{ num.name }}</li>
+  </ul>
       </div>
       <div class="slide">
         <h1>학급일정</h1>
@@ -90,7 +93,7 @@
           <h5 class="modal-title" id="schoolSearchModalLabel">학교 검색</h5>
         </div>
         <div class="modal-body">
-          
+
         </div>
         <div class="modal-footer">
           <button class="btn btn-primary" data-bs-target="#signUpModal" data-bs-toggle="modal"
@@ -244,6 +247,7 @@ export default {
         navigation: false,
         anchors: ['page1', 'page2', 'page3', 'page4', 'page5'],
         sectionsColor: ['#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ee1a59', '#2c3e4f', '#ba5be9', '#b4b8ab',],
+        controlArrows: false,
       },
       loading: false,
       successful: false,
@@ -255,12 +259,35 @@ export default {
       location: "",
       grade: "",
       ban: "",
+      dataList : [
+        {
+          name: 'One',
+          value: 'one'
+        },
+        {
+          name: 'Two',
+          value: 'two'
+        },
+        {
+          name: 'Three',
+          value: 'three'
+        },
+        {
+          name: 'Four',
+          value: 'four'
+        }
+      ],
+      searchTerm: '',
     };
   },
   mounted() {
     this.flycat();
   },
   methods: {
+    
+    setSearchTerm(e) {
+      this.searchTerm = e.target.value;
+    },
     handleRegister(user) {
       this.message = "";
       this.successful = false;
@@ -306,6 +333,16 @@ export default {
     flycat() {
       AuthService.getTimeSchedule().then(res => {
         console.log(res.data);
+      });
+
+      AuthService.getSchoolInfo().then(res => {
+        console.log(typeof(res.data));
+        console.log(res.data);
+        
+        if(typeof(res.data) == JSON){
+          this.dataList = res.data;
+        }
+        
       })
     },
     forceRerender() {
@@ -344,6 +381,16 @@ export default {
     },
   },
   computed: {
+    filteredList() {
+      if(this.searchTerm === '') {
+        return this.dataList;
+      }
+      return this.dataList.filter(num => {
+        if(num.value.includes(this.searchTerm)) {
+          return num;
+        }
+      })
+    },
     currentUser() {
       return this.$store.state.auth.user;
     },

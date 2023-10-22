@@ -66,6 +66,10 @@ class AuthService {
     });
   }
 
+  getSchoolInfo() {
+    return axios.get(API_URL2 + 'getSchoolInfo');
+  }
+
 }
 
 export default new AuthService();

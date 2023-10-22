@@ -1,12 +1,12 @@
 package com.bezkoder.springjwt.controllers;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -28,7 +28,7 @@ public class InfoController {
 	}
 	
 	@PostMapping("/getSchoolInfo")
-	public List<String> getSchoolInfo(@RequestParam(value="schoolName", defaultValue="이현고등학교") String name) {
-		return this.schoolInfo.GetSchoolInfo(name);
+	public Map<String, String> getSchoolInfo() {
+		return this.schoolInfo.GetSchoolInfo();
 	}
 }
