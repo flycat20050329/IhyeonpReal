@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 const API_URL = 'http://localhost:8080/api/auth/';
-const API_URL2 = 'http://localhost:8080/api/info/';
+const API_URL2 = 'http://localhost:8080/api/photo/';
+const API_URL3 = 'http://localhost:8080/api/info/';
 
 class AuthService {
   login(user) {
@@ -37,12 +38,12 @@ class AuthService {
   };
 
   getLunchList() {
-    return axios.get(API_URL2 + 'getLunchInfo', {
+    return axios.get(API_URL3 + 'getLunchInfo', {
     });
   }
 
   async saveImagePost(frm) {
-    return axios.post(API_URL + 'uploadImagePost', frm, {
+    return axios.post(API_URL2 + 'uploadImagePost', frm, {
       hearder: {
         'Content-Type': 'multipart/form-data'
       }
@@ -50,24 +51,28 @@ class AuthService {
   }
 
   async saveImage(frm) {
-    return axios.post(API_URL + 'uploadImage', frm, {
+    return axios.post(API_URL2 + 'uploadImage', frm, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
     })
   }
 
-  getImage() {
-    return axios.get(API_URL + 'getImage')
+  getAllImage() {
+    return axios.get(API_URL2 + 'getImage')
+  }
+
+  getImagePost(){
+    return axios.get(API_URL2 + 'getImagepost')
   }
 
   getTimeSchedule() {
-    return axios.get(API_URL2 + 'getScheduleInfo', {
+    return axios.get(API_URL3 + 'getScheduleInfo', {
     });
   }
 
   getSchoolInfo() {
-    return axios.get(API_URL2 + 'getSchoolInfo');
+    return axios.get(API_URL3 + 'getSchoolInfo');
   }
 
 }

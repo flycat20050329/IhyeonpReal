@@ -56,12 +56,6 @@ public class AuthController {
 	RoleRepository roleRepository;
 
 	@Autowired
-	ImageRepository imageRepository;
-
-	@Autowired
-	ImagePostRepository imagePostRepository;
-
-	@Autowired
 	PasswordEncoder encoder;
 
 	@Autowired
@@ -71,39 +65,6 @@ public class AuthController {
 	public String aaa() {
 		System.out.println("axios test");
 		return "axios 호출됨";
-	}
-
-	@GetMapping("/getImage")
-	public List<Image> getImage() {
-		return imageRepository.findAll().stream().sorted(Comparator.comparing(Image::getId).reversed())
-				.collect(Collectors.toList());
-//		return imageRepository.findAll();
-	}
-
-	@PostMapping("/uploadImage")
-	public void uploadImage(@RequestParam() List<MultipartFile> images, @RequestParam() Long postId)
-			throws IOException {
-		ImagePost imagePost = new ImagePost(postId);
-
-		List<Image> imageList = new ArrayList<Image>();
-
-		for (int i = 0; i < images.size(); i++) {
-			Image image = new Image(images.get(i).getBytes(), imagePost, i + 1);
-
-			imageRepository.save(image);
-			imageList.add(image);
-		}
-	}
-
-	@PostMapping("/uploadImagePost")
-	public Long uploadImagePost(@RequestParam() Long id, @RequestParam() int heart, @RequestParam() String text) {
-		User user = new User(id);
-
-		ImagePost imagePost = new ImagePost(user, heart, text);
-
-		imagePostRepository.save(imagePost);
-
-		return imagePost.getId();
 	}
 
 	@PostMapping("/signin")

@@ -191,13 +191,14 @@ export default {
 
 
     const clickImage = (image) => {
-      console.log(image);
+      console.log(image.imagePost);
+      AuthService.getImagePost
     }
 
     const popToast = () => {
     }
 
-    await AuthService.getImage().then((result) => {
+    await AuthService.getAllImage().then((result) => {
       for (var i = 0; i < result.data.length; i++) {
         result.data[i].image = "data:image/png;base64," + result.data[i].image
       }
