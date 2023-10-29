@@ -1,6 +1,11 @@
 <template>
-  <div style="height:fit-content">
-    <div v-if="!uploadImages" style="padding-top: 500px;">
+  <div style="height:fit-content;">
+    <div>
+      <PhotoPost :postImages="imageList" />
+    </div>
+    <!-- gallery -->
+    <div v-if="!uploadImages" class="container" style="padding-top: 80px;">
+      <!-- top bar -->
       <div class="topBar">
         <div class="row justify-content-between">
           <div class="col-4">
@@ -26,12 +31,12 @@
       </div>
     </div>
     <!-- image upload -->
-    <div class="container" style="padding-top: 100px;">
+    <div class="container" style="padding-top: 100px; height: fit-content;">
       <div class="row" v-if="uploadImages">
         <div class="col-5">
           <!-- imagePreview -->
           <splide :options="preoptions">
-            <splide-slide v-for="(image, index) in previewImages">
+            <splide-slide v-for="image in previewImages">
               <div class="imagePreviewWrapper" :style="{ 'background-image': `url(${image})` }" @click="chooseFiles()">
               </div>
             </splide-slide>
@@ -62,6 +67,8 @@ import { Grid } from '@splidejs/splide-extension-grid';
 import "@splidejs/splide/dist/css/splide.min.css";
 import vueFullpageUmd from 'vue-fullpage.js';
 
+import PhotoPost from './PhotoPost.vue';
+
 
 // import '@splidejs/splide/dist/css/themes/splide-default.min.css';
 // import '@splidejs/splide/dist/css/themes/splide-sea-green.min.css';
@@ -75,7 +82,7 @@ export default {
   components: {
     Splide,
     SplideSlide,
-    // Flicking: Flicking,
+    PhotoPost,
   },
   props: {
     mainimages: Array,
@@ -167,32 +174,28 @@ export default {
 
       await AuthService.saveImage(frm2);
 
-      // await AuthService.getImage().then((result) => {
-      //   for (var i = 0; i < result.data.length; i++) {
-      //     result.data[i].image = "data:image/png;base64," + result.data[i].image
-      //   }
-      //   mainimages.value = result.data;
-      // });
-
       context.emit("setInput", 0);
       mainimages.value = props.mainimages;
-
-      // await AuthService.saveImage(frm2).then((result) => {
-      //   for (var i = 0; i < result.data.length; i++) {
-      //     result.data[i].image = "data:image/png;base64," + result.data[i].image;
-      //     mainimages.value.unshift(result.data[i]);
-      //   }
-      // });
     }
 
     const chooseFiles = () => {
       document.getElementById("fileUpload").click();
     }
 
+    var imageList = ref([]);
 
+    var clickedImagePostId = 0;
     const clickImage = (image) => {
-      console.log(image.imagePost);
-      AuthService.getImagePost
+      clickedImagePostId = image.imagePost.id
+      imageList = mainimages.value.filter(isSameImagePost);
+
+      // console.log(imageList);
+    }
+
+    const isSameImagePost = (element) => {
+      if (element.imagePost.id === clickedImagePostId) {
+        return true;
+      }
     }
 
     const popToast = () => {
@@ -205,7 +208,6 @@ export default {
 
       mainimages.value = result.data;
     });
-
 
 
     return {
@@ -229,6 +231,7 @@ export default {
       images,
       uploadImages,
       mainimages,
+      imageList,
     };
   },
 }

@@ -9,8 +9,8 @@
       <div class="slide text-center">
         <input type="text" :value="searchTerm" @input="setSearchTerm" />
         <ul>
-    <li v-for="num in filteredList">{{ num.name }}</li>
-  </ul>
+          <li v-for="num in filteredList">{{ num.name }}</li>
+        </ul>
       </div>
       <div class="slide">
         <h1>학급일정</h1>
@@ -18,7 +18,6 @@
     </div>
     <!-- Photo -->
     <div class="section" v-if="currentUser" style="height:fit-content">
-      <!-- <PhotoPost /> -->
       <Suspense>
         <PhotoBook :key="componentKey" @setInput="forceRerender" :mainimages="mainimages" />
       </Suspense>
@@ -184,8 +183,6 @@ import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 import { ref } from "vue";
 
-import PhotoPost from './PhotoPost.vue';
-
 export default {
   name: "Home",
   components: {
@@ -195,7 +192,6 @@ export default {
     Form,
     Field,
     ErrorMessage,
-    PhotoPost,
   },
   setup() {
     const componentKey = ref(0);
@@ -263,7 +259,7 @@ export default {
       location: "",
       grade: "",
       ban: "",
-      dataList : [
+      dataList: [
         {
           name: 'One',
           value: 'one'
@@ -288,7 +284,7 @@ export default {
     this.flycat();
   },
   methods: {
-    
+
     setSearchTerm(e) {
       this.searchTerm = e.target.value;
     },
@@ -340,20 +336,20 @@ export default {
       });
 
       AuthService.getSchoolInfo().then(res => {
-        console.log(typeof(res.data));
+        console.log(typeof (res.data));
         console.log(res.data);
-        
-        if(typeof(res.data) == JSON){
+
+        if (typeof (res.data) == JSON) {
           this.dataList = res.data;
         }
-        
+
       })
     },
     forceRerender() {
 
       const mainimages = [];
 
-      AuthService.getImage().then((result) => {
+      AuthService.getAllImage().then((result) => {
         for (var i = 0; i < result.data.length; i++) {
           result.data[i].image = "data:image/png;base64," + result.data[i].image
         }
@@ -386,11 +382,11 @@ export default {
   },
   computed: {
     filteredList() {
-      if(this.searchTerm === '') {
+      if (this.searchTerm === '') {
         return this.dataList;
       }
       return this.dataList.filter(num => {
-        if(num.value.includes(this.searchTerm)) {
+        if (num.value.includes(this.searchTerm)) {
           return num;
         }
       })

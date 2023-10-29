@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,8 +41,11 @@ public class PhotoController {
 	}
 
 	@GetMapping("/getImagePost")
-	public void getImagePost() {
-		
+	public List<Image> getImagePost(@RequestParam(required = "false") Long postId) {
+//		return imageRepository.findAll();
+		System.out.println(postId);
+		return null;
+//		return imageRepository.findByImagePostId(postId);
 	}
 
 	@PostMapping("/uploadImage")

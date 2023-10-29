@@ -62,10 +62,6 @@ class AuthService {
     return axios.get(API_URL2 + 'getImage')
   }
 
-  getImagePost(){
-    return axios.get(API_URL2 + 'getImagepost')
-  }
-
   getTimeSchedule() {
     return axios.get(API_URL3 + 'getScheduleInfo', {
     });
