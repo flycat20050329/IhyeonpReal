@@ -50,24 +50,34 @@ public class Schedule {
 		String sat = dateBound.get(1);
 		try {
 			String url = cite + "?KEY=" + key
-					+ "&ATPT_OFCDC_SC_CODE=J10&SD_SCHUL_CODE=7530983&AY=2023&SEM=2&GRADE=3&CLASS_NM=1&TI_FROM_YMD" + "="
+					+ "&ATPT_OFCDC_SC_CODE=J10&SD_SCHUL_CODE=7530112&AY=2023&SEM=2&GRADE=3&CLASS_NM=1&TI_FROM_YMD" + "="
 					+ sun + "&TI_TO_YMD=" + sat;
 
-			System.out.println(url);
 			Document doc = Jsoup.connect(url).get();
 			Elements elements = doc.select("row");
 			Elements timeElement = elements.select("ALL_TI_YMD");
 			Elements classElement = elements.select("ITRT_CNTNT");
+			Elements perioElement = elements.select("PERIO");
 			String curDate = null;
+			String prevInfo = "";
 			List<String> classList = new ArrayList<String>();
 			List<String> perioList = new ArrayList<String>();
 			int perio = 0;
 
 			for (int i = 0; i < classElement.size(); i++) {
-				if (curDate == null) {
+				if(prevInfo.equals(perioElement.get(i).text() + classElement.get(i).text())) {
+					continue;
+				}
+				else {
+					prevInfo = perioElement.get(i).text() + classElement.get(i).text();
+					System.out.println(prevInfo);
+				}
+				
+				if (curDate == null) {	//월요일 1교시
 					curDate = timeElement.get(i).text();
 				}
-				if (!curDate.equals(timeElement.get(i).text())) {
+				
+				if (!curDate.equals(timeElement.get(i).text()) || perio == 7) {
 					perioList.add(Integer.toString(perio));
 					perio = 0;
 					curDate = timeElement.get(i).text();

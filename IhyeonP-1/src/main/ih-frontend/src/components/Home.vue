@@ -7,7 +7,10 @@
     </div>
     <div class="section" v-if="currentUser">
       <div class="slide text-center">
-        <h1>급식표</h1>
+        <input type="text" :value="searchTerm" @input="setSearchTerm" />
+        <ul>
+    <li v-for="num in filteredList">{{ num.name }}</li>
+  </ul>
       </div>
       <div class="slide">
         <h1>학급일정</h1>
@@ -22,7 +25,7 @@
     </div>
     <div class="section">
       <div class="slide">
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#signUpModal">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#schoolSearchModal">
           Launch demo modal
         </button>
       </div>
@@ -83,32 +86,23 @@
     </div>
   </div>
 
-  <!-- <div class="modal fade" id="signUpModal" tabindex="-1" aria-labelledby="signUpModalLabel" aria-hidden="true">
+  <div class="modal fade" id="schoolSearchModal" aria-hidden="true" aria-labelledby="schoolSearchModalLabel"
+    tabindex="-1">
     <div class="modal-dialog">
       <div class="modal-content">
-        <form @submit="handleRegister" :validation-schema="signupSchema">
-          <div v-if="!successful">
-            <div class="form-group">
-              <label for="username">Username</label>
-              <Field name="username" type="text" class="form-control" />
-              <ErrorMessage name="username" class="error-feedback" />
-            </div>
-            <div class="form-group">
-              <label for="email">Email</label>
-              <Field name="email" type="email" class="form-control" />
-              <ErrorMessage name="email" class="error-feedback" />
-            </div>
-            <div class="form-group">
-              <label for="password">Password</label>
-              <Field name="password" type="password" class="form-control" />
-              <ErrorMessage name="password" class="error-feedback" />
-            </div>
-          </div>
-        </form>
+        <div class="modal-header">
+          <h5 class="modal-title" id="schoolSearchModalLabel">학교 검색</h5>
+        </div>
+        <div class="modal-body">
+
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" data-bs-target="#signUpModal" data-bs-toggle="modal"
+            data-bs-dismiss="modal">Open second modal</button>
+        </div>
       </div>
     </div>
-  </div> -->
-
+  </div>
   <div class="modal fade" id="signUpModal" tabindex="-1" aria-labelledby="signUpModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -221,19 +215,19 @@ export default {
     const signupSchema = yup.object().shape({
       username: yup
         .string()
-        .required("Username is required!")
-        .min(3, "Must be at least 3 characters!")
-        .max(20, "Must be maximum 20 characters!"),
+        .required("닉네임이 필요합니다!")
+        .min(2, "한글자 닉네임을 누가 쓰냐")
+        .max(20, "이렇게 길게 적어서 뭐하시게요?"),
       email: yup
         .string()
-        .required("Email is required!")
-        .email("Email is invalid!")
-        .max(50, "Must be maximum 50 characters!"),
+        .required("이메일을 적어주세요!")
+        .email("이메일을 \"제대로\" 적어주세요!")
+        .max(50, "누가 이메일을 50글자 이상 적냐"),
       password: yup
         .string()
-        .required("Password is required!")
-        .min(6, "Must be at least 6 characters!")
-        .max(40, "Must be maximum 40 characters!"),
+        .required("비밀번호를 넣어주세요!")
+        .min(6, "너무 취약합니다!")
+        .max(40, "너무 안전합니다!"),
       schoolCode: yup
         .string()
         .required("Password is required!")
@@ -241,14 +235,10 @@ export default {
         .max(40, "Must be maximum 40 characters!"),
       grade: yup
         .string()
-        .required("Password is required!")
-        .min(6, "Must be at least 6 characters!")
-        .max(40, "Must be maximum 40 characters!"),
+        .required("몇 학년인지 적어주세요!"),
       ban: yup
         .string()
-        .required("Password is required!")
-        .min(6, "Must be at least 6 characters!")
-        .max(40, "Must be maximum 40 characters!"),
+        .required("몇 반인지 적어주세요!"),
     });
 
     return {
@@ -261,6 +251,7 @@ export default {
         navigation: false,
         anchors: ['page1', 'page2', 'page3', 'page4', 'page5'],
         sectionsColor: ['#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ee1a59', '#2c3e4f', '#ba5be9', '#b4b8ab',],
+        controlArrows: false,
       },
       loading: false,
       successful: false,
@@ -272,12 +263,35 @@ export default {
       location: "",
       grade: "",
       ban: "",
+      dataList : [
+        {
+          name: 'One',
+          value: 'one'
+        },
+        {
+          name: 'Two',
+          value: 'two'
+        },
+        {
+          name: 'Three',
+          value: 'three'
+        },
+        {
+          name: 'Four',
+          value: 'four'
+        }
+      ],
+      searchTerm: '',
     };
   },
   mounted() {
     this.flycat();
   },
   methods: {
+    
+    setSearchTerm(e) {
+      this.searchTerm = e.target.value;
+    },
     handleRegister(user) {
       this.message = "";
       this.successful = false;
@@ -323,10 +337,17 @@ export default {
     flycat() {
       AuthService.getTimeSchedule().then(res => {
         console.log(res.data);
+      });
+
+      AuthService.getSchoolInfo().then(res => {
+        console.log(typeof(res.data));
+        console.log(res.data);
+        
+        if(typeof(res.data) == JSON){
+          this.dataList = res.data;
+        }
+        
       })
-    },
-    afterLoad() {
-      console.log('After load')
     },
     forceRerender() {
 
@@ -341,15 +362,6 @@ export default {
 
       this.mainimages = mainimages;
       this.componentKey += 1;
-    },
-
-    toggleNavigation() {
-      this.options.navigation = !this.options.navigation
-    },
-
-    toggleScrollbar() {
-      console.log('Changing scrollbar...')
-      this.options.scrollBar = !this.options.scrollBar
     },
     Please() {
       AuthService.please().then(
@@ -373,6 +385,16 @@ export default {
     },
   },
   computed: {
+    filteredList() {
+      if(this.searchTerm === '') {
+        return this.dataList;
+      }
+      return this.dataList.filter(num => {
+        if(num.value.includes(this.searchTerm)) {
+          return num;
+        }
+      })
+    },
     currentUser() {
       return this.$store.state.auth.user;
     },
