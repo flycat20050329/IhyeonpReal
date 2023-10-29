@@ -15,6 +15,7 @@
     </div>
     <!-- Photo -->
     <div class="section" v-if="currentUser" style="height:fit-content">
+      <!-- <PhotoForm /> -->
       <Suspense>
         <PhotoBook :key="componentKey" @setInput="forceRerender" :mainimages="mainimages" />
       </Suspense>
@@ -189,6 +190,8 @@ import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 import { ref } from "vue";
 
+import PhotoForm from './PhotoForm.vue';
+
 export default {
   name: "Home",
   components: {
@@ -198,6 +201,7 @@ export default {
     Form,
     Field,
     ErrorMessage,
+    // PhotoForm,
   },
   setup() {
     const componentKey = ref(0);

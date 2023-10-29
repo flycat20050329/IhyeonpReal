@@ -7,7 +7,7 @@
             <button type="button" class="btn btn-outline-dark" @click="chooseFiles()">
               <font-awesome-icon icon="plus" /> 사진 올리기</button>
           </div>
-          <div class="col-4">
+          <div class="col-3">
             <div class="form">
               <i class="fa fa-search"></i>
               <input type="text" class="form-control form-input" placeholder="검색어를 입력하세요.">
@@ -61,6 +61,7 @@ import { Splide, SplideSlide } from '@splidejs/vue-splide';
 import { Grid } from '@splidejs/splide-extension-grid';
 import "@splidejs/splide/dist/css/splide.min.css";
 import vueFullpageUmd from 'vue-fullpage.js';
+
 
 // import '@splidejs/splide/dist/css/themes/splide-default.min.css';
 // import '@splidejs/splide/dist/css/themes/splide-sea-green.min.css';
@@ -190,13 +191,11 @@ export default {
 
 
     const clickImage = (image) => {
-      console.log(image.id);
+      console.log(image);
     }
 
     const popToast = () => {
     }
-
-
 
     await AuthService.getImage().then((result) => {
       for (var i = 0; i < result.data.length; i++) {
@@ -238,12 +237,12 @@ export default {
 // @import url("../../node_modules/@egjs/vue3-flicking/dist/flicking-inline.css");
 
 .splide {
-  background-color: #ececec38;
+  background-color: #d7d7d72b;
 }
 
 .item {
-  height: 180px;
-  max-width: 180px;
+  height: 200px;
+  max-width: 200px;
   object-fit: cover;
   display: block;
   cursor: pointer;
