@@ -43,6 +43,19 @@
     </div>
   </full-page>
 
+  <!-- Photo Modal -->
+  <div class="modal fade" id="photoModal" tabindex="-1" role="dialog" aria-labelledby="photoModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <!-- <PhotoPost :images="imageData"></PhotoPost> -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Login Modal -->
   <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -85,6 +98,7 @@
     </div>
   </div>
 
+  <!-- School Modal -->
   <div class="modal fade" id="schoolSearchModal" aria-hidden="true" aria-labelledby="schoolSearchModalLabel"
     tabindex="-1">
     <div class="modal-dialog">
@@ -102,6 +116,8 @@
       </div>
     </div>
   </div>
+
+  <!-- Register Modal -->
   <div class="modal fade" id="signUpModal" tabindex="-1" aria-labelledby="signUpModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -164,7 +180,6 @@
               </div>
             </div>
           </Form>
-
           <div v-if="message" class="alert" :class="successful ? 'alert-success' : 'alert-danger'">
             {{ message }}
           </div>

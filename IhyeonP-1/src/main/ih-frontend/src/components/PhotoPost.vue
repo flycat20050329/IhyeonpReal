@@ -1,15 +1,24 @@
 <template>
-  <!-- imagePreview -->
-  <splide :options="preoptions">
-    <splide-slide v-for="image in images">
-      <div class="imagePreviewWrapper" :style="{ 'background-image': `url(${image.image})` }">
+  <!-- imageViewer -->
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <splide :options="preoptions">
+          <splide-slide v-for="image in images.images">
+            <div class="imagePreviewWrapper" :style="{ 'background-image': `url(${image.image})` }">
+            </div>
+          </splide-slide>
+        </splide>
       </div>
-    </splide-slide>
-  </splide>
+      <div class="col textContainer">
+        <!-- <p>{{ images.post }}</p> -->
+      </div>
+    </div>
+  </div>
 </template>
 
-<script>
 
+<script>
 import AuthService from '../services/auth.service';
 import { Splide, SplideSlide } from '@splidejs/vue-splide';
 
@@ -20,13 +29,9 @@ export default {
   },
   props: {
     postImages: Array,
+    images: Object,
   },
-  data() {
-    return {
-      images: this.postImages,
-    }
-  },
-  setup() {
+  setup(props, context) {
     const preoptions = {
       rewind: true,
       height: 300,
@@ -38,18 +43,14 @@ export default {
       // arrows: false,
       // paginationDirection: 'ttb',
     };
+
+    context.emit("images", props.images);
+
+    // console.log(props.postImages);
     return {
       preoptions,
     }
   },
-  watch: {
-    postImages() {
-      this.images = this.postImages;
-    }
-  },
-  mounted() {
-    // console.log(this.postImages);
-  }
 }
 </script>
 
@@ -64,5 +65,9 @@ export default {
   background-size: cover;
   background-position: center center;
   border: 1px solid gray;
+}
+
+.textContainer {
+  background-color: whitesmoke;
 }
 </style>

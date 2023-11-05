@@ -11,22 +11,22 @@
           Home
         </a>
       </li>
-      <li class="col-1">
+      <li class="col-1" v-if="currentUser">
         <a class="btn text-dark" href="#page2" role="button">
           학교
         </a>
       </li>
-      <li class="col-1">
+      <li class="col-1" v-if="currentUser">
         <a class="btn text-dark" href="#page3" role="button">
           Photo
         </a>
       </li>
-      <li class="col-1">
+      <li class="col-1" v-if="currentUser">
         <a class="btn text-dark" href="#page4" role="button">
           동아리
         </a>
       </li>
-      <li class="col-1">
+      <li class="col-1" v-if="currentUser">
         <a class="btn text-dark" href="#page5" role="button">
           중고거래
         </a>

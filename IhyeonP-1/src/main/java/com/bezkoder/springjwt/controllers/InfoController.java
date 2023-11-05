@@ -27,7 +27,7 @@ public class InfoController {
 		return this.schedule.getScheduleInfo();
 	}
 	
-	@PostMapping("/getSchoolInfo")
+	@GetMapping("/getSchoolInfo")
 	public Map<String, String> getSchoolInfo() {
 		return this.schoolInfo.GetSchoolInfo();
 	}

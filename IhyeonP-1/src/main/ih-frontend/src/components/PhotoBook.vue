@@ -1,8 +1,5 @@
 <template>
-  <div style="height:fit-content;">
-    <div>
-      <PhotoPost :postImages="imageList" />
-    </div>
+  <div class="container" style="height:fit-content;">
     <!-- gallery -->
     <div v-if="!uploadImages" class="container" style="padding-top: 80px;">
       <!-- top bar -->
@@ -12,7 +9,7 @@
             <button type="button" class="btn btn-outline-dark" @click="chooseFiles()">
               <font-awesome-icon icon="plus" /> 사진 올리기</button>
           </div>
-          <div class="col-3">
+          <div class="col-4">
             <div class="form">
               <i class="fa fa-search"></i>
               <input type="text" class="form-control form-input" placeholder="검색어를 입력하세요.">
@@ -20,8 +17,8 @@
           </div>
         </div>
       </div>
+      <!-- main splide -->
       <div>
-        <!-- main splide -->
         <splide class="splide" :options="mainoptions" :extensions="extensions">
           <splide-slide v-for=" image of mainimages">
             <div class="item" :style="{ 'background-image': `url(${image.image})` }" @click="clickImage(image)">
@@ -30,6 +27,7 @@
         </splide>
       </div>
     </div>
+
     <!-- image upload -->
     <div class="container" style="padding-top: 100px; height: fit-content;">
       <div class="row" v-if="uploadImages">
@@ -51,6 +49,13 @@
     <input id="fileUpload" class="form-control" type="file" @input="pickFile" multiple hidden>
     <!-- <div class="imagePreviewWrapper" :style="{ 'background-image': `url(${previewImage})` }" @click="getImage" /> -->
     <!-- <div class="imagePreviewWrapper" :style="{ 'background-image': `url(${uploadImage})` }"></div> -->
+
+
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#photoModal">
+      Launch demo modal
+    </button>
+
   </div>
 </template>
  
@@ -77,24 +82,27 @@ import PhotoPost from './PhotoPost.vue';
 // import Flicking from "@egjs/vue3-flicking";
 
 
-
 export default {
   components: {
     Splide,
     SplideSlide,
     PhotoPost,
   },
+
   props: {
     mainimages: Array,
   },
-  async setup(props, context) {
 
+  async setup(props, context) {
     var previewImages = ref([]);
     var text = ref(null);
     var images = [];
     var uploadImages = ref(false);
     var mainimages = ref([]);
     var postId;
+
+
+    var imageList = ref([]);
 
     const store = useStore();
     const currentUser = store.state.auth.user;
@@ -182,12 +190,15 @@ export default {
       document.getElementById("fileUpload").click();
     }
 
-    var imageList = ref([]);
+    var clickedImagePostId = ref(0);
+    var imageData = ref({ images: null, post: null });
 
-    var clickedImagePostId = 0;
     const clickImage = (image) => {
-      clickedImagePostId = image.imagePost.id
-      imageList = mainimages.value.filter(isSameImagePost);
+      clickedImagePostId = image.imagePost.id;
+      imageList.value = mainimages.value.filter(isSameImagePost);
+
+      imageData.value.images = imageList.value;
+      imageData.value.post = image.imagePost;
 
       // console.log(imageList);
     }
@@ -231,7 +242,7 @@ export default {
       images,
       uploadImages,
       mainimages,
-      imageList,
+      imageData
     };
   },
 }

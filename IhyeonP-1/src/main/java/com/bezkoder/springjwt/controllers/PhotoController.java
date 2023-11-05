@@ -41,7 +41,7 @@ public class PhotoController {
 	}
 
 	@GetMapping("/getImagePost")
-	public List<Image> getImagePost(@RequestParam(required = "false") Long postId) {
+	public List<Image> getImagePost(@RequestParam() Long postId) {
 //		return imageRepository.findAll();
 		System.out.println(postId);
 		return null;
