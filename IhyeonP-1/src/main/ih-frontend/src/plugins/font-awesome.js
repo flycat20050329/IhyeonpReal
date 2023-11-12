@@ -9,6 +9,10 @@ import {
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 
-library.add(faHome, faUser, faUserPlus, faSignInAlt, faSignOutAlt, faPlus);
+import {
+  faHeart
+} from "@fortawesome/free-regular-svg-icons";
+
+library.add(faHome, faUser, faUserPlus, faSignInAlt, faSignOutAlt, faPlus, faHeart);
 
 export { FontAwesomeIcon };

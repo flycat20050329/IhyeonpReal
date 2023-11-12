@@ -19,7 +19,7 @@
     <!-- Photo -->
     <div class="section" v-if="currentUser" style="height:fit-content">
       <Suspense>
-        <PhotoBook :key="componentKey" @setInput="forceRerender" :mainimages="mainimages" />
+        <PhotoBook :key="componentKey" @setInput="forceRerender" @imageData="getImageData" :mainimages="mainimages" />
       </Suspense>
     </div>
     <div class="section">
@@ -42,18 +42,6 @@
       <h2>Section 5</h2>
     </div>
   </full-page>
-
-  <!-- Photo Modal -->
-  <div class="modal fade" id="photoModal" tabindex="-1" role="dialog" aria-labelledby="photoModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-body">
-          <!-- <PhotoPost :images="imageData"></PhotoPost> -->
-        </div>
-      </div>
-    </div>
-  </div>
 
   <!-- Login Modal -->
   <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
@@ -116,6 +104,23 @@
       </div>
     </div>
   </div>
+
+  <!-- Photo Modal -->
+  <div class="modal fade" id="photoModal" tabindex="-1" role="dialog" aria-labelledby="photoModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <PhotoPost :images="imageData"></PhotoPost>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Button trigger photoModal -->
+  <button type="button" id="photoModalBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#photoModal"
+    style="display:none;">
+  </button>
 
   <!-- Register Modal -->
   <div class="modal fade" id="signUpModal" tabindex="-1" aria-labelledby="signUpModalLabel" aria-hidden="true">
@@ -198,6 +203,8 @@ import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 import { ref } from "vue";
 
+import PhotoPost from "./PhotoPost.vue";
+
 export default {
   name: "Home",
   components: {
@@ -207,6 +214,7 @@ export default {
     Form,
     Field,
     ErrorMessage,
+    PhotoPost,
   },
   setup() {
     const componentKey = ref(0);
@@ -274,6 +282,7 @@ export default {
       location: "",
       grade: "",
       ban: "",
+      imageData: { images: null, post: { text: null, user: { username: null } } },
       dataList: [
         {
           name: 'One',
@@ -299,7 +308,10 @@ export default {
     this.flycat();
   },
   methods: {
-
+    getImageData(imageData) {
+      document.getElementById("photoModalBtn").click();
+      this.imageData = imageData;
+    },
     setSearchTerm(e) {
       this.searchTerm = e.target.value;
     },

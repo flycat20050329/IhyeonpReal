@@ -22,6 +22,7 @@
         <splide class="splide" :options="mainoptions" :extensions="extensions">
           <splide-slide v-for=" image of mainimages">
             <div class="item" :style="{ 'background-image': `url(${image.image})` }" @click="clickImage(image)">
+              <!-- data-bs-toggle="modal" data-bs-target="#photoModal" -->
             </div>
           </splide-slide>
         </splide>
@@ -50,11 +51,10 @@
     <!-- <div class="imagePreviewWrapper" :style="{ 'background-image': `url(${previewImage})` }" @click="getImage" /> -->
     <!-- <div class="imagePreviewWrapper" :style="{ 'background-image': `url(${uploadImage})` }"></div> -->
 
-
     <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#photoModal">
+    <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#photoModal">
       Launch demo modal
-    </button>
+    </button> -->
 
   </div>
 </template>
@@ -72,7 +72,6 @@ import { Grid } from '@splidejs/splide-extension-grid';
 import "@splidejs/splide/dist/css/splide.min.css";
 import vueFullpageUmd from 'vue-fullpage.js';
 
-import PhotoPost from './PhotoPost.vue';
 
 
 // import '@splidejs/splide/dist/css/themes/splide-default.min.css';
@@ -86,7 +85,6 @@ export default {
   components: {
     Splide,
     SplideSlide,
-    PhotoPost,
   },
 
   props: {
@@ -120,7 +118,7 @@ export default {
     };
 
     const mainoptions = {
-      drag: "free",
+      // drag: "free",
       // autoWidth: true,
       perPage: 7,
       pagination: false,
@@ -200,7 +198,12 @@ export default {
       imageData.value.images = imageList.value;
       imageData.value.post = image.imagePost;
 
+
+
+      // console.log(image.id);
+
       // console.log(imageList);
+      context.emit('imageData', imageData);
     }
 
     const isSameImagePost = (element) => {
