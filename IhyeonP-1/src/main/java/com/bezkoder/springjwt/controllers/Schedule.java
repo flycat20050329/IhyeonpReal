@@ -70,7 +70,6 @@ public class Schedule {
 				}
 				else {
 					prevInfo = perioElement.get(i).text() + classElement.get(i).text();
-					System.out.println(prevInfo);
 				}
 				
 				if (curDate == null) {	//월요일 1교시
