@@ -67,8 +67,13 @@ class AuthService {
     });
   }
 
-  getSchoolInfo() {
-    return axios.get(API_URL3 + 'getSchoolInfo');
+  getSchoolInfo(location, schoolName) {
+    return axios.get(API_URL3 + 'getSchoolInfo', {
+      params: {
+        loca: location,
+        name: schoolName
+      }
+    });
   }
 
 }

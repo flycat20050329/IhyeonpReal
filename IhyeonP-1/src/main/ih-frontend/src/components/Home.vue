@@ -6,15 +6,7 @@
       </div>
     </div>
     <div class="section" v-if="currentUser">
-      <div class="slide text-center">
-        <input type="text" :value="searchTerm" @input="setSearchTerm" />
-        <ul>
-          <li v-for="num in filteredList">{{ num.name }}</li>
-        </ul>
-      </div>
-      <div class="slide">
-        <h1>학급일정</h1>
-      </div>
+      <h1>학급일정</h1>
     </div>
     <!-- Photo -->
     <div class="section" v-if="currentUser" style="height:fit-content">
@@ -107,11 +99,60 @@
           <h5 class="modal-title" id="schoolSearchModalLabel">학교 검색</h5>
         </div>
         <div class="modal-body">
+          <select class="form-select" aria-label="Default select example" @change="getSelect()">
+            <option selected value="">지역을 선택해주세요.</option>
+            <option value="B10">서울</option>
+            <option value="C10">부산</option>
+            <option value="D10">대구</option>
+            <option value="E10">인천</option>
+            <option value="F10">대전</option>
+            <option value="G10">광주</option>
+            <option value="H10">울산</option>
+            <option value="I10">세종시</option>
+            <option value="J10">경기도</option>
+            <option value="K10">강원도</option>
+            <option value="M10">충청북도</option>
+            <option value="N10">충청남도</option>
+            <option value="Q10">전라남도</option>
+            <option value="P10">전라북도</option>
+            <option value="R10">경상북도</option>
+            <option value="S10">경상남도</option>
+            <option value="T10">제주도</option>
+          </select>
 
+          <div class="input-group mb-3">
+            <!-- <span class="input-group-text" id="schoolNameInput" >@</span> -->
+            <input type="text" aria-label="Username" id="schoolNameInput" placeholder="학교 이름을 입력하세요"
+              aria-describedby="basic-addon1">
+          </div>
         </div>
         <div class="modal-footer">
+          <button class="btn btn-primary" data-bs-target="#schoolSelectModal" data-bs-toggle="modal"
+            v-on:click="getschoolInfo()" data-bs-dismiss="modal">학교 선택</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="schoolSelectModal" tabindex="-1" aria-labelledby="schoolSelectModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="schoolSearchModalLabel">학교 검색</h5>
+        </div>
+        <div class="modal-body">
+          <select class="form-select form-select-lg mb-3" aria-label="schoolNameSelect" id="schoolSelect">
+            <option selected>학교 선택</option>
+            <option v-for="value in this.schoolNameList">
+              {{ value }}
+            </option>
+          </select>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" data-bs-target="#schoolSearchModal" data-bs-toggle="modal"
+            data-bs-dismiss="modal">학교 검색으로 돌아가기</button>
           <button class="btn btn-primary" data-bs-target="#signUpModal" data-bs-toggle="modal"
-            data-bs-dismiss="modal">Open second modal</button>
+            v-on:click="schoolNameRegister()" data-bs-dismiss="modal">인적사항 입력</button>
         </div>
       </div>
     </div>
@@ -121,68 +162,76 @@
   <div class="modal fade" id="signUpModal" tabindex="-1" aria-labelledby="signUpModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
-        <div class="col-md-12">
-          <Form @submit="handleRegister" :validation-schema="signupSchema">
-            <div v-if="!successful">
-              <div class="form-group">
-                <label for="username">Username</label>
-                <Field name="username" type="text" class="form-control" />
-                <ErrorMessage name="username" class="error-feedback" />
-              </div>
-              <div class="form-group">
-                <label for="email">Email</label>
-                <Field name="email" type="email" class="form-control" />
-                <ErrorMessage name="email" class="error-feedback" />
-              </div>
-              <div class="form-group">
-                <label for="password">Password</label>
-                <Field name="password" type="password" class="form-control" />
-                <ErrorMessage name="password" class="error-feedback" />
-              </div>
-              <div class="form-group">
-                <label for="schoolCode">schoolCode</label>
-                <Field name="schoolCode" type="schoolCode" class="form-control" />
-                <ErrorMessage name="schoolCode" class="error-feedback" />
-              </div>
-              <div class="form-group">
-                <label for="grade">grade</label>
-                <Field name="grade" type="grade" class="form-control" />
-                <ErrorMessage name="grade" class="error-feedback" />
-              </div>
-              <div class="form-group">
-                <label for="ban">ban</label>
-                <Field name="ban" type="ban" class="form-control" />
-                <ErrorMessage name="ban" class="error-feedback" />
-              </div>
-              <div class="row">
-                <div class="col-1">
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
-                    <label class="form-check-label" for="flexRadioDefault1">
-                      학생
-                    </label>
+        <div class="modal-body">
+          <div class="col-md-12">
+            <Form @submit="handleRegister" :validation-schema="signupSchema">
+              <div v-if="!successful">
+                <fieldset disabled>
+                  <div class="form-group">
+                    <label for="disabledTextInput" class="form-label">학교 이름</label>
+                    <input type="text" id="disabledTextInput" class="form-control" :value=schoolName >
                   </div>
+                </fieldset>
+                <div class="form-group">
+                  <label for="username">Username</label>
+                  <Field name="username" type="text" class="form-control" />
+                  <ErrorMessage name="username" class="error-feedback" />
                 </div>
-                <div class="col-1">
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
-                    <label class="form-check-label" for="flexRadioDefault2">
-                      교사
-                    </label>
+                <div class="form-group">
+                  <label for="email">Email</label>
+                  <Field name="email" type="email" class="form-control" />
+                  <ErrorMessage name="email" class="error-feedback" />
+                </div>
+                <div class="form-group">
+                  <label for="password">Password</label>
+                  <Field name="password" type="password" class="form-control" />
+                  <ErrorMessage name="password" class="error-feedback" />
+                </div>
+                <div class="form-group">
+                  <label for="grade">grade</label>
+                  <Field name="grade" type="grade" class="form-control" />
+                  <ErrorMessage name="grade" class="error-feedback" />
+                </div>
+                <div class="form-group">
+                  <label for="ban">ban</label>
+                  <Field name="ban" type="ban" class="form-control" />
+                  <ErrorMessage name="ban" class="error-feedback" />
+                </div>
+                <div class="row">
+                  <div class="col-1">
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
+                      <label class="form-check-label" for="flexRadioDefault1">
+                        학생
+                      </label>
+                    </div>
                   </div>
+                  <div class="col-1">
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
+                      <label class="form-check-label" for="flexRadioDefault2">
+                        교사
+                      </label>
+                    </div>
+                  </div>
+                  <div class="col-7"></div>
+                  <div class="form-group col-3 mt-3">
+                  <button class="btn btn-primary btn-block" :disabled="loading">
+                    <span v-show="loading" class="spinner-border spinner-border-sm"></span>
+                    Sign Up
+                  </button>
+                </div>
                 </div>
               </div>
-              <div class="form-group">
-                <button class="btn btn-primary btn-block" :disabled="loading">
-                  <span v-show="loading" class="spinner-border spinner-border-sm"></span>
-                  Sign Up
-                </button>
-              </div>
+            </Form>
+            <div v-if="message" class="alert" :class="successful ? 'alert-success' : 'alert-danger'">
+              {{ message }}
             </div>
-          </Form>
-          <div v-if="message" class="alert" :class="successful ? 'alert-success' : 'alert-danger'">
-            {{ message }}
           </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" data-bs-target="#schoolSelectModal" data-bs-toggle="modal"
+            data-bs-dismiss="modal">학교 선택으로 돌아가기</button>
         </div>
       </div>
     </div>
@@ -239,11 +288,6 @@ export default {
         .required("비밀번호를 넣어주세요!")
         .min(6, "너무 취약합니다!")
         .max(40, "너무 안전합니다!"),
-      schoolCode: yup
-        .string()
-        .required("Password is required!")
-        .min(6, "Must be at least 6 characters!")
-        .max(40, "Must be maximum 40 characters!"),
       grade: yup
         .string()
         .required("몇 학년인지 적어주세요!"),
@@ -274,34 +318,56 @@ export default {
       location: "",
       grade: "",
       ban: "",
-      dataList: [
-        {
-          name: 'One',
-          value: 'one'
-        },
-        {
-          name: 'Two',
-          value: 'two'
-        },
-        {
-          name: 'Three',
-          value: 'three'
-        },
-        {
-          name: 'Four',
-          value: 'four'
-        }
-      ],
-      searchTerm: '',
+      loca: "",
+      schoolNameList: [],
+
+      // dataList: [
+      //   {
+      //     name: 'One',
+      //     value: 'one'
+      //   },
+      //   {
+      //     name: 'Two',
+      //     value: 'two'
+      //   },
+      //   {
+      //     name: 'Three',
+      //     value: 'three'
+      //   },
+      //   {
+      //     name: 'Four',
+      //     value: 'four'
+      //   }
+      // ],
+      // searchTerm: '',
     };
   },
   mounted() {
     this.flycat();
   },
   methods: {
+    schoolNameRegister() {
+      this.schoolName = document.getElementById("schoolSelect").value;
+      console.log(this.schoolName);
+    },
+    // setSearchTerm(e) {
+    //   this.searchTerm = e.target.value;
+    // },
+    getSelect() {
+      console.log(event.target.value);
+      this.loca = event.target.value;
+    },
+    getschoolInfo() {
+      console.log(this.loca);
+      console.log(document.getElementById("schoolNameInput").value);
 
-    setSearchTerm(e) {
-      this.searchTerm = e.target.value;
+      AuthService.getSchoolInfo(this.loca, document.getElementById("schoolNameInput").value).then(
+        (res) => {
+          this.schoolNameList = res.data;
+
+          console.log(this.schoolNameList);
+        }
+      )
     },
     handleRegister(user) {
       this.message = "";
@@ -350,15 +416,15 @@ export default {
         console.log(res.data);
       });
 
-      AuthService.getSchoolInfo().then(res => {
-        console.log(typeof (res.data));
-        console.log(res.data);
+      // AuthService.getSchoolInfo().then(res => {
+      //   console.log(typeof (res.data));
+      //   console.log(res.data);
 
-        if (typeof (res.data) == JSON) {
-          this.dataList = res.data;
-        }
+      //   if (typeof (res.data) == JSON) {
+      //     this.dataList = res.data;
+      //   }
 
-      })
+      // })
     },
     forceRerender() {
 

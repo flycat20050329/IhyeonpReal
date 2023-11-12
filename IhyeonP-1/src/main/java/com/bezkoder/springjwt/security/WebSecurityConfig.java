@@ -16,6 +16,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.bezkoder.springjwt.security.jwt.AuthEntryPointJwt;
 import com.bezkoder.springjwt.security.jwt.AuthTokenFilter;
@@ -26,7 +28,7 @@ import com.bezkoder.springjwt.security.services.UserDetailsServiceImpl;
 // (securedEnabled = true,
 // jsr250Enabled = true,
 // prePostEnabled = true) // by default
-public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig implements WebMvcConfigurer{ // extends WebSecurityConfigurerAdapter {
   @Autowired
   UserDetailsServiceImpl userDetailsService;
 
