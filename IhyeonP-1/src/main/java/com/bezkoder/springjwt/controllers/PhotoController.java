@@ -3,13 +3,16 @@ package com.bezkoder.springjwt.controllers;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -40,13 +43,24 @@ public class PhotoController {
 //		return imageRepository.findAll();
 	}
 
-	@GetMapping("/getImagePost")
-//	public List<Image> getImagePost(@RequestParam() Long postId) {
-	public List<Image> getImagePost(@RequestParam(required = false) Long postId) {
-//		return imageRepository.findAll();
-		System.out.println(postId);
-		return null;
-//		return imageRepository.findByImagePostId(postId);
+	@GetMapping("/getClickedImageData/{id}")
+	public Map<String, Object> getClickedImageData(@PathVariable Long id) {
+		Map<String, Object> imageData = new HashMap<String, Object>();
+
+		imageData.put("images", imageRepository.findByImagePostId(id));
+		imageData.put("post", imagePostRepository.findById(id));
+
+		return imageData;
+	}
+
+	@GetMapping("/getImagePost/{id}")
+	public Optional<ImagePost> getImagePost(@PathVariable Long id) {
+		return imagePostRepository.findById(id);
+	}
+
+	@GetMapping("/getImagesByPostId/{id}")
+	public List<Image> getImagesByPostId(@PathVariable Long id) {
+		return imageRepository.findByImagePostId(id);
 	}
 
 	@PostMapping("/uploadImage")

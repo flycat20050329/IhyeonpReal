@@ -33,8 +33,8 @@ public class Schedule {
 		d = c.getTime();
 		sat = formatter.format(d);
 
-		System.out.println(sun);
-		System.out.println(sat);
+//		System.out.println(sun);
+//		System.out.println(sat);
 
 		List<String> s = new ArrayList<String>();
 		s.add(sun);

@@ -64,6 +64,8 @@ import VueFullPage from 'vue-fullpage.js'
 import AuthService from './services/auth.service.js'
 import axios from 'axios';
 
+import { usePhotoStore } from "./store/photo.js";
+import PhotoService from "./services/photo.service.js";
 
 export default {
   name: 'app',
@@ -74,18 +76,23 @@ export default {
   data() {
     return {
     }
-  }, mounted() {
+  },
+  mounted() {
+  },
+  created() {
+    const photos = usePhotoStore();
+
+    PhotoService.getAllImage().then((result) => {
+      for (var i = 0; i < result.data.length; i++) {
+        result.data[i].image = "data:image/png;base64," + result.data[i].image
+      }
+      photos.setPhotos(result.data);
+    })
   },
   methods: {
     changePopState() {
       this.popState = !this.popState;
     },
-
-
-    afterLoad() {
-      // console.log('After load')
-    },
-
 
     toggleNavigation() {
       this.options.navigation = !this.options.navigation

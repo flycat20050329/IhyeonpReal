@@ -21,8 +21,8 @@
       <div>
         <splide class="splide" :options="mainoptions" :extensions="extensions">
           <splide-slide v-for=" image of mainimages">
+
             <div class="item" :style="{ 'background-image': `url(${image.image})` }" @click="clickImage(image)">
-              <!-- data-bs-toggle="modal" data-bs-target="#photoModal" -->
             </div>
           </splide-slide>
         </splide>
@@ -43,7 +43,7 @@
         </div>
         <div class="col">
           <textarea class="form-control" rows="10" v-model="text"></textarea>
-          <button class="btn btn-outline-dark m-3" @click="savePost">Submit</button>
+          <button class="btn btn-outline-dark m-3" @click="uploadPost">Submit</button>
         </div>
       </div>
     </div>
@@ -62,6 +62,7 @@
 <script>
 import axios from 'axios';
 import AuthService from '../services/auth.service';
+import PhotoService from '../services/photo.service';
 import { Form } from 'vee-validate';
 
 import { ref } from 'vue';
@@ -71,6 +72,8 @@ import { Splide, SplideSlide } from '@splidejs/vue-splide';
 import { Grid } from '@splidejs/splide-extension-grid';
 import "@splidejs/splide/dist/css/splide.min.css";
 import vueFullpageUmd from 'vue-fullpage.js';
+
+import { usePhotoStore } from '../store/photo.js';
 
 
 
@@ -104,6 +107,8 @@ export default {
 
     const store = useStore();
     const currentUser = store.state.auth.user;
+
+    const photoStore = usePhotoStore();
 
     const preoptions = {
       rewind: true,
@@ -156,21 +161,21 @@ export default {
       }
     }
 
-    const savePost = async () => {
+    const uploadPost = async () => {
       const frm = new FormData();
       frm.append("id", currentUser.id);
       frm.append("heart", 0);
       frm.append("text", text.value);
 
-      await AuthService.saveImagePost(frm).then((result) => {
+      await PhotoService.uploadImagePost(frm).then((result) => {
         postId = result.data;
       });
       uploadImages.value = false;
       text.value = null;
-      await saveImage();
+      await uploadImage();
     }
 
-    const saveImage = async () => {
+    const uploadImage = async () => {
       const frm2 = new FormData();
       for (const file of images) {
         frm2.append('images', file)
@@ -178,7 +183,7 @@ export default {
 
       frm2.append("postId", postId);
 
-      await AuthService.saveImage(frm2);
+      await PhotoService.uploadImage(frm2);
 
       context.emit("setInput", 0);
       mainimages.value = props.mainimages;
@@ -192,17 +197,16 @@ export default {
     var imageData = ref({ images: null, post: null });
 
     const clickImage = (image) => {
-      clickedImagePostId = image.imagePost.id;
-      imageList.value = mainimages.value.filter(isSameImagePost);
+      PhotoService.getClickedImageData(image.imagePost.id).then((result) => {
+        imageData.value.post = result.data.post;
 
-      imageData.value.images = imageList.value;
-      imageData.value.post = image.imagePost;
+        for (var i = 0; i < result.data.images.length; i++) {
+          result.data.images[i].image = "data:image/png;base64," + result.data.images[i].image
+        }
+        imageData.value.images = result.data.images;
 
+      })
 
-
-      // console.log(image.id);
-
-      // console.log(imageList);
       context.emit('imageData', imageData);
     }
 
@@ -215,19 +219,20 @@ export default {
     const popToast = () => {
     }
 
-    await AuthService.getAllImage().then((result) => {
-      for (var i = 0; i < result.data.length; i++) {
-        result.data[i].image = "data:image/png;base64," + result.data[i].image
-      }
+    // await PhotoService.getAllImage().then((result) => {
+    //   for (var i = 0; i < result.data.length; i++) {
+    //     result.data[i].image = "data:image/png;base64," + result.data[i].image
+    //   }
 
-      mainimages.value = result.data;
-    });
+    //   mainimages.value = result.data;
+    // });
 
+    mainimages.value = photoStore.getPhotos;
 
     return {
       // methods
       pickFile,
-      savePost,
+      uploadPost,
       chooseFiles,
       clickImage,
       popToast,

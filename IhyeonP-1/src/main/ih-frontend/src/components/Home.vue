@@ -245,6 +245,7 @@
 
 <script>
 import AuthService from '../services/auth.service';
+import PhotoService from '../services/photo.service';
 import PhotoBook from "./PhotoBook.vue";
 import TimeSchedule from './TimeSchedule.vue';
 import Register from './Register.vue';
@@ -253,6 +254,7 @@ import * as yup from "yup";
 import { ref } from "vue";
 
 import PhotoPost from "./PhotoPost.vue";
+import { usePhotoStore } from "../store/photo.js";
 
 export default {
   name: "Home",
@@ -316,6 +318,7 @@ export default {
         sectionsColor: ['#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ee1a59', '#2c3e4f', '#ba5be9', '#b4b8ab',],
         controlArrows: false,
       },
+      schoolNameList: [],
       loading: false,
       successful: false,
       message: "",
@@ -420,7 +423,7 @@ export default {
 
       const mainimages = [];
 
-      AuthService.getAllImage().then((result) => {
+      PhotoService.getAllImage().then((result) => {
         for (var i = 0; i < result.data.length; i++) {
           result.data[i].image = "data:image/png;base64," + result.data[i].image
         }
