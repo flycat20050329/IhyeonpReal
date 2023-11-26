@@ -5,6 +5,7 @@
       <!-- top bar -->
       <div class="topBar">
         <div class="row justify-content-between">
+          <!-- upload button -->
           <div class="col-4">
             <button type="button" class="btn btn-outline-dark" @click="chooseFiles()">
               <font-awesome-icon icon="plus" /> 사진 올리기</button>
@@ -19,9 +20,8 @@
       </div>
       <!-- main splide -->
       <div>
-        <splide class="splide" :options="mainoptions" :extensions="extensions">
-          <splide-slide v-for=" image of mainimages">
-
+        <splide id="splide" class="splide" :options="mainoptions" :extensions="extensions">
+          <splide-slide v-for="image of photoStore.getPhotos">
             <div class="item" :style="{ 'background-image': `url(${image.image})` }" @click="clickImage(image)">
             </div>
           </splide-slide>
@@ -65,7 +65,7 @@ import AuthService from '../services/auth.service';
 import PhotoService from '../services/photo.service';
 import { Form } from 'vee-validate';
 
-import { ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { useStore } from 'vuex';
 
 import { Splide, SplideSlide } from '@splidejs/vue-splide';
@@ -76,12 +76,9 @@ import vueFullpageUmd from 'vue-fullpage.js';
 import { usePhotoStore } from '../store/photo.js';
 
 
-
 // import '@splidejs/splide/dist/css/themes/splide-default.min.css';
 // import '@splidejs/splide/dist/css/themes/splide-sea-green.min.css';
 // import '@splidejs/splide/dist/css/themes/splide-skyblue.min.css';
-
-// import Flicking from "@egjs/vue3-flicking";
 
 
 export default {
@@ -91,7 +88,7 @@ export default {
   },
 
   props: {
-    mainimages: Array,
+    // mainimages: Array,
   },
 
   async setup(props, context) {
@@ -102,8 +99,7 @@ export default {
     var mainimages = ref([]);
     var postId;
 
-
-    var imageList = ref([]);
+    // var imageList = ref([]);
 
     const store = useStore();
     const currentUser = store.state.auth.user;
@@ -155,8 +151,6 @@ export default {
             }
             reader.readAsDataURL(files[i])
           }
-          // this.$emit('input', file[0])
-          // this.imgData = files[0];
         }
       }
     }
@@ -183,10 +177,12 @@ export default {
 
       frm2.append("postId", postId);
 
-      await PhotoService.uploadImage(frm2);
-
-      context.emit("setInput", 0);
-      mainimages.value = props.mainimages;
+      await PhotoService.uploadImage(frm2).then((result) => {
+        for (var i = 0; i < result.data.length; i++) {
+          result.data[i].image = "data:image/png;base64," + result.data[i].image
+        }
+        photoStore.setPhotos(result.data);
+      }); 
     }
 
     const chooseFiles = () => {
@@ -216,18 +212,16 @@ export default {
       }
     }
 
-    const popToast = () => {
+    const setImages = () => {
+      mainimages.value = photoStore.getPhotos;
     }
 
-    // await PhotoService.getAllImage().then((result) => {
-    //   for (var i = 0; i < result.data.length; i++) {
-    //     result.data[i].image = "data:image/png;base64," + result.data[i].image
-    //   }
+    watch(() => photoStore.getPhotos, (newValue, oldValue) => {
+      console.log({ newValue, oldValue });
+      context.emit("rerender", 0);
+    })
 
-    //   mainimages.value = result.data;
-    // });
 
-    mainimages.value = photoStore.getPhotos;
 
     return {
       // methods
@@ -235,7 +229,7 @@ export default {
       uploadPost,
       chooseFiles,
       clickImage,
-      popToast,
+      setImages,
 
       // splide
       preoptions: preoptions,
@@ -244,20 +238,25 @@ export default {
         Grid,
       },
 
+      photoStore,
+
       // data
       previewImages,
       text,
       images,
       uploadImages,
       mainimages,
-      imageData
+      imageData,
     };
+  },
+  created() {
+    this.setImages();
   },
 }
 </script>
 
 <style scoped lang="scss">
-// @import url("../../node_modules/@egjs/vue3-flicking/dist/flicking-inline.css");
+@import url("../../node_modules/@egjs/vue3-flicking/dist/flicking-inline.css");
 
 .splide {
   background-color: #d7d7d72b;
@@ -274,6 +273,7 @@ export default {
   background-position: center center;
   border: 1px solid rgba(165, 165, 165, 0.539);
   // transition: width 1s ease;
+  padding: 3px 3px 3px 3px;
 }
 
 .imagePreviewWrapper {

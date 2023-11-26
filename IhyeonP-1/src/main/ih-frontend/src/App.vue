@@ -79,10 +79,10 @@ export default {
   },
   mounted() {
   },
-  created() {
+  async created() {
     const photos = usePhotoStore();
 
-    PhotoService.getAllImage().then((result) => {
+    await PhotoService.getAllImage().then((result) => {
       for (var i = 0; i < result.data.length; i++) {
         result.data[i].image = "data:image/png;base64," + result.data[i].image
       }

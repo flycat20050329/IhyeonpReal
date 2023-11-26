@@ -64,7 +64,7 @@ public class PhotoController {
 	}
 
 	@PostMapping("/uploadImage")
-	public void uploadImage(@RequestParam() List<MultipartFile> images, @RequestParam() Long postId)
+	public List<Image> uploadImage(@RequestParam() List<MultipartFile> images, @RequestParam() Long postId)
 			throws IOException {
 		ImagePost imagePost = new ImagePost(postId);
 
@@ -76,6 +76,9 @@ public class PhotoController {
 			imageRepository.save(image);
 			imageList.add(image);
 		}
+
+		return imageRepository.findAll().stream().sorted(Comparator.comparing(Image::getId).reversed())
+				.collect(Collectors.toList());
 	}
 
 	@PostMapping("/uploadImagePost")

@@ -5,15 +5,18 @@
         <h1>home</h1>
       </div>
     </div>
+
     <div class="section" v-if="currentUser">
       <h1>학급일정</h1>
     </div>
+
     <!-- Photo -->
     <div class="section" v-if="currentUser" style="height:fit-content">
       <Suspense>
-        <PhotoBook :key="componentKey" @setInput="forceRerender" @imageData="getImageData" :mainimages="mainimages" />
+        <PhotoBook :key="componentKey" @setInput="setInput" @rerender="forceRerender" @imageData="getImageData" />
       </Suspense>
     </div>
+
     <div class="section">
       <div class="slide">
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#schoolSearchModal">
@@ -271,9 +274,12 @@ export default {
     const componentKey = ref(0);
     const mainimages = ref([]);
 
+    const photoStore = usePhotoStore();
+
     return {
       componentKey,
       mainimages,
+      photoStore
     }
   },
   data() {
@@ -354,6 +360,8 @@ export default {
   mounted() {
     this.flycat();
   },
+  created() {
+  },
   methods: {
     getImageData(imageData) {
       document.getElementById("photoModalBtn").click();
@@ -419,18 +427,19 @@ export default {
 
       // })
     },
+    // async setInput() {
+    //   const mainimages = [];
+
+    //   await PhotoService.getAllImage().then((result) => {
+    //     for (var i = 0; i < result.data.length; i++) {
+    //       result.data[i].image = "data:image/png;base64," + result.data[i].image
+    //     }
+    //     mainimages.value = result.data;
+    //   });
+    //   this.photoStore.setPhotos(mainimages);
+    //   // this.componentKey += 1;
+    // },
     forceRerender() {
-
-      const mainimages = [];
-
-      PhotoService.getAllImage().then((result) => {
-        for (var i = 0; i < result.data.length; i++) {
-          result.data[i].image = "data:image/png;base64," + result.data[i].image
-        }
-        mainimages.value = result.data;
-      });
-
-      this.mainimages = mainimages;
       this.componentKey += 1;
     },
     Please() {
