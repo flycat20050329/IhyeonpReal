@@ -209,16 +209,11 @@ export default {
       context.emit('imageData', imageData);
     }
 
-    const isSameImagePost = (element) => {
-      if (element.imagePost.id === clickedImagePostId) {
-        return true;
-      }
-    }
-
     watch(() => photoStore.getPhotos, (newValue, oldValue) => {
       console.log({ newValue, oldValue });
       context.emit("rerender", 0);
     })
+
 
     return {
       // methods
