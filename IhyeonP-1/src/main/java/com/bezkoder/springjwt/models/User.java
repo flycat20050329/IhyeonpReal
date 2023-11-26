@@ -67,6 +67,13 @@ public class User {
 	@Size(max = 120)
 	private String password;
 
+	@NotBlank
+	@Size(max = 1)
+	private String s_grade;
+
+	@NotBlank
+	@Size(max = 2)
+	private String s_class;
 //	@NotNull
 //	@Size(max = 20)
 //	@Column(unique = true)
@@ -80,13 +87,6 @@ public class User {
 //	@Size(max = 6)
 //	private Long s_id;
 //
-//	@NotBlank
-//	@Size(max = 1)
-//	private Integer s_grade;
-//
-//	@NotBlank
-//	@Size(max = 2)
-//	private Integer s_class;
 //
 //	@NotBlank
 //	@Size(max = 3)
@@ -112,9 +112,11 @@ public class User {
 		this.id = id;
 	}
 
-	public User(String username, String email, String password) {
+	public User(String username, String email, String password, String grade, String ban) {
 		this.username = username;
 		this.email = email;
 		this.password = password;
+		this.s_grade = grade;
+		this.s_class = ban;
 	}
 }
