@@ -5,11 +5,14 @@
       <!-- top bar -->
       <div class="topBar">
         <div class="row justify-content-between">
+
           <!-- upload button -->
           <div class="col-4">
             <button type="button" class="btn btn-outline-dark" @click="chooseFiles()">
               <font-awesome-icon icon="plus" /> 사진 올리기</button>
           </div>
+
+          <!-- 검색어 입력 -->
           <div class="col-4">
             <div class="form">
               <i class="fa fa-search"></i>
@@ -212,16 +215,10 @@ export default {
       }
     }
 
-    const setImages = () => {
-      mainimages.value = photoStore.getPhotos;
-    }
-
     watch(() => photoStore.getPhotos, (newValue, oldValue) => {
       console.log({ newValue, oldValue });
       context.emit("rerender", 0);
     })
-
-
 
     return {
       // methods
@@ -229,7 +226,6 @@ export default {
       uploadPost,
       chooseFiles,
       clickImage,
-      setImages,
 
       // splide
       preoptions: preoptions,
@@ -248,9 +244,6 @@ export default {
       mainimages,
       imageData,
     };
-  },
-  created() {
-    this.setImages();
   },
 }
 </script>

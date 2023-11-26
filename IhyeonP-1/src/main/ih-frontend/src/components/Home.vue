@@ -13,7 +13,7 @@
     <!-- Photo -->
     <div class="section" v-if="currentUser" style="height:fit-content">
       <Suspense>
-        <PhotoBook :key="componentKey" @setInput="setInput" @rerender="forceRerender" @imageData="getImageData" />
+        <PhotoBook :key="componentKey" @rerender="forceRerender" @imageData="getImageData" />
       </Suspense>
     </div>
 
@@ -171,7 +171,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-body">
-          <Form @submit="handleRegister" :validation-schema="signupSchema"  v-slot="{ isSubmitting }">
+          <Form @submit="handleRegister" :validation-schema="signupSchema" v-slot="{ isSubmitting }">
             <div v-if="!successful">
               <fieldset disabled>
                 <div class="form-group">
