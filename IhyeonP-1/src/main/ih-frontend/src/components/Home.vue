@@ -168,76 +168,74 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-body">
-          <div class="col-md-12">
-            <Form @submit="handleRegister" :validation-schema="signupSchema">
-              <div v-if="!successful">
-                <fieldset disabled>
-                  <div class="form-group">
-                    <label for="disabledTextInput" class="form-label">학교 이름</label>
-                    <input type="text" id="disabledTextInput" class="form-control" :value=schoolName>
+          <Form @submit="handleRegister" :validation-schema="signupSchema"  v-slot="{ isSubmitting }">
+            <div v-if="!successful">
+              <fieldset disabled>
+                <div class="form-group">
+                  <label for="disabledTextInput" class="form-label">학교 이름</label>
+                  <input type="text" id="disabledTextInput" class="form-control" :value=schoolName>
+                </div>
+              </fieldset>
+              <div class="form-group">
+                <label for="username">닉네임</label>
+                <Field name="username" type="text" class="form-control" />
+                <ErrorMessage name="username" class="error-feedback" />
+              </div>
+              <div class="form-group">
+                <label for="email">이메일</label>
+                <Field name="email" type="email" class="form-control" />
+                <ErrorMessage name="email" class="error-feedback" />
+              </div>
+              <div class="form-group">
+                <label for="password">비밀번호</label>
+                <Field name="password" type="password" class="form-control" />
+                <ErrorMessage name="password" class="error-feedback" />
+              </div>
+              <div class="form-group">
+                <label for="s_grade">학년</label>
+                <Field id="s_grade" name="s_grade" type="s_grade" class="form-control" />
+                <ErrorMessage name="s_grade" class="error-feedback" />
+              </div>
+              <div class="form-group">
+                <label for="s_class">반</label>
+                <Field name="s_class" id="s_class" type="s_class" class="form-control" />
+                <ErrorMessage name="s_class" class="error-feedback" />
+              </div>
+              <div class="row">
+                <div class="col-1">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
+                    <label class="form-check-label" for="flexRadioDefault1">
+                      학생
+                    </label>
                   </div>
-                </fieldset>
-                <div class="form-group">
-                  <label for="username">Username</label>
-                  <Field name="username" type="text" class="form-control" />
-                  <ErrorMessage name="username" class="error-feedback" />
                 </div>
-                <div class="form-group">
-                  <label for="email">Email</label>
-                  <Field name="email" type="email" class="form-control" />
-                  <ErrorMessage name="email" class="error-feedback" />
-                </div>
-                <div class="form-group">
-                  <label for="password">Password</label>
-                  <Field name="password" type="password" class="form-control" />
-                  <ErrorMessage name="password" class="error-feedback" />
-                </div>
-                <div class="form-group">
-                  <label for="grade">grade</label>
-                  <Field name="grade" type="grade" class="form-control" />
-                  <ErrorMessage name="grade" class="error-feedback" />
-                </div>
-                <div class="form-group">
-                  <label for="ban">ban</label>
-                  <Field name="ban" type="ban" class="form-control" />
-                  <ErrorMessage name="ban" class="error-feedback" />
-                </div>
-                <div class="row">
-                  <div class="col-1">
-                    <div class="form-check">
-                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
-                      <label class="form-check-label" for="flexRadioDefault1">
-                        학생
-                      </label>
-                    </div>
+                <div class="col-1">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
+                    <label class="form-check-label" for="flexRadioDefault2">
+                      교사
+                    </label>
                   </div>
-                  <div class="col-1">
-                    <div class="form-check">
-                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
-                      <label class="form-check-label" for="flexRadioDefault2">
-                        교사
-                      </label>
-                    </div>
-                  </div>
-                  <div class="col-7"></div>
-                  <div class="form-group col-3 mt-3">
-                    <button class="btn btn-primary btn-block" :disabled="loading">
-                      <span v-show="loading" class="spinner-border spinner-border-sm"></span>
-                      Sign Up
-                    </button>
-                  </div>
+                </div>
+                <div class="col-7"></div>
+                <div class="form-group col-3 mt-3">
+                  <button class="btn btn-primary btn-block" :disabled="loading" v-on:click="getClassGrade()">
+                    <span v-show="loading" class="spinner-border spinner-border-sm"></span>
+                    Sign Up
+                  </button>
                 </div>
               </div>
-            </Form>
-            <div v-if="message" class="alert" :class="successful ? 'alert-success' : 'alert-danger'">
-              {{ message }}
             </div>
+          </Form>
+          <div v-if="message" class="alert" :class="successful ? 'alert-success' : 'alert-danger'">
+            {{ message }}
           </div>
         </div>
-        <div class="modal-footer">
-          <button class="btn btn-primary" data-bs-target="#schoolSelectModal" data-bs-toggle="modal"
-            data-bs-dismiss="modal">학교 선택으로 돌아가기</button>
-        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" data-bs-target="#schoolSelectModal" data-bs-toggle="modal"
+          data-bs-dismiss="modal">학교 선택으로 돌아가기</button>
       </div>
     </div>
   </div>
@@ -298,10 +296,10 @@ export default {
         .required("비밀번호를 넣어주세요!")
         .min(6, "너무 취약합니다!")
         .max(40, "너무 안전합니다!"),
-      grade: yup
+      s_grade: yup
         .string()
         .required("몇 학년인지 적어주세요!"),
-      ban: yup
+      s_class: yup
         .string()
         .required("몇 반인지 적어주세요!"),
     });
@@ -349,12 +347,63 @@ export default {
         }
       ],
       searchTerm: '',
+      s_grade: "",
+      s_class: "",
+      loca: "",
+      schoolNameList: [],
+
+      // dataList: [
+      //   {
+      //     name: 'One',
+      //     value: 'one'
+      //   },
+      //   {
+      //     name: 'Two',
+      //     value: 'two'
+      //   },
+      //   {
+      //     name: 'Three',
+      //     value: 'three'
+      //   },
+      //   {
+      //     name: 'Four',
+      //     value: 'four'
+      //   }
+      // ],
+      // searchTerm: '',
     };
   },
   mounted() {
     this.flycat();
   },
   methods: {
+    schoolNameRegister() {
+      this.schoolName = document.getElementById("schoolSelect").value;
+      console.log(this.schoolName);
+    },
+    // setSearchTerm(e) {
+    //   this.searchTerm = e.target.value;
+    // },
+    getSelect() {
+      console.log(event.target.value);
+      this.loca = event.target.value;
+    },
+    getschoolInfo() {
+      console.log(this.loca);
+      console.log(document.getElementById("schoolNameInput").value);
+
+      AuthService.getSchoolInfo(this.loca, document.getElementById("schoolNameInput").value).then(
+        (res) => {
+          this.schoolNameList = res.data;
+
+          console.log(this.schoolNameList);
+        }
+      )
+    },
+    getClassGrade() {
+      console.log(document.getElementById("s_grade").value);
+      console.log(document.getElementById("s_class").value);
+    },
     getImageData(imageData) {
       document.getElementById("photoModalBtn").click();
       this.imageData = imageData;
@@ -363,12 +412,14 @@ export default {
       this.searchTerm = e.target.value;
     },
     handleRegister(user) {
+      console.log("registered");
       this.message = "";
       this.successful = false;
       this.loading = true;
 
       this.$store.dispatch("auth/register", user).then(
         (data) => {
+          console.log(data);
           this.message = data.message;
           this.successful = true;
           this.loading = false;
