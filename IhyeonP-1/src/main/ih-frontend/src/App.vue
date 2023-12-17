@@ -5,51 +5,54 @@
 
     <!-- nav bar -->
     <nav id="menu">
-      <li class="col-1"></li>
-      <li class="col-1">
-        <a class="btn text-dark " href="/" role="button">
-          Home
-        </a>
-      </li>
-      <li class="col-1" v-if="currentUser">
-        <a class="btn text-dark" href="#page2" role="button">
-          학교
-        </a>
-      </li>
-      <li class="col-1" v-if="currentUser">
-        <a class="btn text-dark" href="#page3" role="button">
-          Photo
-        </a>
-      </li>
-      <li class="col-1" v-if="currentUser">
-        <a class="btn text-dark" href="#page4" role="button">
-          동아리
-        </a>
-      </li>
-      <li class="col-1" v-if="currentUser">
-        <a class="btn text-dark" href="#page5" role="button">
-          중고거래
-        </a>
-      </li>
-      <li class="col-3">
-        <a class="btn text-dark" @click="Please()" role="button">
-          문의
-        </a>
-      </li>
-      <li class="col-2" v-if="!currentUser">
-        <a class="btn text-dark" data-bs-toggle="modal" data-bs-target="#loginModal" href="/login">Login</a>
-      </li>
-      <li class="col-1" v-if="currentUser">
-        <router-link to="/" class="nav-link btn text-dark">
-          <font-awesome-icon icon="user" />
-          {{ currentUser.username }}
-        </router-link>
-      </li>
-      <li class="col-1" v-if="currentUser">
-        <a class="nav-link btn text-dark" @click.prevent="logOut">
-          <font-awesome-icon icon="sign-out-alt" /> LogOut
-        </a>
-      </li>
+      <div class="row justify-content-between">
+        <li class="col-1"></li>
+        <li class="col-1">
+          <a class="btn text-dark " href="/" role="button">
+            Home
+          </a>
+        </li>
+        <li class="col-1" v-if="currentUser">
+          <a class="btn text-dark" href="#page2" role="button">
+            학교
+          </a>
+        </li>
+        <li class="col-1" v-if="currentUser">
+          <a class="btn text-dark" href="#page3" role="button">
+            Photo
+          </a>
+        </li>
+        <li class="col-1" v-if="currentUser">
+          <a class="btn text-dark" href="#page4" role="button">
+            동아리
+          </a>
+        </li>
+        <li class="col-1" v-if="currentUser">
+          <a class="btn text-dark" href="#page5" role="button">
+            중고
+          </a>
+        </li>
+        <li :class="currentUser ? 'col-2' : 'col-7'">
+          <a class="btn text-dark" href="#page6" @click="Please()" role="button">
+            문의
+          </a>
+        </li>
+        <li class="col-2" v-if="!currentUser">
+          <a class="btn text-dark" data-bs-toggle="modal" data-bs-target="#schoolSearchModal">Sign Up</a>
+          <a class="btn text-dark" data-bs-toggle="modal" data-bs-target="#loginModal">Sign In</a>
+        </li>
+        <li class="col-2" v-if="currentUser">
+          <router-link to="/" class="nav-link btn text-dark">
+            <font-awesome-icon icon="user" />
+            {{ currentUser.username }}
+          </router-link>
+        </li>
+        <li class="col-2" v-if="currentUser">
+          <a class="nav-link btn text-dark" @click.prevent="logOut">
+            <font-awesome-icon icon="sign-out-alt" /> LogOut
+          </a>
+        </li>
+      </div>
     </nav>
   </div>
 
@@ -67,6 +70,7 @@ import axios from 'axios';
 import { usePhotoStore } from "./store/photo.js";
 import PhotoService from "./services/photo.service.js";
 
+
 export default {
   name: 'app',
   components: {
@@ -82,10 +86,11 @@ export default {
   async created() {
     const photos = usePhotoStore();
 
-    await PhotoService.getAllImage().then((result) => {
+    await PhotoService.getAllPhoto().then((result) => {
       for (var i = 0; i < result.data.length; i++) {
         result.data[i].image = "data:image/png;base64," + result.data[i].image
       }
+      photos.setAllPhotos(result.data);
       photos.setPhotos(result.data);
     })
   },
@@ -122,7 +127,8 @@ export default {
       this.$store.dispatch('auth/logout');
       // this.$router.push('/login');
       this.changePopState();
-    }
+    },
+
   },
   computed: {
     currentUser() {

@@ -1,5 +1,6 @@
 <template>
   <full-page :options="this.options" id="fullpage" ref="fullpage">
+
     <div class="section">
       <div class="text-center">
         <h1>home</h1>
@@ -7,39 +8,49 @@
     </div>
 
     <div class="section" v-if="currentUser">
-      <h1>학급일정</h1>
-    </div>
-
-    <!-- Photo -->
-    <div class="section" v-if="currentUser" style="height:fit-content">
-      <Suspense>
-        <PhotoBook :key="componentKey" @rerender="forceRerender" @imageData="getImageData" />
-      </Suspense>
-    </div>
-
-    <div class="section">
       <div class="slide">
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#schoolSearchModal">
-          Launch demo modal
-        </button>
+        <h1>학급일정 →→→</h1>
       </div>
       <div class="slide">
         <TimeSchedule />
       </div>
     </div>
-    <div class="section text-center">
+
+    <!-- Photo -->
+    <div class="section" style="height:fit-content" v-if="currentUser">
+      <Suspense>
+        <PhotoBook :key="componentKey" @rerender="forceRerender" @imageData="getImageData" />
+        <!--  @imageData="getImageData"  -->
+      </Suspense>
+    </div>
+
+    <!-- <div class="section"  v-if="currentUser">
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#schoolSearchModal">
+        Launch demo modal
+      </button>
+    </div> -->
+
+    <!-- <div class="section text-center">
       <Register />
-    </div>
+    </div> -->
+
     <div class="section" v-if="currentUser">
-      <h2>Section 4</h2>
+      <h2>동아리</h2>
     </div>
+
     <div class="section" v-if="currentUser">
-      <h2>Section 5</h2>
+      <h2>중고</h2>
     </div>
+
+    <div class="section" v-if="currentUser">
+      <h2>문의</h2>
+    </div>
+
   </full-page>
 
   <!-- Login Modal -->
-  <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+  <div class="modal fade" ref="loginModal" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -60,11 +71,12 @@
             </div>
 
             <div class="form-group">
-              회원가입이 필요하시면 <a href="/register">여기</a>
+              회원가입이 필요하시면 <a class="text-dark" data-bs-toggle="modal" data-bs-target="#schoolSearchModal"
+                href="/register">Click!</a>
             </div>
 
             <div class="form-group">
-              <button class="btn btn-primary btn-block" :disabled="loading" data-bs-dismiss="modal" style="float: right;">
+              <button class="btn btn-primary btn-block" :disabled="loading" style="float: right;">
                 <span v-show="loading" class="spinner-border spinner-border-sm"></span>
                 <span>Login</span>
               </button>
@@ -150,12 +162,16 @@
   </div>
 
   <!-- Photo Modal -->
-  <div class="modal fade" id="photoModal" tabindex="-1" role="dialog" aria-labelledby="photoModalLabel"
+  <div class="modal fade" ref="photoModal" id="photoModal" tabindex="-1" role="dialog" aria-labelledby="photoModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
       <div class="modal-content">
         <div class="modal-body">
-          <PhotoPost :images="imageData"></PhotoPost>
+          <PhotoPost :images="imageData" ref="photoPost"></PhotoPost>
+          <!-- <button type="button" id="deletePhotoModalBtn" class="btn btn-primary" data-bs-toggle="modal"
+            data-bs-target="#deletePhotoModal">
+            modal 버튼
+          </button> -->
         </div>
       </div>
     </div>
@@ -165,6 +181,19 @@
   <button type="button" id="photoModalBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#photoModal"
     style="display:none;">
   </button>
+
+
+  <!-- Delete Photo Modal -->
+  <div class="modal fade" id="deletePhotoModal" aria-labelledby="photoModalLabel">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <h1> hi </h1>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
   <!-- Register Modal -->
   <div class="modal fade" id="signUpModal" tabindex="-1" aria-labelledby="signUpModalLabel" aria-hidden="true">
@@ -196,12 +225,12 @@
               </div>
               <div class="form-group">
                 <label for="s_grade">학년</label>
-                <Field id="s_grade" name="s_grade" type="s_grade" class="form-control" />
+                <Field id="s_grade" name="s_grade" type="number" class="form-control" />
                 <ErrorMessage name="s_grade" class="error-feedback" />
               </div>
               <div class="form-group">
                 <label for="s_class">반</label>
-                <Field name="s_class" id="s_class" type="s_class" class="form-control" />
+                <Field name="s_class" id="s_class" type="number" class="form-control" />
                 <ErrorMessage name="s_class" class="error-feedback" />
               </div>
               <div class="row">
@@ -245,17 +274,18 @@
 </template>
 
 <script>
-import AuthService from '../services/auth.service';
-import PhotoService from '../services/photo.service';
-import PhotoBook from "./PhotoBook.vue";
-import TimeSchedule from './TimeSchedule.vue';
-import Register from './Register.vue';
-import { Form, Field, ErrorMessage } from "vee-validate";
-import * as yup from "yup";
+import { ErrorMessage, Field, Form } from "vee-validate";
 import { ref } from "vue";
+import * as yup from "yup";
+import AuthService from '../services/auth.service';
+import PhotoBook from "./PhotoBook.vue";
+import Register from './Register.vue';
+import TimeSchedule from './TimeSchedule.vue';
 
-import PhotoPost from "./PhotoPost.vue";
 import { usePhotoStore } from "../store/photo.js";
+import PhotoPost from "./PhotoPost.vue";
+
+import $ from "jquery";
 
 export default {
   name: "Home",
@@ -273,6 +303,8 @@ export default {
     const mainimages = ref([]);
 
     const photoStore = usePhotoStore();
+
+    const photoPost = ref(null);
 
     return {
       componentKey,
@@ -314,12 +346,12 @@ export default {
       options: {
         licenseKey: 'YOUR_KEY_HERE',
         afterLoad: this.afterLoad,
-        scrollOverflow: true,
+        scrollOverflow: false,
         scrollBar: false,
         menu: '#menu',
         navigation: false,
-        anchors: ['page1', 'page2', 'page3', 'page4', 'page5'],
-        sectionsColor: ['#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ee1a59', '#2c3e4f', '#ba5be9', '#b4b8ab',],
+        anchors: ['page1', 'page2', 'page3', 'page4', 'page5', 'page6'],
+        sectionsColor: ['#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff',],
         controlArrows: false,
       },
       schoolNameList: [],
@@ -357,41 +389,16 @@ export default {
       s_class: "",
       loca: "",
       schoolNameList: [],
-
-      // dataList: [
-      //   {
-      //     name: 'One',
-      //     value: 'one'
-      //   },
-      //   {
-      //     name: 'Two',
-      //     value: 'two'
-      //   },
-      //   {
-      //     name: 'Three',
-      //     value: 'three'
-      //   },
-      //   {
-      //     name: 'Four',
-      //     value: 'four'
-      //   }
-      // ],
-      // searchTerm: '',
     };
   },
   mounted() {
     this.flycat();
-  },
-  created() {
   },
   methods: {
     schoolNameRegister() {
       this.schoolName = document.getElementById("schoolSelect").value;
       console.log(this.schoolName);
     },
-    // setSearchTerm(e) {
-    //   this.searchTerm = e.target.value;
-    // },
     getSelect() {
       console.log(event.target.value);
       this.loca = event.target.value;
@@ -413,8 +420,10 @@ export default {
       console.log(document.getElementById("s_class").value);
     },
     getImageData(imageData) {
-      document.getElementById("photoModalBtn").click();
       this.imageData = imageData;
+      // document.getElementById("photoModalBtn").click();
+      // console.log(this.$refs['photoModal'].modal());
+      // window.$('#photoModal').modal();
     },
     setSearchTerm(e) {
       this.searchTerm = e.target.value;
@@ -445,10 +454,9 @@ export default {
       );
     },
     handleLogin(user) {
-      this.loading = true;
-
       this.$store.dispatch("auth/login", user).then(
         () => {
+          this.loading = true;
           this.$router.push("/");
           this.$router.go();
         },
@@ -478,18 +486,6 @@ export default {
 
       // })
     },
-    // async setInput() {
-    //   const mainimages = [];
-
-    //   await PhotoService.getAllImage().then((result) => {
-    //     for (var i = 0; i < result.data.length; i++) {
-    //       result.data[i].image = "data:image/png;base64," + result.data[i].image
-    //     }
-    //     mainimages.value = result.data;
-    //   });
-    //   this.photoStore.setPhotos(mainimages);
-    //   // this.componentKey += 1;
-    // },
     forceRerender() {
       this.componentKey += 1;
     },
@@ -513,6 +509,15 @@ export default {
       this.$store.dispatch('auth/logout');
       this.$router.push('/login');
     },
+    clickedSignIn() {
+      console.log("열였당")
+    },
+    onModalShowed() {
+      this.$refs['my-modal'].show()
+    },
+    setSplideIndex() {
+
+    }
   },
   computed: {
     filteredList() {

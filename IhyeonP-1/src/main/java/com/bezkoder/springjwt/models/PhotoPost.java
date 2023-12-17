@@ -3,9 +3,10 @@ package com.bezkoder.springjwt.models;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,6 +16,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,7 +24,7 @@ import lombok.Setter;
 @Table(name = "ih_images_post")
 @Getter
 @Setter
-public class ImagePost {
+public class PhotoPost {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,25 +39,24 @@ public class ImagePost {
 //	@Size(max = 11)
 	private int heart;
 
-//	@Size(max = 250)
+	@Size(max = 100)
 	private String text;
 
-//	@NotNull
-	@Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	@CreationTimestamp
 	private java.util.Date uploaded_on;
 
 	@JsonIgnore
-	@OneToMany(mappedBy = "imagePost")
-	private Set<Image> Images = new HashSet<>();
+	@OneToMany(mappedBy = "photoPost")
+	private Set<Photo> Images = new HashSet<>();
 
-	public ImagePost() {
+	public PhotoPost() {
 	}
 
-	public ImagePost(Long id) {
+	public PhotoPost(Long id) {
 		this.id = id;
 	}
 
-	public ImagePost(User user, int heart, String text) {
+	public PhotoPost(User user, int heart, String text) {
 		this.user = user;
 		this.heart = heart;
 		this.text = text;

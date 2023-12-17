@@ -6,7 +6,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +18,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.bezkoder.springjwt.models.Image;
-import com.bezkoder.springjwt.models.ImagePost;
+import com.bezkoder.springjwt.models.Photo;
+import com.bezkoder.springjwt.models.PhotoPost;
 import com.bezkoder.springjwt.models.User;
-import com.bezkoder.springjwt.repository.ImagePostRepository;
-import com.bezkoder.springjwt.repository.ImageRepository;
+import com.bezkoder.springjwt.repository.PhotoPostRepository;
+import com.bezkoder.springjwt.repository.PhotoRepository;
+import com.bezkoder.springjwt.repository.UserRepository;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -31,65 +31,85 @@ import com.bezkoder.springjwt.repository.ImageRepository;
 public class PhotoController {
 
 	@Autowired
-	ImageRepository imageRepository;
+	PhotoRepository photoRepository;
 
 	@Autowired
-	ImagePostRepository imagePostRepository;
+	PhotoPostRepository photoPostRepository;
 
-	@GetMapping("/getImage")
-	public List<Image> getImage() {
-		return imageRepository.findAll().stream().sorted(Comparator.comparing(Image::getId).reversed())
+	@Autowired
+	UserRepository userRepository;
+
+	@GetMapping("/getAllPhoto")
+	public List<Photo> getAllPhoto() {
+		return photoRepository.findAll().stream().sorted(Comparator.comparing(Photo::getId).reversed())
 				.collect(Collectors.toList());
 //		return imageRepository.findAll();
 	}
 
-	@GetMapping("/getClickedImageData/{id}")
-	public Map<String, Object> getClickedImageData(@PathVariable Long id) {
-		Map<String, Object> imageData = new HashMap<String, Object>();
+	@GetMapping("/getClickedPhotoData/{id}")
+	public Map<String, Object> getClickedPhotoData(@PathVariable Long id) {
+		Map<String, Object> photoData = new HashMap<String, Object>();
 
-		imageData.put("images", imageRepository.findByImagePostId(id));
-		imageData.put("post", imagePostRepository.findById(id));
+		photoData.put("images", photoRepository.findByPhotoPostId(id));
+		photoData.put("post", photoPostRepository.findById(id));
 
-		return imageData;
+		return photoData;
 	}
 
-	@GetMapping("/getImagePost/{id}")
-	public Optional<ImagePost> getImagePost(@PathVariable Long id) {
-		return imagePostRepository.findById(id);
+	@GetMapping("/getPhotoPost/{id}")
+	public PhotoPost getPhotoPost(@PathVariable Long id) {
+		return photoPostRepository.findAllById(id).get(0);
 	}
 
-	@GetMapping("/getImagesByPostId/{id}")
-	public List<Image> getImagesByPostId(@PathVariable Long id) {
-		return imageRepository.findByImagePostId(id);
+	@GetMapping("/getPhotosByPostId/{id}")
+
+	public List<Photo> getPhotosByPostId(@PathVariable Long id) {
+		return photoRepository.findByPhotoPostId(id);
 	}
 
-	@PostMapping("/uploadImage")
-	public List<Image> uploadImage(@RequestParam() List<MultipartFile> images, @RequestParam() Long postId)
+	@PostMapping("/uploadPhoto")
+	public List<Photo> uploadPhoto(@RequestParam() List<MultipartFile> images, @RequestParam() Long postId)
 			throws IOException {
-		ImagePost imagePost = new ImagePost(postId);
+		PhotoPost photoPost = photoPostRepository.findAllById(postId).get(0);
 
-		List<Image> imageList = new ArrayList<Image>();
+//		List<Photo> photoList = new ArrayList<Photo>();
 
 		for (int i = 0; i < images.size(); i++) {
-			Image image = new Image(images.get(i).getBytes(), imagePost, i + 1);
+			Photo photo = new Photo(images.get(i).getBytes(), photoPost, i);
 
-			imageRepository.save(image);
-			imageList.add(image);
+			photoRepository.save(photo);
+//			photoList.add(photo);
 		}
 
-		return imageRepository.findAll().stream().sorted(Comparator.comparing(Image::getId).reversed())
+		return photoRepository.findAll().stream().sorted(Comparator.comparing(Photo::getId).reversed())
 				.collect(Collectors.toList());
 	}
 
-	@PostMapping("/uploadImagePost")
-	public Long uploadImagePost(@RequestParam() Long id, @RequestParam() int heart, @RequestParam() String text) {
-		User user = new User(id);
+	@PostMapping("/uploadPhotoPost")
+	public Long uploadPhotoPost(@RequestParam() Long id, @RequestParam() int heart, @RequestParam() String text) {
+		User user = userRepository.findAllById(id).get(0);
 
-		ImagePost imagePost = new ImagePost(user, heart, text);
+		PhotoPost photoPost;
 
-		imagePostRepository.save(imagePost);
+		if (text.equals("")) {
+			photoPost = new PhotoPost(user, heart, null);
+		} else {
+			photoPost = new PhotoPost(user, heart, text);
+		}
 
-		return imagePost.getId();
+		photoPostRepository.save(photoPost);
+
+		return photoPost.getId();
 	}
 
+	@PostMapping("/updatePostText")
+	public PhotoPost updatePostText(@RequestParam() Long postId, @RequestParam() String text) {
+		PhotoPost photoPost = photoPostRepository.findAllById(postId).get(0);
+
+		photoPost.setText(text);
+
+		photoPostRepository.save(photoPost);
+
+		return photoPost;
+	}
 }

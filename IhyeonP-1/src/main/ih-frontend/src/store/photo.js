@@ -2,19 +2,30 @@
 import { defineStore } from 'pinia'
 
 export const usePhotoStore = defineStore('photo', {
-  state: () => ({ photos: [] }),
+  state: () => ({ photos: [], allPhotos: [] }),
   actions: {
     setPhotos(photoData) {
       this.photos = photoData;
+    },
+    setAllPhotos(photoData) {
+      this.allPhotos = photoData;
+    },
+    updatePhoto(newValue) {
+      this.allPhotos.filter(photo => {
+        if (photo.photoPost.id == newValue.id) {
+          return newValue;
+        } else { return photo }
+      })
     }
   },
+
   getters: {
-    doubleCount(state) {
-      return state.count * 2
-    },
     getPhotos(state) {
       return state.photos;
-    }
+    },
+    getAllPhotos(state) {
+      return state.allPhotos;
+    },
   }
 })
 

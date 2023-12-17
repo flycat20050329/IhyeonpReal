@@ -3,36 +3,44 @@ import axios from 'axios';
 const API_URL = 'http://localhost:8080/api/photo/';
 
 class PhotoService {
-  async uploadImagePost(frm) {
-    return axios.post(API_URL + 'uploadImagePost', frm, {
+  async uploadPhotoPost(frm) {
+    return axios.post(API_URL + 'uploadPhotoPost', frm, {
       hearder: {
         'Content-Type': 'multipart/form-data'
       }
     })
   }
 
-  async uploadImage(frm) {
-    return axios.post(API_URL + 'uploadImage', frm, {
+  async uploadPhoto(frm) {
+    return axios.post(API_URL + 'uploadPhoto', frm, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
     })
   }
 
-  getAllImage() {
-    return axios.get(API_URL + 'getImage')
+  getAllPhoto() {
+    return axios.get(API_URL + 'getAllPhoto')
   }
 
-  getImagePost(id) {
-    return axios.get(API_URL + 'getImagePost/' + id);
+  getPhotoPost(id) {
+    return axios.get(API_URL + 'getPhotoPost/' + id);
   }
 
-  getImageByPostId(id) {
-    return axios.get(API_URL + 'getImagesByPostId/' + id);
+  getPhotoByPostId(id) {
+    return axios.get(API_URL + 'getPhotosByPostId/' + id);
   }
 
-  getClickedImageData(id) {
-    return axios.get(API_URL + 'getClickedImageData/' + id);
+  getClickedPhotoData(id) {
+    return axios.get(API_URL + 'getClickedPhotoData/' + id);
+  }
+
+  editPostText(frm) {
+    return axios.post(API_URL + 'updatePostText', frm, {
+      hearder: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
   }
 
 }

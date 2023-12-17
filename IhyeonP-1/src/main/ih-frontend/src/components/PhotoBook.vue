@@ -1,15 +1,29 @@
 <template>
   <div class="container" style="height:fit-content;">
     <!-- gallery -->
-    <div v-if="!uploadImages" class="container" style="padding-top: 80px;">
+    <div v-if="!uploadImages" class="container">
+
       <!-- top bar -->
       <div class="topBar">
         <div class="row justify-content-between">
+          <div class="col">
+            <div class="row">
 
-          <!-- upload button -->
-          <div class="col-4">
-            <button type="button" class="btn btn-outline-dark" @click="chooseFiles()">
-              <font-awesome-icon icon="plus" /> 사진 올리기</button>
+              <!-- upload button -->
+              <div class="col-3">
+                <button type="button" class="btn btn-outline-dark" @click="chooseFiles()">
+                  <font-awesome-icon icon="plus" /> 사진 올리기</button>
+              </div>
+
+              <!-- switch -->
+              <div class="col">
+                <div class="form-check form-switch" style="width:fit-content">
+                  <input class="form-check-input" type="checkbox" id="meSwitch" v-model="meChecked"
+                    v-on:change="checkSwitch">
+                  <label class="form-check-label" for="flexSwitchCheckDefault">Only Mine</label>
+                </div>
+              </div>
+            </div>
           </div>
 
           <!-- 검색어 입력 -->
@@ -21,8 +35,10 @@
           </div>
         </div>
       </div>
+
+
       <!-- main splide -->
-      <div>
+      <div class="mainSplide" v-if="!meChecked || !noPhoto">
         <splide id="splide" class="splide" :options="mainoptions" :extensions="extensions">
           <splide-slide v-for="image of photoStore.getPhotos">
             <div class="item" :style="{ 'background-image': `url(${image.image})` }" @click="clickImage(image)">
@@ -30,23 +46,38 @@
           </splide-slide>
         </splide>
       </div>
+
+      <div class="noMyPhoto" v-if="meChecked && noPhoto" style="padding: 7% 0 0 5%; color: gray">
+        <h2>사진이 없습니다.</h2>
+      </div>
+
     </div>
 
+
     <!-- image upload -->
-    <div class="container" style="padding-top: 100px; height: fit-content;">
-      <div class="row" v-if="uploadImages">
-        <div class="col-5">
+    <div class="container" style=" height: fit-content" v-if="uploadImages">
+      <div class="row justify-content-end">
+        <div class="col-7">
           <!-- imagePreview -->
           <splide :options="preoptions">
             <splide-slide v-for="image in previewImages">
-              <div class="imagePreviewWrapper" :style="{ 'background-image': `url(${image})` }" @click="chooseFiles()">
+              <div class="imagePreviewWrapper" :style="{ 'background-image': `url(${image})` }" @click="">
               </div>
             </splide-slide>
           </splide>
         </div>
         <div class="col">
-          <textarea class="form-control" rows="10" v-model="text"></textarea>
-          <button class="btn btn-outline-dark m-3" @click="uploadPost">Submit</button>
+          <textarea @input="inputHandler" maxlength="100" class="form-control" rows="12" v-model="text"
+            style="resize: none;"></textarea>
+          <p id="lengthText">{{ 100 - text.length }}/100</p>
+          <div class="row justify-content-end" style="width:inherit">
+            <div class="col-2">
+              <button class="btn btn-outline-dark m-3" @click="cancelPost">Cancel</button>
+            </div>
+            <div class="col-2">
+              <button class="btn btn-outline-primary m-3" @click="uploadPost">Submit</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -58,8 +89,12 @@
     <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#photoModal">
       Launch demo modal
     </button> -->
-
   </div>
+
+  <!-- Button trigger photoModal -->
+  <button type="button" id="photoModalBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#photoModal"
+    style="display:none;">
+  </button>
 </template>
  
 <script>
@@ -91,34 +126,33 @@ export default {
   },
 
   props: {
-    // mainimages: Array,
   },
+  emits: ["rerender", "imageData"],
 
   async setup(props, context) {
     var previewImages = ref([]);
-    var text = ref(null);
+    var text = ref("");
     var images = [];
     var uploadImages = ref(false);
     var mainimages = ref([]);
     var postId;
 
-    // var imageList = ref([]);
 
     const store = useStore();
     const currentUser = store.state.auth.user;
 
     const photoStore = usePhotoStore();
 
+    var meChecked = ref(false);
+
     const preoptions = {
       rewind: true,
-      height: 300,
+      height: 400,
       gap: '1rem',
       perMove: 1,
       perPage: 1,
       pagination: false,
       postId: null,
-      // arrows: false,
-      // paginationDirection: 'ttb',
     };
 
     const mainoptions = {
@@ -129,7 +163,8 @@ export default {
       arrows: false,
       gap: 10,
       grid: {
-        dimensions: [[2, 1]],
+        rows: 2,
+        cols: 1,
         gap: {
           row: "1rem",
           col: "1.5rem",
@@ -162,14 +197,18 @@ export default {
       const frm = new FormData();
       frm.append("id", currentUser.id);
       frm.append("heart", 0);
-      frm.append("text", text.value);
+      frm.append("text", text.value)
 
-      await PhotoService.uploadImagePost(frm).then((result) => {
+      await PhotoService.uploadPhotoPost(frm).then((result) => {
         postId = result.data;
       });
       uploadImages.value = false;
-      text.value = null;
+      text.value = "";
       await uploadImage();
+    }
+
+    const cancelPost = () => {
+      uploadImages.value = false;
     }
 
     const uploadImage = async () => {
@@ -180,40 +219,71 @@ export default {
 
       frm2.append("postId", postId);
 
-      await PhotoService.uploadImage(frm2).then((result) => {
+      await PhotoService.uploadPhoto(frm2).then((result) => {
         for (var i = 0; i < result.data.length; i++) {
           result.data[i].image = "data:image/png;base64," + result.data[i].image
         }
-        photoStore.setPhotos(result.data);
-      }); 
+        photoStore.setAllPhotos(result.data);
+      });
     }
 
     const chooseFiles = () => {
       document.getElementById("fileUpload").click();
     }
 
-    var clickedImagePostId = ref(0);
-    var imageData = ref({ images: null, post: null });
+    var imageData = ref({ index: null, images: null, photoPost: null, });
 
-    const clickImage = (image) => {
-      PhotoService.getClickedImageData(image.imagePost.id).then((result) => {
+    const clickImage = async (image) => {
+      imageData.value.index = image.index;
+      PhotoService.getClickedPhotoData(image.photoPost?.id).then((result) => {
+
         imageData.value.post = result.data.post;
-
         for (var i = 0; i < result.data.images.length; i++) {
           result.data.images[i].image = "data:image/png;base64," + result.data.images[i].image
         }
         imageData.value.images = result.data.images;
-
       })
 
+      console.log(imageData.value.index);
       context.emit('imageData', imageData);
+      document.getElementById("photoModalBtn").click();
     }
 
-    watch(() => photoStore.getPhotos, (newValue, oldValue) => {
+    const checkSwitch = () => {
+      if (meChecked.value) {
+        photoStore.setPhotos(photoStore.getAllPhotos.filter(photo => {
+          return photo.photoPost.user?.id == currentUser.id;
+        }))
+      } else {
+        photoStore.setPhotos(photoStore.getAllPhotos);
+        context.emit("rerender", 0);
+      }
+
+    }
+
+    const inputHandler = (e) => {
+      const target = e.currentTarget;
+      const max = e.currentTarget.getAttribute('maxlength');
+      if (target.value.length > max) {
+        target.value = target.value.slice(0, max);
+      }
+      // customString.value = target.value;
+    };
+
+    const noPhoto = ref(false);
+
+    watch(() => photoStore.getAllPhotos, (newValue, oldValue) => {
       console.log({ newValue, oldValue });
+      // photoStore.setPhotos(newValue);
+      checkSwitch();
       context.emit("rerender", 0);
     })
 
+    watch(() => photoStore.getPhotos, (newValue, oldValue) => {
+      if (newValue?.length == 0) {
+        noPhoto.value = true;
+      }
+    })
 
     return {
       // methods
@@ -221,6 +291,9 @@ export default {
       uploadPost,
       chooseFiles,
       clickImage,
+      cancelPost,
+      checkSwitch,
+      inputHandler,
 
       // splide
       preoptions: preoptions,
@@ -238,6 +311,8 @@ export default {
       uploadImages,
       mainimages,
       imageData,
+      meChecked,
+      noPhoto,
     };
   },
 }
@@ -265,15 +340,15 @@ export default {
 }
 
 .imagePreviewWrapper {
-  height: 300px;
-  max-width: 300px;
+  height: 400px;
+  max-width: 700px;
   object-fit: cover;
   display: block;
   cursor: pointer;
   margin: 0 auto 30px;
-  background-size: cover;
+  background-size: contain;
   background-position: center center;
-  border: 1px solid gray;
+  // border: 1px solid gray;
 }
 
 .topBar {
@@ -310,5 +385,13 @@ export default {
 .form-input:focus {
   box-shadow: none;
   border: none;
+}
+
+#lengthText {
+  text-align: right;
+  margin-top: -27px;
+  margin-right: 10px;
+  padding-right: 1%;
+  color: gray;
 }
 </style>

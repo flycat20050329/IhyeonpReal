@@ -103,13 +103,9 @@ public class User {
 
 	@JsonIgnore
 	@OneToMany(mappedBy = "user")
-	private Set<ImagePost> imagePosts = new HashSet<>();
+	private Set<PhotoPost> imagePosts = new HashSet<>();
 
 	public User() {
-	}
-
-	public User(Long id) {
-		this.id = id;
 	}
 
 	public User(String username, String email, String password, String grade, String ban) {

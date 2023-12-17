@@ -1,8 +1,5 @@
 package com.bezkoder.springjwt.controllers;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,21 +17,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.bezkoder.springjwt.models.ERole;
-import com.bezkoder.springjwt.models.Image;
-import com.bezkoder.springjwt.models.ImagePost;
 import com.bezkoder.springjwt.models.Role;
 import com.bezkoder.springjwt.models.User;
 import com.bezkoder.springjwt.payload.request.LoginRequest;
 import com.bezkoder.springjwt.payload.request.SignupRequest;
 import com.bezkoder.springjwt.payload.response.JwtResponse;
 import com.bezkoder.springjwt.payload.response.MessageResponse;
-import com.bezkoder.springjwt.repository.ImagePostRepository;
-import com.bezkoder.springjwt.repository.ImageRepository;
 import com.bezkoder.springjwt.repository.RoleRepository;
 import com.bezkoder.springjwt.repository.UserRepository;
 import com.bezkoder.springjwt.security.jwt.JwtUtils;
@@ -88,11 +79,11 @@ public class AuthController {
 	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
 		System.out.println("일단 데이터는 들어옴");
 		if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-			return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already taken!"));
+			return ResponseEntity.badRequest().body(new MessageResponse("이미 등록된 닉네임입니다."));
 		}
 
 		if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-			return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already in use!"));
+			return ResponseEntity.badRequest().body(new MessageResponse("이미 등록된 이메일입니다."));
 		}
 
 		// Create new user's account
@@ -132,7 +123,7 @@ public class AuthController {
 		user.setRoles(roles);
 		userRepository.save(user);
 
-		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+		return ResponseEntity.ok(new MessageResponse("회원가입에 성공하였습니다!"));
 	}
 
 }
