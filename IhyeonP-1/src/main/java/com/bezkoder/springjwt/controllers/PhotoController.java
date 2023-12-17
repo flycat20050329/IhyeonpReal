@@ -1,7 +1,6 @@
 package com.bezkoder.springjwt.controllers;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -112,4 +111,17 @@ public class PhotoController {
 
 		return photoPost;
 	}
+
+	@PostMapping("/deletePost")
+	public List<Photo> deletePost(@RequestParam() Long postId, @RequestParam() List<Long> photoIdList) {
+//		System.out.println(photoIdList);
+		for (Long id : photoIdList) {
+			photoRepository.deleteById(id);
+		}
+		photoPostRepository.deleteById(postId);
+
+		return photoRepository.findAll().stream().sorted(Comparator.comparing(Photo::getId).reversed())
+				.collect(Collectors.toList());
+	}
+
 }

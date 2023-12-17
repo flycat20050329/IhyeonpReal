@@ -13,7 +13,7 @@
             </div>
           </splide-slide>
         </splide>
-        <!-- <p id="imageLength">{{ currentIndex + 1 }} / {{ images.images?.length }}</p> -->
+        <p id="imageLength">{{ }} / {{ images.images?.length }}</p>
         <button id="goIndexBtn" class="btn" @click="goIndex()">눌러</button>
       </div>
 
@@ -42,8 +42,7 @@
                   </div>
                 </li>
                 <li v-if="currentUser?.id == images.post?.user.id">
-                  <div class="btn dropdown-item" data-bs-toggle="modal" data-bs-taget="#deletePhotoModal">
-                    <font-awesome-icon icon="trash" /> 삭제
+                  <div class="btn dropdown-item" @click="deletePost()"><font-awesome-icon icon="trash" /> 삭제
                   </div>
                 </li>
                 <li>
@@ -85,19 +84,19 @@
 
         <!-- reaction zone -->
         <div id="reactionZone" v-if="!editing">
+
           <!-- heart -->
           <div id="heartBox" class="col align-self-end mt-2">
             <font-awesome-icon :icon="['far', 'heart']" /> <a>{{ images.post?.heart }}</a>
           </div>
+
           <!-- reply chat -->
           <div class="input-group">
             <textarea class="form-control mt-1 ml-3" id="textArea" rows="1" placeholder="댓글을 입력하세요."
               style="resize: none;"></textarea>
             <span class="input-group-addon btn text-primary" @click="sendReply">게시</span>
           </div>
-
         </div>
-
       </div>
     </div>
   </div>
@@ -128,7 +127,7 @@ export default {
       gap: '1rem',
       perMove: 1,
       perPage: 1,
-      pagination: true,
+      // pagination: true,
       postId: null,
       paginationDirection: 'ltr',
       // direction: 'ttb',
@@ -154,11 +153,6 @@ export default {
       frm.append("postId", props.images.post?.id);
       frm.append("text", text.value)
 
-
-      // 질문하기!) 디비 수정을 하고 스토어를 어떻게 처리하는 게 좋을지
-      // 지금은 너무 정적이라는 생각이 듦. 동적이었으면 하는 바람?
-      // 추후 댓글과 하트도 생각해야함.
-
       await PhotoService.editPostText(frm).then((result) => {
         // console.log(result.data.text);
         props.images.post.text = result.data.text;
@@ -168,7 +162,29 @@ export default {
     };
 
     const deletePost = () => {
+      // alert("정말 삭제하시겠습니까?");
+      if (confirm('삭제하시면 복구할수 없습니다. \n 정말로 삭제하시겠습니까??')) {
+        const frm = new FormData();
+        frm.append("postId", props.images.post?.id);
+        console.log(props.images.images);
+        var photoIdList = [];
+        for (const photo in props.images.images) {
+          // photoIdList.append(photo.id);
+          photoIdList.push(props.images.images[photo].id);
+        }
+        frm.append("photoIdList", photoIdList);
 
+        PhotoService.deletePost(frm).then((result) => {
+          for (var i = 0; i < result.data.length; i++) {
+            result.data[i].image = "data:image/png;base64," + result.data[i].image
+          }
+          photoStore.setAllPhotos(result.data);
+          console.log(alert("삭제되었습니다."))
+          history.go(0);
+        });
+      } else {
+        console.log("취소함");
+      }
     }
 
     var currentIndex = ref(1);
@@ -198,6 +214,7 @@ export default {
       onSplideMounted,
       goIndex,
       onSplideMoved,
+      deletePost,
 
       // variables
       editing,

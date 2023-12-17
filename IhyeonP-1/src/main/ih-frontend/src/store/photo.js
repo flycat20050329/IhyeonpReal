@@ -16,7 +16,7 @@ export const usePhotoStore = defineStore('photo', {
           return newValue;
         } else { return photo }
       })
-    }
+    },
   },
 
   getters: {

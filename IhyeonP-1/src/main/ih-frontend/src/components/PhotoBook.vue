@@ -231,7 +231,7 @@ export default {
       document.getElementById("fileUpload").click();
     }
 
-    var imageData = ref({ index: null, images: null, photoPost: null, });
+    var imageData = ref({ index: null, images: null, post: null, });
 
     const clickImage = async (image) => {
       imageData.value.index = image.index;
@@ -244,7 +244,7 @@ export default {
         imageData.value.images = result.data.images;
       })
 
-      console.log(imageData.value.index);
+      // console.log(imageData.value.index);
       context.emit('imageData', imageData);
       document.getElementById("photoModalBtn").click();
     }

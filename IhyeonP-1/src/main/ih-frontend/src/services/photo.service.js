@@ -5,7 +5,7 @@ const API_URL = 'http://localhost:8080/api/photo/';
 class PhotoService {
   async uploadPhotoPost(frm) {
     return axios.post(API_URL + 'uploadPhotoPost', frm, {
-      hearder: {
+      headers: {
         'Content-Type': 'multipart/form-data'
       }
     })
@@ -37,7 +37,15 @@ class PhotoService {
 
   editPostText(frm) {
     return axios.post(API_URL + 'updatePostText', frm, {
-      hearder: {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+  }
+
+  deletePost(frm) {
+    return axios.post(API_URL + 'deletePost', frm, {
+      headers: {
         'Content-Type': 'multipart/form-data'
       }
     })

@@ -162,8 +162,8 @@
   </div>
 
   <!-- Photo Modal -->
-  <div class="modal fade" ref="photoModal" id="photoModal" tabindex="-1" role="dialog" aria-labelledby="photoModalLabel"
-    aria-hidden="true">
+  <div class="modal fade" ref="photoModal" id="photoModal" tabindex="-1" role="dialog"
+    aria-labelledby="photoModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
       <div class="modal-content">
         <div class="modal-body">
@@ -181,19 +181,6 @@
   <button type="button" id="photoModalBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#photoModal"
     style="display:none;">
   </button>
-
-
-  <!-- Delete Photo Modal -->
-  <div class="modal fade" id="deletePhotoModal" aria-labelledby="photoModalLabel">
-    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-      <div class="modal-content">
-        <div class="modal-body">
-          <h1> hi </h1>
-        </div>
-      </div>
-    </div>
-  </div>
-
 
   <!-- Register Modal -->
   <div class="modal fade" id="signUpModal" tabindex="-1" aria-labelledby="signUpModalLabel" aria-hidden="true">
@@ -509,11 +496,8 @@ export default {
       this.$store.dispatch('auth/logout');
       this.$router.push('/login');
     },
-    clickedSignIn() {
+    onModalOpened() {
       console.log("열였당")
-    },
-    onModalShowed() {
-      this.$refs['my-modal'].show()
     },
     setSplideIndex() {
 
