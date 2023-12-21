@@ -162,16 +162,12 @@
   </div>
 
   <!-- Photo Modal -->
-  <div class="modal fade" ref="photoModal" id="photoModal" tabindex="-1" role="dialog"
-    aria-labelledby="photoModalLabel" aria-hidden="true">
+  <div class="modal fade" id="photoModal" tabindex="-1" role="dialog" aria-labelledby="photoModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
       <div class="modal-content">
         <div class="modal-body">
           <PhotoPost :images="imageData" ref="photoPost"></PhotoPost>
-          <!-- <button type="button" id="deletePhotoModalBtn" class="btn btn-primary" data-bs-toggle="modal"
-            data-bs-target="#deletePhotoModal">
-            modal 버튼
-          </button> -->
         </div>
       </div>
     </div>
@@ -262,7 +258,7 @@
 
 <script>
 import { ErrorMessage, Field, Form } from "vee-validate";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import * as yup from "yup";
 import AuthService from '../services/auth.service';
 import PhotoBook from "./PhotoBook.vue";
@@ -291,8 +287,6 @@ export default {
 
     const photoStore = usePhotoStore();
 
-    const photoPost = ref(null);
-
     return {
       componentKey,
       mainimages,
@@ -300,6 +294,7 @@ export default {
     }
   },
   data() {
+
     const loginSchema = yup.object().shape({
       username: yup.string().required("Username is required!"),
       password: yup.string().required("Password is required!"),
@@ -380,6 +375,22 @@ export default {
   },
   mounted() {
     this.flycat();
+
+    var photoModalEl = document.getElementById('photoModal')
+    const vm = this;
+    photoModalEl.addEventListener('shown.bs.modal', function (event) {
+      // console.log(event);
+      vm.$refs.photoPost.goIndex();
+    })
+
+
+    // console.log(this.getPhotoModal.style.display)
+    // var photoModalEl = document.getElementById('photoModal')
+    // photoModalEl.addEventListener('shown.bs.modal', function (event) {
+    //   // console.log(event);
+    //   console.log(this.$refs.photoPost);
+    // })
+    // // console.log(this.getPhotoModal.style.display)
   },
   methods: {
     schoolNameRegister() {
@@ -408,8 +419,7 @@ export default {
     },
     getImageData(imageData) {
       this.imageData = imageData;
-      // document.getElementById("photoModalBtn").click();
-      // console.log(this.$refs['photoModal'].modal());
+      // console.log(document.getElementById("photoModal").style);
       // window.$('#photoModal').modal();
     },
     setSearchTerm(e) {
@@ -504,6 +514,9 @@ export default {
     }
   },
   computed: {
+    getPhotoModal() {
+      return document.getElementById("photoModal");
+    },
     filteredList() {
       if (this.searchTerm === '') {
         return this.dataList;

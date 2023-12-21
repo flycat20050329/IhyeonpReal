@@ -19,8 +19,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bezkoder.springjwt.models.Photo;
 import com.bezkoder.springjwt.models.PhotoPost;
+import com.bezkoder.springjwt.models.PhotoReply;
 import com.bezkoder.springjwt.models.User;
 import com.bezkoder.springjwt.repository.PhotoPostRepository;
+import com.bezkoder.springjwt.repository.PhotoReplyRepository;
 import com.bezkoder.springjwt.repository.PhotoRepository;
 import com.bezkoder.springjwt.repository.UserRepository;
 
@@ -31,6 +33,9 @@ public class PhotoController {
 
 	@Autowired
 	PhotoRepository photoRepository;
+
+	@Autowired
+	PhotoReplyRepository photoReplyRepository;
 
 	@Autowired
 	PhotoPostRepository photoPostRepository;
@@ -85,8 +90,8 @@ public class PhotoController {
 	}
 
 	@PostMapping("/uploadPhotoPost")
-	public Long uploadPhotoPost(@RequestParam() Long id, @RequestParam() int heart, @RequestParam() String text) {
-		User user = userRepository.findAllById(id).get(0);
+	public Long uploadPhotoPost(@RequestParam() Long userId, @RequestParam() int heart, @RequestParam() String text) {
+		User user = userRepository.findAllById(userId).get(0);
 
 		PhotoPost photoPost;
 
@@ -122,6 +127,21 @@ public class PhotoController {
 
 		return photoRepository.findAll().stream().sorted(Comparator.comparing(Photo::getId).reversed())
 				.collect(Collectors.toList());
+	}
+
+	@PostMapping("/uploadReply")
+	public void uploadReply(@RequestParam() String text, @RequestParam() Long postId, @RequestParam() Long userId) {
+		User user = userRepository.findAllById(userId).get(0);
+		PhotoPost photoPost = photoPostRepository.findAllById(postId).get(0);
+		PhotoReply photoReply = new PhotoReply(user, text, photoPost);
+
+		photoReplyRepository.save(photoReply);
+	}
+
+	@PostMapping("/deleteReply")
+	public void deleteReply(@RequestParam() Long id) {
+		PhotoReply photoReply = photoReplyRepository.findAllById(id).get(0);
+		photoReplyRepository.delete(photoReply);
 	}
 
 }

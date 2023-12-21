@@ -13,8 +13,8 @@
             </div>
           </splide-slide>
         </splide>
-        <p id="imageLength">{{ }} / {{ images.images?.length }}</p>
-        <button id="goIndexBtn" class="btn" @click="goIndex()">눌러</button>
+        <!-- <p id="imageLength">{{ currentIndex + 1 }} / {{ images.images?.length }}</p> -->
+        <!-- <button id="goIndexBtn" class="btn" @click="goIndex()">눌러</button> -->
       </div>
 
       <!-- info -->
@@ -87,13 +87,13 @@
 
           <!-- heart -->
           <div id="heartBox" class="col align-self-end mt-2">
-            <font-awesome-icon :icon="['far', 'heart']" /> <a>{{ images.post?.heart }}</a>
+            <HeartButton ref="heartButton" /> <a>{{ images.post?.heart }}</a>
           </div>
 
           <!-- reply chat -->
           <div class="input-group">
-            <textarea class="form-control mt-1 ml-3" id="textArea" rows="1" placeholder="댓글을 입력하세요."
-              style="resize: none;"></textarea>
+            <textarea class="form-control mt-1 ml-3" id="textArea" rows="1" placeholder="댓글을 입력하세요." style="resize: none;"
+              v-model="chatText"></textarea>
             <span class="input-group-addon btn text-primary" @click="sendReply">게시</span>
           </div>
         </div>
@@ -112,10 +112,13 @@ import PhotoService from "../services/photo.service.js";
 
 import usePhotoStore from '../store/photo';
 
+import HeartButton from "./HeartButton.vue";
+
 export default {
   components: {
     Splide,
     SplideSlide,
+    HeartButton,
   },
   props: {
     images: Object,
@@ -166,7 +169,7 @@ export default {
       if (confirm('삭제하시면 복구할수 없습니다. \n 정말로 삭제하시겠습니까??')) {
         const frm = new FormData();
         frm.append("postId", props.images.post?.id);
-        console.log(props.images.images);
+
         var photoIdList = [];
         for (const photo in props.images.images) {
           // photoIdList.append(photo.id);
@@ -200,8 +203,28 @@ export default {
     }
 
     const goIndex = () => {
+      currentIndex.value = props.images.index;
       mainSplide.value.splide.Components.Controller.go(props.images.index);
     }
+
+    const chatText = ref(null);
+
+    const sendReply = () => {
+      const frm = new FormData();
+      frm.append("text", chatText.value);
+      frm.append("userId", currentUser.id);
+      frm.append("postId", props.images.post.id);
+      PhotoService.uploadReply(frm)
+
+      chatText.value = null;
+    }
+
+    var heartButton = ref(null);
+
+    const clickHeart = () => {
+      console.log(heartButton.value);
+    }
+
 
     return {
       preoptions,
@@ -215,19 +238,17 @@ export default {
       goIndex,
       onSplideMoved,
       deletePost,
+      sendReply,
+      clickHeart,
 
       // variables
       editing,
       text,
       currentIndex,
       mainSplide,
+      chatText,
 
     }
-  },
-  methods: {
-    sendReply() {
-
-    },
   },
 }
 </script>
@@ -290,5 +311,13 @@ export default {
   padding-right: 3%;
   color: gray;
   position: relative;
+}
+
+button {
+  background: none;
+  border: none;
+  padding: 0;
+  outline: inherit;
+  cursor: pointer;
 }
 </style>

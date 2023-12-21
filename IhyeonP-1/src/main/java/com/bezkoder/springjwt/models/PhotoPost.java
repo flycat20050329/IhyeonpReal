@@ -49,11 +49,11 @@ public class PhotoPost {
 	@OneToMany(mappedBy = "photoPost")
 	private Set<Photo> Images = new HashSet<>();
 
-	public PhotoPost() {
-	}
+	@JsonIgnore
+	@OneToMany(mappedBy = "photoPost")
+	private Set<PhotoReply> Replys = new HashSet<>();
 
-	public PhotoPost(Long id) {
-		this.id = id;
+	public PhotoPost() {
 	}
 
 	public PhotoPost(User user, int heart, String text) {

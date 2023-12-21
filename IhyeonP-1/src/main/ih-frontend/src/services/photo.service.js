@@ -51,6 +51,14 @@ class PhotoService {
     })
   }
 
+  uploadReply(frm) {
+    return axios.post(API_URL + 'uploadReply', frm, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+  }
+
 }
 
 export default new PhotoService();

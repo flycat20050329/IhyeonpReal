@@ -61,7 +61,7 @@
           <!-- imagePreview -->
           <splide :options="preoptions">
             <splide-slide v-for="image in previewImages">
-              <div class="imagePreviewWrapper" :style="{ 'background-image': `url(${image})` }" @click="">
+              <div class="imagePreviewWrapper" :style="{ 'background-image': `url(${image})` }" @click="chooseFiles()">
               </div>
             </splide-slide>
           </splide>
@@ -195,7 +195,7 @@ export default {
 
     const uploadPost = async () => {
       const frm = new FormData();
-      frm.append("id", currentUser.id);
+      frm.append("userId", currentUser.id);
       frm.append("heart", 0);
       frm.append("text", text.value)
 
@@ -333,7 +333,10 @@ export default {
   cursor: pointer;
   margin: 5px auto 0 auto;
   background-size: cover;
+  // background-size: contain;
+  // background-repeat: no-repeat;
   background-position: center center;
+  background-color: white;
   border: 1px solid rgba(165, 165, 165, 0.539);
   // transition: width 1s ease;
   padding: 3px 3px 3px 3px;
