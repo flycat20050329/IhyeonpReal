@@ -85,9 +85,12 @@ public class AuthController {
 		if (userRepository.existsByEmail(signUpRequest.getEmail())) {
 			return ResponseEntity.badRequest().body(new MessageResponse("이미 등록된 이메일입니다."));
 		}
-
+		
+		SchoolInfo schoolInfo = new SchoolInfo();
+		
 		// Create new user's account
-		User user = new User(signUpRequest.getUsername(), signUpRequest.getEmail(),
+		User user = new User(schoolInfo.GetLocationCode(signUpRequest.getSchoolName()),
+				schoolInfo.GetSchoolcode(signUpRequest.getSchoolName()), signUpRequest.getUsername(), signUpRequest.getEmail(),
 				encoder.encode(signUpRequest.getPassword()), signUpRequest.getS_grade(), signUpRequest.getS_class());
 
 		Set<String> strRoles = signUpRequest.getRole();

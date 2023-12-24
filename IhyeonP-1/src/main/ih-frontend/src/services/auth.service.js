@@ -25,6 +25,7 @@ class AuthService {
 
   register(user) {
     return axios.post(API_URL + 'signup', {
+      schoolName: user.schoolName,
       username: user.username,
       email: user.email,
       password: user.password,
@@ -43,8 +44,11 @@ class AuthService {
     });
   }
 
-  getTimeSchedule() {
+  getTimeSchedule(userName) {
     return axios.get(API_URL3 + 'getScheduleInfo', {
+      params:{
+        name: userName
+      }
     });
   }
 

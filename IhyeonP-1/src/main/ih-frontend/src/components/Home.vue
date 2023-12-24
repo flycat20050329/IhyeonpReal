@@ -74,13 +74,15 @@
               회원가입이 필요하시면 <a class="text-dark" data-bs-toggle="modal" data-bs-target="#schoolSearchModal"
                 href="/register">Click!</a>
             </div>
-
-            <div class="form-group">
-              <button class="btn btn-primary btn-block" :disabled="loading" style="float: right;">
-                <span v-show="loading" class="spinner-border spinner-border-sm"></span>
-                <span>Login</span>
-              </button>
+            <div class="modal-footer">
+              <div class="form-group">
+                <button class="btn btn-primary btn-block" :disabled="loading" style="float: right;">
+                  <span v-show="loading" class="spinner-border spinner-border-sm"></span>
+                  <span>Login</span>
+                </button>
+              </div>
             </div>
+
 
             <div class="form-group">
               <div v-if="message" class="alert alert-danger" role="alert">
@@ -131,7 +133,7 @@
         </div>
         <div class="modal-footer">
           <button class="btn btn-primary" data-bs-target="#schoolSelectModal" data-bs-toggle="modal"
-            v-on:click="getschoolInfo()" data-bs-dismiss="modal">학교 선택</button>
+            v-on:click="getschoolName()" data-bs-dismiss="modal">학교 선택</button>
         </div>
       </div>
     </div>
@@ -186,11 +188,12 @@
           <Form @submit="handleRegister" :validation-schema="signupSchema" v-slot="{ isSubmitting }">
             <div v-if="!successful">
               <fieldset disabled>
-                <div class="form-group">
-                  <label for="disabledTextInput" class="form-label">학교 이름</label>
-                  <input type="text" id="disabledTextInput" class="form-control" :value=schoolName>
-                </div>
-              </fieldset>
+              <div class="form-group">
+                <label for="schoolName" class="form-label">학교 이름</label>
+                <Field name="schoolName" type="schoolName" class="form-control" :model-value=schoolName />
+                <ErrorMessage name="schoolName" class="error-feedback" />
+              </div>
+            </fieldset>
               <div class="form-group">
                 <label for="username">닉네임</label>
                 <Field name="username" type="text" class="form-control" />
@@ -250,7 +253,7 @@
       </div>
       <div class="modal-footer">
         <button class="btn btn-primary" data-bs-target="#schoolSelectModal" data-bs-toggle="modal"
-          data-bs-dismiss="modal">학교 선택으로 돌아가기</button>
+          data-bs-dismiss="modal">학교 검색으로 돌아가기</button>
       </div>
     </div>
   </div>
@@ -264,6 +267,7 @@ import AuthService from '../services/auth.service';
 import PhotoBook from "./PhotoBook.vue";
 import Register from './Register.vue';
 import TimeSchedule from './TimeSchedule.vue';
+import { useStore } from 'vuex';
 
 import { usePhotoStore } from "../store/photo.js";
 import PhotoPost from "./PhotoPost.vue";
@@ -301,6 +305,8 @@ export default {
     });
 
     const signupSchema = yup.object().shape({
+      schoolName: yup
+        .string(),
       username: yup
         .string()
         .required("닉네임이 필요합니다!")
@@ -402,7 +408,7 @@ export default {
       console.log(event.target.value);
       this.loca = event.target.value;
     },
-    getschoolInfo() {
+    getschoolName() {
       console.log(this.loca);
       console.log(document.getElementById("schoolNameInput").value);
 
@@ -417,6 +423,8 @@ export default {
     getClassGrade() {
       console.log(document.getElementById("s_grade").value);
       console.log(document.getElementById("s_class").value);
+
+      this.$router.go();
     },
     getImageData(imageData) {
       this.imageData = imageData;
@@ -427,7 +435,7 @@ export default {
       this.searchTerm = e.target.value;
     },
     handleRegister(user) {
-      console.log("registered");
+      console.log("registed");
       this.message = "";
       this.successful = false;
       this.loading = true;
@@ -470,19 +478,7 @@ export default {
       );
     },
     flycat() {
-      AuthService.getTimeSchedule().then(res => {
-        console.log(res.data);
-      });
-
-      // AuthService.getSchoolInfo().then(res => {
-      //   console.log(typeof (res.data));
-      //   console.log(res.data);
-
-      //   if (typeof (res.data) == JSON) {
-      //     this.dataList = res.data;
-      //   }
-
-      // })
+      
     },
     forceRerender() {
       this.componentKey += 1;
