@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 
 import com.fasterxml.jackson.datatype.hibernate5.jakarta.Hibernate5JakartaModule;
 
+
 @SpringBootApplication
 public class SpringBootSecurityJwtApplication {
 

@@ -6,6 +6,9 @@ import jakarta.validation.constraints.*;
 
 public class SignupRequest {
 	@NotBlank
+	private String schoolName;
+	
+	@NotBlank
 	@Size(min = 3, max = 20)
 	private String username;
 
@@ -27,6 +30,14 @@ public class SignupRequest {
 	@NotBlank
 	@Size(max = 2)
 	private String s_class;
+	
+	public String getSchoolName() {
+		return schoolName;
+	}
+
+	public void setSchoolName(String schoolName) {
+		this.schoolName = schoolName;
+	}
 
 	public String getS_grade() {
 		return s_grade;

@@ -1,5 +1,6 @@
 package com.bezkoder.springjwt.controllers;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -8,10 +9,17 @@ import java.util.List;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.bezkoder.springjwt.models.User;
+import com.bezkoder.springjwt.repository.UserRepository;
+
+import jakarta.validation.Valid;
 
 public class Schedule {
 	String key = "e987e18bddbb4a80bc3fe9e58ee54f4a";
 	String cite = "https://open.neis.go.kr/hub/hisTimetable";
+	
 //	String schoolCode = "7530983";
 //	String locationCode = "";
 //	String semester = "";
@@ -43,16 +51,19 @@ public class Schedule {
 		return s;
 	}
 
-	public List<List<String>> getScheduleInfo() {
+	public List<List<String>> getScheduleInfo(User user) {
 		List<List<String>> classTable = new ArrayList<List<String>>();
+		LocalDate localDate = LocalDate.now();
 		List<String> dateBound = getWeek();
 		String sun = dateBound.get(0);
 		String sat = dateBound.get(1);
+		
 		try {
-			String url = cite + "?KEY=" + key
-					+ "&ATPT_OFCDC_SC_CODE=J10&SD_SCHUL_CODE=7530112&AY=2023&SEM=2&GRADE=3&CLASS_NM=1&TI_FROM_YMD" + "="
-					+ sun + "&TI_TO_YMD=" + sat;
-
+			String url = cite + "?KEY=" + key + "&ATPT_OFCDC_SC_CODE=" + user.getLocaCode()
+					+ "&SD_SCHUL_CODE=" + user.getSchoolCode() + "&AY=" + localDate.getYear() + "&GRADE=" + user.getS_grade() 
+					+ "&CLASS_NM=" + user.getS_class() + "&TI_FROM_YMD=" + sun + "&TI_TO_YMD=" + sat;
+			
+			System.out.println(url);
 			Document doc = Jsoup.connect(url).get();
 			Elements elements = doc.select("row");
 			Elements timeElement = elements.select("ALL_TI_YMD");

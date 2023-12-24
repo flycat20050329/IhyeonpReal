@@ -14,6 +14,7 @@
 </template>
 <script>
 import authService from '../services/auth.service';
+import { useStore } from 'vuex';
 
 export default {
   components: {
@@ -35,8 +36,13 @@ export default {
       let i = 0;
       let j = 0
 
-      authService.getTimeSchedule().then(
+      const store = useStore();
+      const currentUser = store.state.auth.user;
+
+      authService.getTimeSchedule(currentUser.username).then(
         (res) => {
+          console.log(res.data);
+
           let a = new Array();
           a = res.data;
 

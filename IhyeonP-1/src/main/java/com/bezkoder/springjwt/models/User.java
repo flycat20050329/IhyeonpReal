@@ -37,7 +37,7 @@ id
 생년월일 - birth
 
 
-학교 코드 - s_id
+학교 코드 - schoolCode
 학년 - s_grade
 반 - s_class
 번호 - s_number
@@ -53,7 +53,13 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "user")
 	private Long id;
-
+	
+	@NotBlank
+	private String locaCode;
+	
+	@NotBlank
+	private String schoolCode;
+	
 	@NotNull
 	@Size(max = 20)
 	private String username;
@@ -108,7 +114,9 @@ public class User {
 	public User() {
 	}
 
-	public User(String username, String email, String password, String grade, String ban) {
+	public User(String locaCode, String code, String username, String email, String password, String grade, String ban) {
+		this.locaCode = locaCode;
+		this.schoolCode = code;
 		this.username = username;
 		this.email = email;
 		this.password = password;
