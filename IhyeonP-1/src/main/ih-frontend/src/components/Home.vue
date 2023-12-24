@@ -378,11 +378,12 @@ export default {
 
     var photoModalEl = document.getElementById('photoModal')
     const vm = this;
-    photoModalEl.addEventListener('shown.bs.modal', function (event) {
-      // console.log(event);
+    photoModalEl.addEventListener('shown.bs.modal', function () {
       vm.$refs.photoPost.goIndex();
     })
+    photoModalEl.addEventListener('hidden.bs.modal', function () {
 
+    })
 
     // console.log(this.getPhotoModal.style.display)
     // var photoModalEl = document.getElementById('photoModal')

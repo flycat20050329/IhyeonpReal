@@ -3,6 +3,7 @@ import axios from 'axios';
 const API_URL = 'http://localhost:8080/api/photo/';
 
 class PhotoService {
+
   async uploadPhotoPost(frm) {
     return axios.post(API_URL + 'uploadPhotoPost', frm, {
       headers: {
@@ -57,6 +58,30 @@ class PhotoService {
         'Content-Type': 'multipart/form-data'
       }
     })
+  }
+
+  favorited(frm) {
+    return axios.post(API_URL + 'clickHeart', frm, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+  }
+
+  unFavorited(frm) {
+    return axios.post(API_URL + 'deleteHeart', frm, {
+      hearders: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+  }
+
+  ifFavorited(postId, userId) {
+    return axios.get(API_URL + 'isFavorited/' + postId + '/' + userId);
+  }
+
+  getPostHearts(postId) {
+    return axios.get(API_URL + 'getPostHearts/' + postId)
   }
 
 }

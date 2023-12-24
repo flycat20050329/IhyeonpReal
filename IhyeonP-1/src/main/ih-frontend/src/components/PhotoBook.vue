@@ -196,7 +196,6 @@ export default {
     const uploadPost = async () => {
       const frm = new FormData();
       frm.append("userId", currentUser.id);
-      frm.append("heart", 0);
       frm.append("text", text.value)
 
       await PhotoService.uploadPhotoPost(frm).then((result) => {

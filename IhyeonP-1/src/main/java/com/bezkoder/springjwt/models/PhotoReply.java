@@ -11,6 +11,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,7 +31,7 @@ public class PhotoReply {
 	@JoinColumn(name = "user")
 	private User user;
 
-//	@Size(max = 250)
+	@Size(max = 250)
 	@NotNull
 	private String text;
 

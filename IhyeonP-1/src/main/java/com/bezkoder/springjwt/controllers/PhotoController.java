@@ -18,9 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bezkoder.springjwt.models.Photo;
+import com.bezkoder.springjwt.models.PhotoHeart;
 import com.bezkoder.springjwt.models.PhotoPost;
 import com.bezkoder.springjwt.models.PhotoReply;
 import com.bezkoder.springjwt.models.User;
+import com.bezkoder.springjwt.repository.PhotoHeartRepository;
 import com.bezkoder.springjwt.repository.PhotoPostRepository;
 import com.bezkoder.springjwt.repository.PhotoReplyRepository;
 import com.bezkoder.springjwt.repository.PhotoRepository;
@@ -32,16 +34,19 @@ import com.bezkoder.springjwt.repository.UserRepository;
 public class PhotoController {
 
 	@Autowired
-	PhotoRepository photoRepository;
+	UserRepository userRepository;
 
 	@Autowired
-	PhotoReplyRepository photoReplyRepository;
+	PhotoRepository photoRepository;
 
 	@Autowired
 	PhotoPostRepository photoPostRepository;
 
 	@Autowired
-	UserRepository userRepository;
+	PhotoReplyRepository photoReplyRepository;
+
+	@Autowired
+	PhotoHeartRepository photoHeartRepository;
 
 	@GetMapping("/getAllPhoto")
 	public List<Photo> getAllPhoto() {
@@ -90,15 +95,15 @@ public class PhotoController {
 	}
 
 	@PostMapping("/uploadPhotoPost")
-	public Long uploadPhotoPost(@RequestParam() Long userId, @RequestParam() int heart, @RequestParam() String text) {
+	public Long uploadPhotoPost(@RequestParam() Long userId, @RequestParam() String text) {
 		User user = userRepository.findAllById(userId).get(0);
 
 		PhotoPost photoPost;
 
 		if (text.equals("")) {
-			photoPost = new PhotoPost(user, heart, null);
+			photoPost = new PhotoPost(user, null);
 		} else {
-			photoPost = new PhotoPost(user, heart, text);
+			photoPost = new PhotoPost(user, text);
 		}
 
 		photoPostRepository.save(photoPost);
@@ -144,4 +149,31 @@ public class PhotoController {
 		photoReplyRepository.delete(photoReply);
 	}
 
+	@PostMapping("/clickHeart")
+	public void cleakHeart(@RequestParam() Long postId, @RequestParam() Long userId) {
+		PhotoHeart photoHeart = new PhotoHeart(userRepository.findAllById(userId).get(0),
+				photoPostRepository.findAllById(postId).get(0));
+
+		photoHeartRepository.save(photoHeart);
+	}
+
+	@PostMapping("/deleteHeart")
+	public void deleteHeart(@RequestParam() Long postId, @RequestParam() Long userId) {
+		PhotoHeart photoHeart = photoHeartRepository.findAllByPhotoPostIdAndUserId(postId, userId).get(0);
+
+		photoHeartRepository.delete(photoHeart);
+	}
+
+	@GetMapping("/isFavorited/{postId}/{userId}")
+	public boolean isFavorited(@PathVariable Long postId, @PathVariable Long userId) {
+		if (photoHeartRepository.findAllByPhotoPostIdAndUserId(postId, userId).size() > 0) {
+			return true;
+		}
+		return false;
+	}
+
+	@GetMapping("/getPostHearts/{postId}")
+	public int getPostHearts(@PathVariable Long postId) {
+		return photoHeartRepository.findAllByPhotoPostId(postId).size();
+	}
 }

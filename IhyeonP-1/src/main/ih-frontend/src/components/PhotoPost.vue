@@ -87,7 +87,7 @@
 
           <!-- heart -->
           <div id="heartBox" class="col align-self-end mt-2">
-            <HeartButton ref="heartButton" /> <a>{{ images.post?.heart }}</a>
+            <HeartButton :imagePost="this.images.post" @clickHeart="getHeart" /> <a>{{ heart }}</a>
           </div>
 
           <!-- reply chat -->
@@ -105,7 +105,7 @@
 
 <script>
 import { Splide, SplideSlide } from '@splidejs/vue-splide';
-import { ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { useStore } from 'vuex';
 
 import PhotoService from "../services/photo.service.js";
@@ -192,6 +192,7 @@ export default {
 
     var currentIndex = ref(1);
     var mainSplide = ref(null);
+    var heart = ref(0);
 
     const onSplideMounted = (splide) => {
       // mainSplide = splide
@@ -207,6 +208,13 @@ export default {
       mainSplide.value.splide.Components.Controller.go(props.images.index);
     }
 
+    const getHeart = () => {
+      PhotoService.getPostHearts(props.images.post.id).then((result) => {
+        heart.value = result.data;
+        // console.log(result.data);
+      })
+    }
+
     const chatText = ref(null);
 
     const sendReply = () => {
@@ -218,13 +226,6 @@ export default {
 
       chatText.value = null;
     }
-
-    var heartButton = ref(null);
-
-    const clickHeart = () => {
-      console.log(heartButton.value);
-    }
-
 
     return {
       preoptions,
@@ -239,7 +240,7 @@ export default {
       onSplideMoved,
       deletePost,
       sendReply,
-      clickHeart,
+      getHeart,
 
       // variables
       editing,
@@ -247,6 +248,7 @@ export default {
       currentIndex,
       mainSplide,
       chatText,
+      heart,
 
     }
   },

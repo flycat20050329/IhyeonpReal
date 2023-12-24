@@ -1,5 +1,5 @@
 <template>
-  <button class="toggle-favorite" @click="toggle">
+  <button class="toggle-favorite" @click="toggle" ref="heartButton">
     <FavoriteIcon class="toggle-favorite__icon" :class="iconClasses" @animationend.native="onIconAnimationEnds" />
     <transition name="favorite-particles-transition">
       <div v-if="animating" class="toggle-favorite__particles"></div>
@@ -9,15 +9,21 @@
 
 <script>
 import FavoriteIcon from "./Favoriteicon.vue";
+
+import PhotoService from "../services/photo.service.js";
+
 export default {
-  name: "ToggleFavorite",
+  name: "HeartButton",
   components: {
     FavoriteIcon
+  },
+  props: {
+    imagePost: Object,
   },
   data() {
     return {
       favorited: false,
-      animating: false
+      animating: false,
     };
   },
   computed: {
@@ -26,20 +32,48 @@ export default {
         "toggle-favorite__icon--favorited": this.favorited,
         "toggle-favorite__icon--animate": this.animating
       };
-    }
+    },
+    currentUser() {
+      return this.$store.state.auth.user;
+    },
   },
   methods: {
-    toggle() {
+    async toggle() {
       // Only animate on favoriting.
       if (!this.favorited) {
         this.animating = true;
+
+        const frm = new FormData();
+        frm.append("postId", this.imagePost?.id);
+        frm.append("userId", this.currentUser.id);
+        await PhotoService.favorited(frm);
+
+      } else {
+        const frm = new FormData();
+        frm.append("postId", this.imagePost?.id);
+        frm.append("userId", this.currentUser.id);
+        await PhotoService.unFavorited(frm);
       }
 
       this.favorited = !this.favorited;
+      this.$emit("clickHeart", 1);
+      // console.log(this.imagePost)
     },
     onIconAnimationEnds() {
       this.animating = false;
     },
+  },
+  watch: {
+    imagePost() {
+      if (this.imagePost) {
+        this.$emit("clickHeart", 1);
+        const vm = this;
+        PhotoService.ifFavorited(this.imagePost.id, this.currentUser.id).then((result) => {
+          vm.favorited = result.data;
+        })
+      }
+
+    }
   }
 };
 </script>
