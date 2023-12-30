@@ -35,11 +35,11 @@
     </div> -->
 
     <div class="section" v-if="currentUser">
-      <h2>동아리</h2>
+      <h2>현재는 동아리 신청 기간이 아닙니다.</h2>
     </div>
 
     <div class="section" v-if="currentUser">
-      <h2>중고</h2>
+      <h2>중고 거래</h2>
     </div>
 
     <div class="section" v-if="currentUser">
