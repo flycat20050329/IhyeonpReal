@@ -250,12 +250,10 @@
             {{ message }}
           </div>
         </div>
-      </div>
-      <div class="modal-footer">
         <button class="btn btn-primary" data-bs-target="#schoolSelectModal" data-bs-toggle="modal"
           data-bs-dismiss="modal">학교 검색으로 돌아가기</button>
       </div>
-    </div>
+      </div>
   </div>
 </template>
 
@@ -423,8 +421,6 @@ export default {
     getClassGrade() {
       console.log(document.getElementById("s_grade").value);
       console.log(document.getElementById("s_class").value);
-
-      this.$router.go();
     },
     getImageData(imageData) {
       this.imageData = imageData;
@@ -446,6 +442,8 @@ export default {
           this.message = data.message;
           this.successful = true;
           this.loading = false;
+    
+          this.$router.go();
         },
         (error) => {
           this.message =
