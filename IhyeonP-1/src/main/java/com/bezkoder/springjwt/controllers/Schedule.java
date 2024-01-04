@@ -53,14 +53,13 @@ public class Schedule {
 
 	public List<List<String>> getScheduleInfo(User user) {
 		List<List<String>> classTable = new ArrayList<List<String>>();
-		LocalDate localDate = LocalDate.now();
 		List<String> dateBound = getWeek();
 		String sun = dateBound.get(0);
 		String sat = dateBound.get(1);
 		
 		try {
 			String url = cite + "?KEY=" + key + "&ATPT_OFCDC_SC_CODE=" + user.getLocaCode()
-					+ "&SD_SCHUL_CODE=" + user.getSchoolCode() + "&AY=" + localDate.getYear() + "&GRADE=" + user.getS_grade() 
+					+ "&SD_SCHUL_CODE=" + user.getSchoolCode() + "&GRADE=" + user.getS_grade() 
 					+ "&CLASS_NM=" + user.getS_class() + "&TI_FROM_YMD=" + sun + "&TI_TO_YMD=" + sat;
 			
 			System.out.println(url);
@@ -93,7 +92,13 @@ public class Schedule {
 					curDate = timeElement.get(i).text();
 				}
 				perio += 1;
-				classList.add(classElement.get(i).text());
+				if(!classElement.get(i).text().equals(null)) {
+					classList.add(classElement.get(i).text());
+				}
+				else {
+					classList.add("");
+				}
+				
 			}
 			// perioList.add(Integer.toString(perio));
 
