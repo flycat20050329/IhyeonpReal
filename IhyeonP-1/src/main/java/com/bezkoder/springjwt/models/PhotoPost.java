@@ -1,5 +1,6 @@
 package com.bezkoder.springjwt.models;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -7,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -39,7 +41,8 @@ public class PhotoPost {
 	private String text;
 
 	@CreationTimestamp
-	private java.util.Date uploaded_on;
+	@Column(name = "uploaded_on")
+	private LocalDate uploadedOn;
 
 	@JsonIgnore
 	@OneToMany(mappedBy = "photoPost")

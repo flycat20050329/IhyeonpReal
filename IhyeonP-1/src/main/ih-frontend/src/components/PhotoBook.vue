@@ -5,7 +5,7 @@
 
       <!-- top bar -->
       <div class="topBar">
-        <div class="row justify-content-between">
+        <div class="row">
           <div class="col">
             <div class="row">
 
@@ -16,12 +16,18 @@
               </div>
 
               <!-- switch -->
-              <div class="col">
+              <div class="col-3">
                 <div class="form-check form-switch" style="width:fit-content">
                   <input class="form-check-input" type="checkbox" id="meSwitch" v-model="meChecked"
                     v-on:change="checkSwitch">
                   <label class="form-check-label" for="flexSwitchCheckDefault">Only Mine</label>
                 </div>
+              </div>
+
+              <!-- date picker -->
+              <div class="col-5">
+                <VueDatePicker :model-value="dateFilter" range :enable-time-picker="false" :max-date="maxDate"
+                  ignore-time-validation @update:model-value="filterDate" />
               </div>
             </div>
           </div>
@@ -104,7 +110,7 @@ import AuthService from '../services/auth.service';
 import PhotoService from '../services/photo.service';
 import { Form } from 'vee-validate';
 
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch, computed } from 'vue';
 import { useStore } from 'vuex';
 
 import { Splide, SplideSlide } from '@splidejs/vue-splide';
@@ -116,6 +122,11 @@ import { usePhotoStore } from '../store/photo.js';
 
 import { useToast } from "vue-toastification";
 
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css';
+import { endOfMonth, endOfYear, startOfMonth, startOfYear, subMonths, startOfWeek, endOfWeek, subWeeks } from 'date-fns';
+
+
 
 // import '@splidejs/splide/dist/css/themes/splide-default.min.css';
 // import '@splidejs/splide/dist/css/themes/splide-sea-green.min.css';
@@ -126,6 +137,7 @@ export default {
   components: {
     Splide,
     SplideSlide,
+    VueDatePicker,
   },
 
   props: {
@@ -145,6 +157,29 @@ export default {
     const currentUser = store.state.auth.user;
 
     const photoStore = usePhotoStore();
+
+    const dateFilter = ref();
+    const maxDate = ref(new Date())
+
+    const filterDate = async (modelData) => {
+      dateFilter.value = modelData;
+      var dates = []
+      for (const d of dateFilter.value) {
+        const day = String(d.getDate()).padStart(2, '0');
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const year = d.getFullYear();
+
+        dates.push(year + "-" + month + "-" + day)
+      }
+      await PhotoService.getPhotoFilteredDate(dates[0], dates[1]).then((result) => {
+        for (var i = 0; i < result.data.length; i++) {
+          result.data[i].image = "data:image/png;base64," + result.data[i].image
+        }
+        photoStore.setPhotos(result.data);
+        context.emit("rerender", 0);
+      });
+
+    }
 
     var meChecked = ref(false);
 
@@ -253,6 +288,7 @@ export default {
       PhotoService.getClickedPhotoData(image.photoPost?.id).then((result) => {
 
         imageData.value.post = result.data.post;
+        imageData.value.post.uploadedOn = imageData.value.post.uploadedOn.split("T").join(" ")
         for (var i = 0; i < result.data.images.length; i++) {
           result.data.images[i].image = "data:image/png;base64," + result.data.images[i].image
         }
@@ -265,6 +301,7 @@ export default {
     }
 
     const checkSwitch = () => {
+      // console.log(dateFilter.value);
       if (meChecked.value) {
         photoStore.setPhotos(photoStore.getAllPhotos.filter(photo => {
           return photo.photoPost.user?.id == currentUser.id;
@@ -286,6 +323,12 @@ export default {
     };
 
     const noPhoto = ref(false);
+
+    onMounted(() => {
+      const endDate = new Date();
+      const startDate = new Date(new Date().setDate(endDate.getDate() - 7));
+      dateFilter.value = [startDate, endDate];
+    })
 
     watch(() => photoStore.getAllPhotos, (newValue, oldValue) => {
       // console.log({ newValue, oldValue });
@@ -309,6 +352,7 @@ export default {
       cancelPost,
       checkSwitch,
       inputHandler,
+      filterDate,
 
       // splide
       preoptions: preoptions,
@@ -328,6 +372,8 @@ export default {
       imageData,
       meChecked,
       noPhoto,
+      dateFilter,
+      maxDate,
     };
   },
 }
@@ -412,5 +458,4 @@ export default {
   padding-right: 1%;
   color: gray;
 }
-
 </style>

@@ -1,6 +1,8 @@
 package com.bezkoder.springjwt.controllers;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -63,6 +65,14 @@ public class PhotoController {
 		photoData.put("post", photoPostRepository.findById(id));
 
 		return photoData;
+	}
+
+	@GetMapping("/getPhotoFilteredDate/{startDate}/{endDate}")
+	public List<Photo> getPhotoFilteredDate(@PathVariable String startDate, @PathVariable String endDate) {
+        LocalDate start = LocalDate.parse(startDate, DateTimeFormatter.ISO_DATE);
+        LocalDate end = LocalDate.parse(endDate, DateTimeFormatter.ISO_DATE);
+
+        return photoRepository.findAllByPhotoPostUploadedOnBetween(start, end);
 	}
 
 	@GetMapping("/getPhotoPost/{id}")
@@ -135,7 +145,8 @@ public class PhotoController {
 	}
 
 	@PostMapping("/uploadReply")
-	public List<PhotoReply> uploadReply(@RequestParam() String text, @RequestParam() Long postId, @RequestParam() Long userId) {
+	public List<PhotoReply> uploadReply(@RequestParam() String text, @RequestParam() Long postId,
+			@RequestParam() Long userId) {
 		User user = userRepository.findAllById(userId).get(0);
 		PhotoPost photoPost = photoPostRepository.findAllById(postId).get(0);
 		PhotoReply photoReply = new PhotoReply(user, text, photoPost);

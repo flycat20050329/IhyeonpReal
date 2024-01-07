@@ -59,7 +59,7 @@
         <div id="textBox" class="row md-3" style="padding-left: 5%;" v-if="!editing">
           <div class="overflow-hidden" style="max-height: 100px; width:95%">{{ images.post?.text }}
           </div>
-          <p style="font-size: 70%; padding-top: 3%;" class="text-secondary">{{ images.post?.uploaded_on
+          <p style="font-size: 70%; padding-top: 3%;" class="text-secondary">{{ images.post?.uploadedOn
           }}</p>
         </div>
 
@@ -109,7 +109,7 @@
 
 <script>
 import { Splide, SplideSlide } from '@splidejs/vue-splide';
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { useStore } from 'vuex';
 
 import PhotoService from "../services/photo.service.js";
@@ -230,6 +230,7 @@ export default {
       mainSplide.value.splide.Components.Controller.go(props.images.index);
 
 
+
     }
 
     const getHeart = () => {
@@ -237,8 +238,6 @@ export default {
         heart.value = result.data;
       })
     }
-
-
 
     const sendReply = () => {
       const frm = new FormData();

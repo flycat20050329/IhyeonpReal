@@ -3,12 +3,12 @@
     <div class="row replies" v-for="reply in replies">
       <!-- <PhotoReply :reply="reply"></PhotoReply> -->
       <div class="reply">
-        <div class="row title">
-          <div class="col">
+        <div class="row justify-content-center title">
+          <div class="col-4 username">
             <a>{{ reply?.user.username }}</a>
           </div>
-          <div class="col-4">
-            <a>{{ reply?.uploaded_on }}</a>
+          <div class="col date">
+            <a>{{ reply?.uploadedOn }}</a>
           </div>
           <div class="col-1">
             <span class="xMark" type="button" @click="deleteReply(reply)" v-if="currentUser?.id == reply?.user.id">
@@ -54,9 +54,10 @@ export default {
 
         PhotoService.deleteReply(frm).then((result) => {
           replies.value = result.data.filter(reply => {
-            reply.uploaded_on = reply.uploaded_on.split("T")[0]
+            reply.uploadedOn = reply.uploadedOn.split("T")[0]
             return reply;
           });
+          // replies.value = result.data;
         })
       } else {
         console.log("취소함");
@@ -66,7 +67,7 @@ export default {
     watch(() => props.replyData, () => {
       if (props.replyData) {
         for (var i = 0; i < props.replyData.length; i++) {
-          props.replyData[i].uploaded_on = props.replyData[i].uploaded_on.split("T")[0]
+          props.replyData[i].uploadedOn = props.replyData[i].uploadedOn.split("T").join(" ")
         }
         replies.value = props.replyData;
       }
@@ -102,8 +103,14 @@ export default {
   width: inherit;
 }
 
-.title {
+.title div.username {
   font-family: "Black Han Sans";
+}
+
+.title div.date{
+  font-size: 60%;
+  vertical-align: bottom;
+  color: rgb(191, 191, 191);
 }
 
 .content {

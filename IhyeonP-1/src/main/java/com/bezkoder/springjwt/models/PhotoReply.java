@@ -1,5 +1,7 @@
 package com.bezkoder.springjwt.models;
 
+import java.time.LocalDate;
+
 import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.Column;
@@ -11,7 +13,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -36,8 +37,8 @@ public class PhotoReply {
 	private String text;
 
 	@CreationTimestamp
-	@Column(updatable = false)
-	private java.util.Date uploaded_on;
+	@Column(name = "uploaded_on", updatable=false)
+	private LocalDate uploadedOn;
 
 	@NotNull
 	@ManyToOne()

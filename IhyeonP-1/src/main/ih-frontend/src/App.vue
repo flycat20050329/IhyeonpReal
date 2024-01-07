@@ -84,15 +84,33 @@ export default {
   mounted() {
   },
   async created() {
-    const photos = usePhotoStore();
+    const photoStore = usePhotoStore();
 
     await PhotoService.getAllPhoto().then((result) => {
       for (var i = 0; i < result.data.length; i++) {
         result.data[i].image = "data:image/png;base64," + result.data[i].image
       }
-      photos.setAllPhotos(result.data);
-      photos.setPhotos(result.data);
+      photoStore.setAllPhotos(result.data);
     })
+    const endDate = new Date();
+    const startDate = new Date(new Date().setDate(endDate.getDate() - 7));
+    var dates = [];
+    for (const d of [startDate, endDate]) {
+      const day = String(d.getDate()).padStart(2, '0');
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const year = d.getFullYear();
+
+      dates.push(year + "-" + month + "-" + day)
+    }
+    // console.log(dates);
+
+    await PhotoService.getPhotoFilteredDate(dates[0], dates[1]).then((result) => {
+      for (var i = 0; i < result.data.length; i++) {
+        result.data[i].image = "data:image/png;base64," + result.data[i].image
+      }
+      photoStore.setPhotos(result.data);
+    });
+
   },
   methods: {
     changePopState() {

@@ -44,6 +44,10 @@ class PhotoService {
     return axios.get(API_URL + 'getReplyByPostId/' + id);
   }
 
+  getPhotoFilteredDate(startDate, endDate) {
+    return axios.get(API_URL + 'getPhotoFilteredDate/' + startDate+"/"+endDate)
+  }
+
   editPostText(frm) {
     return axios.post(API_URL + 'updatePostText', frm, {
       headers: {
