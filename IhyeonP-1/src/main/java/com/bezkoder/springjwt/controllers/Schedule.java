@@ -62,7 +62,7 @@ public class Schedule {
 					+ "&SD_SCHUL_CODE=" + user.getSchoolCode() + "&GRADE=" + user.getS_grade() 
 					+ "&CLASS_NM=" + user.getS_class() + "&TI_FROM_YMD=" + sun + "&TI_TO_YMD=" + sat;
 			
-			System.out.println(url);
+//			System.out.println(url);
 			Document doc = Jsoup.connect(url).get();
 			Elements elements = doc.select("row");
 			Elements timeElement = elements.select("ALL_TI_YMD");

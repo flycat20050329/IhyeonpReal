@@ -8,10 +8,7 @@
     </div>
 
     <div class="section" v-if="currentUser">
-      <div class="slide">
-        <h1>학급일정 →→→</h1>
-      </div>
-      <div class="slide">
+      <div class="text-center">
         <TimeSchedule />
       </div>
     </div>
@@ -253,13 +250,13 @@
         <button class="btn btn-primary" data-bs-target="#schoolSelectModal" data-bs-toggle="modal"
           data-bs-dismiss="modal">학교 검색으로 돌아가기</button>
       </div>
-      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import { ErrorMessage, Field, Form } from "vee-validate";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, VueElement } from "vue";
 import * as yup from "yup";
 import AuthService from '../services/auth.service';
 import PhotoBook from "./PhotoBook.vue";
@@ -269,6 +266,9 @@ import { useStore } from 'vuex';
 
 import { usePhotoStore } from "../store/photo.js";
 import PhotoPost from "./PhotoPost.vue";
+
+import { useToast } from "vue-toastification";
+
 
 import $ from "jquery";
 
@@ -287,12 +287,21 @@ export default {
     const componentKey = ref(0);
     const mainimages = ref([]);
 
+
+    // toast
+    // const toast = useToast();
+    // toast.clear();
+    // toast.error("I'm toast!", {
+    //   position: "bottom-right",
+    //   timeout: 3000
+    // });
+
     const photoStore = usePhotoStore();
 
     return {
       componentKey,
       mainimages,
-      photoStore
+      photoStore,
     }
   },
   data() {
@@ -441,7 +450,7 @@ export default {
           this.message = data.message;
           this.successful = true;
           this.loading = false;
-    
+
           this.$router.go();
         },
         (error) => {

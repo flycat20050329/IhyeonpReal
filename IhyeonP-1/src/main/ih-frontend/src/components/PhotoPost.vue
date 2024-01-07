@@ -37,11 +37,11 @@
                 <font-awesome-icon icon="bars" />
               </button>
               <ul class="dropdown-menu dropdown-menu-end">
-                <li v-if="currentUser?.id == images.post?.user.id">
+                <li v-if="currentUser?.id == images.post?.user.id || currentUser?.roles[0] == 'ROLE_ADMIN'">
                   <div class="btn dropdown-item" @click="editPost()"><font-awesome-icon icon="pencil-alt" /> 수정
                   </div>
                 </li>
-                <li v-if="currentUser?.id == images.post?.user.id">
+                <li v-if="currentUser?.id == images.post?.user.id || currentUser?.roles[0] == 'ROLE_ADMIN'">
                   <div class="btn dropdown-item" @click="deletePost()"><font-awesome-icon icon="trash" /> 삭제
                   </div>
                 </li>
@@ -81,7 +81,7 @@
         <div id="viewReply" v-if="!editing">
           <!-- 댓글이 있을 곳입니다. -->
           <perfect-scrollbar :options="{ suppressScrollX: true }">
-            <PhotoReplyViewer :replyData="replyData"></PhotoReplyViewer>
+            <PhotoReply :replyData="replyData"></PhotoReply>
           </perfect-scrollbar>
 
         </div>
@@ -118,7 +118,7 @@ import usePhotoStore from '../store/photo';
 
 import HeartButton from "./HeartButton.vue";
 
-import PhotoReplyViewer from "./PhotoReplyViewer.vue";
+import PhotoReply from "./PhotoReply.vue";
 
 import { PerfectScrollbar } from "vue3-perfect-scrollbar";
 import 'vue3-perfect-scrollbar/dist/vue3-perfect-scrollbar.css'
@@ -129,7 +129,7 @@ export default {
     Splide,
     SplideSlide,
     HeartButton,
-    PhotoReplyViewer,
+    PhotoReply,
     PerfectScrollbar,
   },
   props: {
@@ -216,14 +216,20 @@ export default {
     }
 
     var replyData = ref(null);
+    const chatText = ref(null);
 
-    const openModal = async () => {
-      await PhotoService.getReplyByPostId(props.images.post.id).then((result) => {
+
+    const openModal = () => {
+      PhotoService.getReplyByPostId(props.images.post.id).then((result) => {
         replyData.value = result.data;
       })
 
+      chatText.value = null;
+
       currentIndex.value = props.images.index;
       mainSplide.value.splide.Components.Controller.go(props.images.index);
+
+
     }
 
     const getHeart = () => {
@@ -232,14 +238,16 @@ export default {
       })
     }
 
-    const chatText = ref(null);
+
 
     const sendReply = () => {
       const frm = new FormData();
       frm.append("text", chatText.value);
       frm.append("userId", currentUser.id);
       frm.append("postId", props.images.post.id);
-      PhotoService.uploadReply(frm)
+      PhotoService.uploadReply(frm).then((result) => {
+        replyData.value = result.data;
+      })
 
       chatText.value = null;
     }

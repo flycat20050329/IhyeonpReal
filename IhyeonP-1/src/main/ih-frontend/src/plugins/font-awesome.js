@@ -11,12 +11,11 @@ import {
   faPencilAlt,
   faFlag,
   faTrash,
-  faEllipsisH
 } from "@fortawesome/free-solid-svg-icons";
 
 import {
 } from "@fortawesome/free-regular-svg-icons";
 
-library.add(faHome, faUser, faUserPlus, faSignInAlt, faSignOutAlt, faPlus, faBars, faPencilAlt, faFlag, faTrash, faEllipsisH);
+library.add(faHome, faUser, faUserPlus, faSignInAlt, faSignOutAlt, faPlus, faBars, faPencilAlt, faFlag, faTrash);
 
 export { FontAwesomeIcon };

@@ -52,7 +52,7 @@ class PhotoService {
     })
   }
 
-  deletePost(frm) {
+  async deletePost(frm) {
     return axios.post(API_URL + 'deletePost', frm, {
       headers: {
         'Content-Type': 'multipart/form-data'

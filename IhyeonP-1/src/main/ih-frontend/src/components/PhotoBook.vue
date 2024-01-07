@@ -33,7 +33,7 @@
               <input type="text" class="form-control form-input" placeholder="검색어를 입력하세요.">
             </div>
           </div>
-          
+
         </div>
       </div>
 
@@ -113,6 +113,8 @@ import "@splidejs/splide/dist/css/splide.min.css";
 import vueFullpageUmd from 'vue-fullpage.js';
 
 import { usePhotoStore } from '../store/photo.js';
+
+import { useToast } from "vue-toastification";
 
 
 // import '@splidejs/splide/dist/css/themes/splide-default.min.css';
@@ -194,17 +196,30 @@ export default {
       }
     }
 
+    const toast = useToast();
+
     const uploadPost = async () => {
       const frm = new FormData();
       frm.append("userId", currentUser.id);
       frm.append("text", text.value)
+      try {
+        await PhotoService.uploadPhotoPost(frm).then((result) => {
+          postId = result.data;
+        });
+        uploadImages.value = false;
+        text.value = "";
+        await uploadImage();
 
-      await PhotoService.uploadPhotoPost(frm).then((result) => {
-        postId = result.data;
-      });
-      uploadImages.value = false;
-      text.value = "";
-      await uploadImage();
+      } catch (error) {
+        if (error.response.status == 401) {
+          toast.clear()
+          toast.error(error.message, {
+            position: "bottom-right",
+            timeout: 30000,
+            toastClassName: "my-custom-toast-class",
+          })
+        };
+      }
     }
 
     const cancelPost = () => {
@@ -397,4 +412,5 @@ export default {
   padding-right: 1%;
   color: gray;
 }
+
 </style>

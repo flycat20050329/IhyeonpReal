@@ -135,18 +135,22 @@ public class PhotoController {
 	}
 
 	@PostMapping("/uploadReply")
-	public void uploadReply(@RequestParam() String text, @RequestParam() Long postId, @RequestParam() Long userId) {
+	public List<PhotoReply> uploadReply(@RequestParam() String text, @RequestParam() Long postId, @RequestParam() Long userId) {
 		User user = userRepository.findAllById(userId).get(0);
 		PhotoPost photoPost = photoPostRepository.findAllById(postId).get(0);
 		PhotoReply photoReply = new PhotoReply(user, text, photoPost);
 
 		photoReplyRepository.save(photoReply);
+
+		return photoReplyRepository.findAllByPhotoPostId(postId);
 	}
 
 	@PostMapping("/deleteReply")
-	public void deleteReply(@RequestParam() Long id) {
+	public List<PhotoReply> deleteReply(@RequestParam() Long id) {
 		PhotoReply photoReply = photoReplyRepository.findAllById(id).get(0);
 		photoReplyRepository.delete(photoReply);
+
+		return photoReplyRepository.findAllByPhotoPostId(photoReply.getPhotoPost().getId());
 	}
 
 	@PostMapping("/clickHeart")
