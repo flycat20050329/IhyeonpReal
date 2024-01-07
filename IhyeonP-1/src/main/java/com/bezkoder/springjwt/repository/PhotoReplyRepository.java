@@ -10,4 +10,5 @@ import com.bezkoder.springjwt.models.PhotoReply;
 @Repository
 public interface PhotoReplyRepository extends JpaRepository<PhotoReply, Long> {
 	public List<PhotoReply> findAllById(Long id);
+	public List<PhotoReply> findAllByPhotoPostId(Long postId);
 }

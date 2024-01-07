@@ -176,4 +176,9 @@ public class PhotoController {
 	public int getPostHearts(@PathVariable Long postId) {
 		return photoHeartRepository.findAllByPhotoPostId(postId).size();
 	}
+
+	@GetMapping("/getReplyByPostId/{postId}")
+	public List<PhotoReply> getReplyByPostId(@PathVariable Long postId) {
+		return photoReplyRepository.findAllByPhotoPostId(postId);
+	}
 }

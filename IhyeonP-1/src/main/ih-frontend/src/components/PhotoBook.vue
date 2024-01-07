@@ -33,6 +33,7 @@
               <input type="text" class="form-control form-input" placeholder="검색어를 입력하세요.">
             </div>
           </div>
+          
         </div>
       </div>
 
@@ -272,7 +273,7 @@ export default {
     const noPhoto = ref(false);
 
     watch(() => photoStore.getAllPhotos, (newValue, oldValue) => {
-      console.log({ newValue, oldValue });
+      // console.log({ newValue, oldValue });
       // photoStore.setPhotos(newValue);
       checkSwitch();
       context.emit("rerender", 0);

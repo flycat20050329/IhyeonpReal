@@ -188,12 +188,12 @@
           <Form @submit="handleRegister" :validation-schema="signupSchema" v-slot="{ isSubmitting }">
             <div v-if="!successful">
               <fieldset disabled>
-              <div class="form-group">
-                <label for="schoolName" class="form-label">학교 이름</label>
-                <Field name="schoolName" type="schoolName" class="form-control" :model-value=schoolName />
-                <ErrorMessage name="schoolName" class="error-feedback" />
-              </div>
-            </fieldset>
+                <div class="form-group">
+                  <label for="schoolName" class="form-label">학교 이름</label>
+                  <Field name="schoolName" type="schoolName" class="form-control" :model-value=schoolName />
+                  <ErrorMessage name="schoolName" class="error-feedback" />
+                </div>
+              </fieldset>
               <div class="form-group">
                 <label for="username">닉네임</label>
                 <Field name="username" type="text" class="form-control" />
@@ -385,10 +385,9 @@ export default {
     var photoModalEl = document.getElementById('photoModal')
     const vm = this;
     photoModalEl.addEventListener('shown.bs.modal', function () {
-      vm.$refs.photoPost.goIndex();
+      vm.$refs.photoPost.openModal();
     })
     photoModalEl.addEventListener('hidden.bs.modal', function () {
-
     })
 
     // console.log(this.getPhotoModal.style.display)
@@ -478,7 +477,7 @@ export default {
       );
     },
     flycat() {
-      
+
     },
     forceRerender() {
       this.componentKey += 1;

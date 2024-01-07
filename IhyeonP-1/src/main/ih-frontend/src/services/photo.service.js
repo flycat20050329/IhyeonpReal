@@ -36,6 +36,14 @@ class PhotoService {
     return axios.get(API_URL + 'getClickedPhotoData/' + id);
   }
 
+  getPostHearts(postId) {
+    return axios.get(API_URL + 'getPostHearts/' + postId)
+  }
+
+  getReplyByPostId(id) {
+    return axios.get(API_URL + 'getReplyByPostId/' + id);
+  }
+
   editPostText(frm) {
     return axios.post(API_URL + 'updatePostText', frm, {
       headers: {
@@ -48,6 +56,14 @@ class PhotoService {
     return axios.post(API_URL + 'deletePost', frm, {
       headers: {
         'Content-Type': 'multipart/form-data'
+      }
+    })
+  }
+
+  deleteReply(frm) {
+    return axios.post(API_URL + 'deleteReply', frm, {
+      hearders: {
+        "Content-Type": "multipart/form-data"
       }
     })
   }
@@ -78,10 +94,6 @@ class PhotoService {
 
   ifFavorited(postId, userId) {
     return axios.get(API_URL + 'isFavorited/' + postId + '/' + userId);
-  }
-
-  getPostHearts(postId) {
-    return axios.get(API_URL + 'getPostHearts/' + postId)
   }
 
 }

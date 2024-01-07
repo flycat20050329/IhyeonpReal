@@ -79,7 +79,11 @@
         </div>
 
         <div id="viewReply" v-if="!editing">
-          댓글이 있을 곳입니다.
+          <!-- 댓글이 있을 곳입니다. -->
+          <perfect-scrollbar :options="{ suppressScrollX: true }">
+            <PhotoReplyViewer :replyData="replyData"></PhotoReplyViewer>
+          </perfect-scrollbar>
+
         </div>
 
         <!-- reaction zone -->
@@ -105,7 +109,7 @@
 
 <script>
 import { Splide, SplideSlide } from '@splidejs/vue-splide';
-import { onMounted, ref, watch } from "vue";
+import { ref } from "vue";
 import { useStore } from 'vuex';
 
 import PhotoService from "../services/photo.service.js";
@@ -114,11 +118,19 @@ import usePhotoStore from '../store/photo';
 
 import HeartButton from "./HeartButton.vue";
 
+import PhotoReplyViewer from "./PhotoReplyViewer.vue";
+
+import { PerfectScrollbar } from "vue3-perfect-scrollbar";
+import 'vue3-perfect-scrollbar/dist/vue3-perfect-scrollbar.css'
+
 export default {
+  name: "PhotoPost",
   components: {
     Splide,
     SplideSlide,
     HeartButton,
+    PhotoReplyViewer,
+    PerfectScrollbar,
   },
   props: {
     images: Object,
@@ -203,7 +215,13 @@ export default {
       currentIndex.value = splide.index;
     }
 
-    const goIndex = () => {
+    var replyData = ref(null);
+
+    const openModal = async () => {
+      await PhotoService.getReplyByPostId(props.images.post.id).then((result) => {
+        replyData.value = result.data;
+      })
+
       currentIndex.value = props.images.index;
       mainSplide.value.splide.Components.Controller.go(props.images.index);
     }
@@ -211,7 +229,6 @@ export default {
     const getHeart = () => {
       PhotoService.getPostHearts(props.images.post.id).then((result) => {
         heart.value = result.data;
-        // console.log(result.data);
       })
     }
 
@@ -236,7 +253,7 @@ export default {
       editPost,
       editText,
       onSplideMounted,
-      goIndex,
+      openModal,
       onSplideMoved,
       deletePost,
       sendReply,
@@ -249,6 +266,7 @@ export default {
       mainSplide,
       chatText,
       heart,
+      replyData,
 
     }
   },
@@ -321,5 +339,9 @@ button {
   padding: 0;
   outline: inherit;
   cursor: pointer;
+}
+
+.ps {
+  height: 250px;
 }
 </style>
