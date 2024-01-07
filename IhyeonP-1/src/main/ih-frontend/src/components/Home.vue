@@ -35,11 +35,11 @@
     </div> -->
 
     <div class="section" v-if="currentUser">
-      <h2>동아리</h2>
+      <h2>현재는 동아리 신청 기간이 아닙니다.</h2>
     </div>
 
     <div class="section" v-if="currentUser">
-      <h2>중고</h2>
+      <h2>중고 거래</h2>
     </div>
 
     <div class="section" v-if="currentUser">
@@ -250,12 +250,10 @@
             {{ message }}
           </div>
         </div>
-      </div>
-      <div class="modal-footer">
         <button class="btn btn-primary" data-bs-target="#schoolSelectModal" data-bs-toggle="modal"
           data-bs-dismiss="modal">학교 검색으로 돌아가기</button>
       </div>
-    </div>
+      </div>
   </div>
 </template>
 
@@ -422,8 +420,6 @@ export default {
     getClassGrade() {
       console.log(document.getElementById("s_grade").value);
       console.log(document.getElementById("s_class").value);
-
-      this.$router.go();
     },
     getImageData(imageData) {
       this.imageData = imageData;
@@ -445,6 +441,8 @@ export default {
           this.message = data.message;
           this.successful = true;
           this.loading = false;
+    
+          this.$router.go();
         },
         (error) => {
           this.message =

@@ -21,8 +21,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 /*
 id
@@ -45,8 +44,8 @@ id
 
 @Entity
 @Table(name = "ih_users", uniqueConstraints = { @UniqueConstraint(columnNames = { "username", "email" }) })
-@Getter
-@Setter
+@Data
+
 public class User {
 
 	@Id
@@ -80,27 +79,6 @@ public class User {
 	@NotBlank
 	@Size(max = 2)
 	private String s_class;
-//	@NotNull
-//	@Size(max = 20)
-//	@Column(unique = true)
-//	private String nickname;
-//
-//	@NotBlank
-//	@Size(max = 1)
-//	private Integer gender;
-//
-//	@NotBlank
-//	@Size(max = 6)
-//	private Long s_id;
-//
-//
-//	@NotBlank
-//	@Size(max = 3)
-//	private Integer s_number;
-//
-//	@NotBlank
-//	@Column(name = "birth", nullable = false)
-//	private java.sql.Date birth;
 
 	@JsonIgnore
 	@ManyToMany(fetch = FetchType.LAZY)

@@ -63,11 +63,6 @@ export default {
   }
 }
 </script>
-<!-- <style>
-.col-md-1-5 {
-  width: 1000px;
-}
-</style> -->
 
 <style>
 .container {
@@ -106,8 +101,40 @@ table td {
   width: 10%;
 }
 
+@font-face {
+  font-family: "Maplestory";
+  src: url("../fonts/MaplestoryBold.ttf") format('opentype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Maplestory";
+  src: url("../fonts/MaplestoryLight.ttf") format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+thead {
+  font-family: "Maplestory";
+  font-weight: bold;
+  font-size: x-large;
+  background-color: rgb(20, 129, 218);
+  color: antiquewhite;
+}
+
+tbody {
+  font-family: "MapleStory";
+  font-weight: normal;
+  font-size: large;
+}
+
+th:first-child,
+td:first-child {
+  border-right: 1px solid black;
+}
 
 table tr:nth-of-type(even) {
-  background-color: rgba(0, 0, 255, 0.1);
+  background-color: rgba(111, 124, 121, 0.132);
 }
 </style>
