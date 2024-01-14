@@ -1,6 +1,8 @@
 package com.bezkoder.springjwt.controllers;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -50,6 +52,14 @@ public class Schedule {
 
 		return s;
 	}
+	
+	public int getDayOfWeek(String date) {		//요일 가져오는 함수
+		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyyMMdd");
+        LocalDate localDate = LocalDate.parse(date, format);
+        
+        DayOfWeek dayOfWeek = localDate.getDayOfWeek();
+        return dayOfWeek.getValue() - 1;
+	}
 
 	public List<List<String>> getScheduleInfo(User user) {
 		List<List<String>> classTable = new ArrayList<List<String>>();
@@ -60,9 +70,8 @@ public class Schedule {
 		try {
 			String url = cite + "?KEY=" + key + "&ATPT_OFCDC_SC_CODE=" + user.getLocaCode()
 					+ "&SD_SCHUL_CODE=" + user.getSchoolCode() + "&GRADE=" + user.getS_grade() 
-					+ "&CLASS_NM=" + user.getS_class() + "&TI_FROM_YMD=" + sun + "&TI_TO_YMD=" + sat;
-			
-//			System.out.println(url);
+					+ "&CLASS_NM=" + user.getS_class() + "&TI_FROM_YMD=" + "20240101" + "&TI_TO_YMD=" + "20240106";
+
 			Document doc = Jsoup.connect(url).get();
 			Elements elements = doc.select("row");
 			Elements timeElement = elements.select("ALL_TI_YMD");
@@ -72,6 +81,7 @@ public class Schedule {
 			String prevInfo = "";
 			List<String> classList = new ArrayList<String>();
 			List<String> perioList = new ArrayList<String>();
+			
 			int perio = 0;
 
 			for (int i = 0; i < classElement.size(); i++) {

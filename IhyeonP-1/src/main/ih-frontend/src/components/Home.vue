@@ -8,8 +8,11 @@
     </div>
 
     <div class="section" v-if="currentUser">
-      <div class="text-center">
+      <div class="slide">
         <TimeSchedule />
+      </div>
+      <div class="slide">
+        <Lunch />
       </div>
     </div>
 
@@ -262,6 +265,7 @@ import AuthService from '../services/auth.service';
 import PhotoBook from "./PhotoBook.vue";
 import Register from './Register.vue';
 import TimeSchedule from './TimeSchedule.vue';
+import Lunch from './Lunch.vue';
 import { useStore } from 'vuex';
 
 import { usePhotoStore } from "../store/photo.js";
@@ -282,6 +286,7 @@ export default {
     Field,
     ErrorMessage,
     PhotoPost,
+    Lunch
   },
   setup() {
     const componentKey = ref(0);

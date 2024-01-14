@@ -5,7 +5,7 @@
         <th v-for="item in header">{{ item }}</th>
       </thead>
       <tbody>
-        <tr v-for="line in ranking">
+        <tr v-for="line in time">
           <td v-for="item in line" style="height: 50px">{{ item }}</td>
         </tr>
       </tbody>
@@ -24,7 +24,7 @@ export default {
   data() {
     return {
       header: ["", "월", "화", "수", "목", "금"],
-      ranking: [["1"], ["2"], ["3"], ["4"], ["5"], ["6"], ["7"]]
+      time: [["1"], ["2"], ["3"], ["4"], ["5"], ["6"], ["7"]]
     }
   },
   mounted() {
@@ -48,12 +48,12 @@ export default {
 
           for (i = 0; i < a[0].length; i++) {
             for (j = 0; j < a[0][i]; j++) {
-              this.ranking[j].push(a[1][index]);
+              this.time[j].push(a[1][index]);
               index += 1;
             };
             if (j < 7) {
               for (j; j < 7; j++) {
-                this.ranking[j].push("");
+                this.time[j].push("");
               }
             }
           }

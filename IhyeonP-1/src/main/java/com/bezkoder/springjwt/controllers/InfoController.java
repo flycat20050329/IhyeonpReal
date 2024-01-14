@@ -24,8 +24,10 @@ public class InfoController {
 	UserRepository userRepository;
 	
 	@GetMapping("/getLunchInfo")
-	public List<List<String>> getLunchInfo() {
-		return this.lunch.getLunchInfo();
+	public List<List<String>> getLunchInfo(@RequestParam String name) {
+		User u = userRepository.findAllByUsername(name).get(0);
+		
+		return this.lunch.getLunchInfo(u);
 	}
 	
 	@GetMapping("/getScheduleInfo")
