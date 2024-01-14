@@ -29,6 +29,7 @@
                 <VueDatePicker :model-value="dateFilter" range :enable-time-picker="false" :max-date="maxDate"
                   ignore-time-validation @update:model-value="filterDate" />
               </div>
+
             </div>
           </div>
 
@@ -126,6 +127,8 @@ import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import { endOfMonth, endOfYear, startOfMonth, startOfYear, subMonths, startOfWeek, endOfWeek, subWeeks } from 'date-fns';
 
+import moment from "moment";
+
 
 
 // import '@splidejs/splide/dist/css/themes/splide-default.min.css';
@@ -158,19 +161,27 @@ export default {
 
     const photoStore = usePhotoStore();
 
-    const dateFilter = ref();
+    const dateFilter = ref(new Date);
     const maxDate = ref(new Date())
 
     const filterDate = async (modelData) => {
       dateFilter.value = modelData;
-      var dates = []
-      for (const d of dateFilter.value) {
-        const day = String(d.getDate()).padStart(2, '0');
-        const month = String(d.getMonth() + 1).padStart(2, '0');
-        const year = d.getFullYear();
 
-        dates.push(year + "-" + month + "-" + day)
+      var dates = []
+
+      dates.push(moment(modelData[0]).format("YYYY-MM-DD 00:00:00.000000"))
+      dates.push(moment(modelData[1]).format("YYYY-MM-DD 11:59:59.999999"))
+
+
+      // console.log([dates[0], dates[1]])
+      photoStore.setPhotos(photoStore.getAllPhotos.filter(photo => {
+        const photoTime = moment(photo.photoPost.uploadedOn).format("YYYY-MM-DD HH:mm:ss.SSSSSS");
+        if (dates[0] <= photoTime && photoTime <= dates[1]) {
+          return photo;
+        }
       }
+      ))
+
       await PhotoService.getPhotoFilteredDate(dates[0], dates[1]).then((result) => {
         for (var i = 0; i < result.data.length; i++) {
           result.data[i].image = "data:image/png;base64," + result.data[i].image

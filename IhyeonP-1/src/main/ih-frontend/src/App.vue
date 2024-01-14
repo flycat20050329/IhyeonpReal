@@ -70,6 +70,7 @@ import axios from 'axios';
 import { usePhotoStore } from "./store/photo.js";
 import PhotoService from "./services/photo.service.js";
 
+import moment from "moment";
 
 export default {
   name: 'app',
@@ -92,24 +93,44 @@ export default {
       }
       photoStore.setAllPhotos(result.data);
     })
+
+    const startDate = new Date(new Date().setDate(new Date().getDate() - 7));
     const endDate = new Date();
-    const startDate = new Date(new Date().setDate(endDate.getDate() - 7));
-    var dates = [];
-    for (const d of [startDate, endDate]) {
-      const day = String(d.getDate()).padStart(2, '0');
-      const month = String(d.getMonth() + 1).padStart(2, '0');
-      const year = d.getFullYear();
 
-      dates.push(year + "-" + month + "-" + day)
-    }
-    // console.log(dates);
+    const startDateStr = moment(startDate).format('YYYY-MM-DD 00:00:00.000000');
+    const endDateStr = moment(endDate).format('YYYY-MM-DD 11:59:59.999999');
 
-    await PhotoService.getPhotoFilteredDate(dates[0], dates[1]).then((result) => {
-      for (var i = 0; i < result.data.length; i++) {
-        result.data[i].image = "data:image/png;base64," + result.data[i].image
+    console.log([startDateStr, endDateStr]);
+
+
+    // var dates = [];
+    // for (const d of [startDate, endDate]) {
+    //   const day = String(d.getDate()).padStart(2, '0');
+    //   const month = String(d.getMonth() + 1).padStart(2, '0');
+    //   const year = d.getFullYear();
+
+    //   dates.push(year + "-" + month + "-" + day)
+    // }
+    // // console.log(dates);
+
+    // console.log([startDateStr, endDateStr]);
+
+    // console.log(photoStore.getAllPhotos);
+
+    photoStore.setPhotos(photoStore.getAllPhotos.filter(photo => {
+      const photoTime = moment(photo.photoPost.uploadedOn).format("YYYY-MM-DD HH:mm:ss.SSSSSS");
+      if (startDateStr <= photoTime && photoTime <= endDateStr) {
+        return photo;
       }
-      photoStore.setPhotos(result.data);
-    });
+    }
+    ))
+
+    // await PhotoService.getPhotoFilteredDate(startDateStr, endDateStr).then((result) => {
+    //   for (var i = 0; i < result.data.length; i++) {
+    //     result.data[i].image = "data:image/png;base64," + result.data[i].image
+    //   }
+    //   photoStore.setPhotos(result.data);
+    // });
 
   },
   methods: {

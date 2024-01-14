@@ -41,7 +41,7 @@ export default {
 
       authService.getTimeSchedule(currentUser.username).then(
         (res) => {
-          console.log(res.data);
+          // console.log(res.data);
 
           let a = new Array();
           a = res.data;

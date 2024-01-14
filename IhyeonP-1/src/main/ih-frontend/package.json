@@ -24,6 +24,7 @@
     "fullpage.js": "^4.0.20",
     "interact.js": "1.2.8",
     "jquery": "^3.7.1",
+    "moment": "^1.1.0",
     "pinia": "^2.1.7",
     "sass": "^1.63.6",
     "swiper": "^10.0.4",

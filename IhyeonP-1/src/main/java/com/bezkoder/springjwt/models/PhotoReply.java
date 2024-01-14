@@ -1,6 +1,6 @@
 package com.bezkoder.springjwt.models;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -38,7 +38,7 @@ public class PhotoReply {
 
 	@CreationTimestamp
 	@Column(name = "uploaded_on", updatable=false)
-	private LocalDate uploadedOn;
+	private LocalDateTime uploadedOn;
 
 	@NotNull
 	@ManyToOne()

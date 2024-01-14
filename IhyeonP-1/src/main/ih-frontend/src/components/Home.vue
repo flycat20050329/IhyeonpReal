@@ -15,6 +15,8 @@
 
     <!-- Photo -->
     <div class="section" style="height:fit-content" v-if="currentUser">
+
+      
       <Suspense>
         <PhotoBook :key="componentKey" @rerender="forceRerender" @imageData="getImageData" />
         <!--  @imageData="getImageData"  -->

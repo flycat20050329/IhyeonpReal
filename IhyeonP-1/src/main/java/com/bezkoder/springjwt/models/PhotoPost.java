@@ -1,6 +1,6 @@
 package com.bezkoder.springjwt.models;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -42,7 +42,7 @@ public class PhotoPost {
 
 	@CreationTimestamp
 	@Column(name = "uploaded_on")
-	private LocalDate uploadedOn;
+	private LocalDateTime uploadedOn;
 
 	@JsonIgnore
 	@OneToMany(mappedBy = "photoPost")

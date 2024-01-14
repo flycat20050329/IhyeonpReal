@@ -1,6 +1,6 @@
 package com.bezkoder.springjwt.repository;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,6 +14,6 @@ public interface PhotoRepository extends JpaRepository<Photo, Long> {
 	public List<Photo> findByPhotoPostId(Long postId);
 
 	public void deleteAllByPhotoPost(PhotoPost photoPost);
-    List<Photo> findAllByPhotoPostUploadedOnBetween(LocalDate start, LocalDate end);
+    List<Photo> findAllByPhotoPostUploadedOnBetween(LocalDateTime start, LocalDateTime end);
 
 }
