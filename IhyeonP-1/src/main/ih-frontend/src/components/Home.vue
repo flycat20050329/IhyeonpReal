@@ -345,6 +345,7 @@ export default {
     ErrorMessage,
     PhotoPost,
     VueDatePicker,
+    Lunch,
   },
   setup() {
     const componentKey = ref(0);
