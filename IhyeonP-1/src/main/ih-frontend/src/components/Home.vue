@@ -50,10 +50,12 @@
                 <button type="button" class="btn btn-outline-dark dateBtn" data-toggle="tooltip" data-placement="top"
                   title="a month ago" @click="dateBeforeAMonth()">
                   <font-awesome-icon icon="angle-left" /></button>
-                <button type="button" class="btn btn-outline-dark dateBtn" @click="dateToday()">
+                <button type="button" class="btn btn-outline-dark dateBtn" data-toggle="tooltip" data-placement="top"
+                  title="today" @click="dateToday()">
                   Today</button>
-                <!-- <button type="button" class="btn btn-outline-dark dateBtn" @click="chooseFiles()">
-                  <font-awesome-icon icon="angle-right" /></button> -->
+                <button type="button" class="btn btn-outline-dark dateBtn" data-toggle="tooltip" data-placement="top"
+                  title="a month later" @click="dateAfterAMonth()">
+                  <font-awesome-icon icon="angle-right" /></button>
               </div>
 
             </div>
@@ -406,18 +408,28 @@ export default {
 
     const dateToday = () => {
       dateFilter.value = [moment(new Date()).format(startDateFormat), moment(new Date()).format(endDateFormat)];
-      // changeDate();
+      changeDate();
 
     }
 
 
     const dateBeforeAMonth = () => {
       if (moment(dateFilter.value[0]).format("DD") != moment(dateFilter.value[1]).format("DD")) {
-        dateFilter.value[0] = moment(dateFilter.value[1]).subtract("months", 1).format("YYYY-MM-DD 00:00:00.000000");
+        dateFilter.value[0] = moment(dateFilter.value[1]).subtract("months", 1).format(startDateFormat);
         moment(dateFilter.value[1]).add('months', 1);
 
       } else {
-        dateFilter.value[0] = moment(dateFilter.value[0]).subtract('months', 1).format("YYYY-MM-DD 00:00:00.000000");
+        dateFilter.value[0] = moment(dateFilter.value[0]).subtract('months', 1).format(startDateFormat);
+      }
+      changeDate();
+    }
+
+    const dateAfterAMonth = () => {
+      if (moment(new Date()) <= moment(dateFilter.value[0]).add('months', 1)) {
+        dateFilter.value[0] = moment(new Date()).format(startDateFormat);
+      }
+      else {
+        dateFilter.value[0] = moment(dateFilter.value[0]).add("months", 1).format(startDateFormat);
       }
       changeDate();
     }
@@ -438,7 +450,7 @@ export default {
     })
 
     watch(() => dateFilter.value, (newValue, oldValue) => {
-      console.log(newValue);
+      // console.log(newValue);
       if (newValue.length == 2) {
         changeDate();
       }
@@ -476,6 +488,7 @@ export default {
       checkSwitch,
       dateToday,
       dateBeforeAMonth,
+      dateAfterAMonth,
     }
   },
   data() {

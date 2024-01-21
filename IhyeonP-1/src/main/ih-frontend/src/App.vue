@@ -100,7 +100,7 @@ export default {
     const startDateStr = moment(startDate).format('YYYY-MM-DD 00:00:00.000000');
     const endDateStr = moment(endDate).format('YYYY-MM-DD 11:59:59.999999');
 
-    console.log([startDateStr, endDateStr]);
+    // console.log([startDateStr, endDateStr]);
 
 
     photoStore.setPhotos(photoStore.getAllPhotos.filter(photo => {
