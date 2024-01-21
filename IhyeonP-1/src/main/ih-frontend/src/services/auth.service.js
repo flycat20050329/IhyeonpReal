@@ -39,8 +39,11 @@ class AuthService {
     });
   };
 
-  getLunchList() {
+  getLunchList(userName) {
     return axios.get(API_URL3 + 'getLunchInfo', {
+      params:{
+        name: userName
+      }
     });
   }
 
