@@ -16,7 +16,57 @@
     <!-- Photo -->
     <div class="section" style="height:fit-content" v-if="currentUser">
 
-      
+      <!-- top bar -->
+      <div class="topBar">
+        <div class="row">
+          <div class="col">
+            <div class="row">
+
+              <!-- upload button -->
+              <div class="col-2">
+                <button type="button" class="btn btn-outline-dark" @click="chooseFiles()">
+                  <font-awesome-icon icon="plus" /> 사진 올리기</button>
+              </div>
+
+              <!-- switch -->
+              <div class="col-2">
+                <div class="form-check form-switch" style="width:fit-content">
+                  <input class="form-check-input" type="checkbox" id="meSwitch" v-model="meChecked"
+                    v-on:change="checkSwitch">
+                  <label class="form-check-label" for="flexSwitchCheckDefault">Only Mine</label>
+                </div>
+              </div>
+
+              <!-- date picker -->
+              <div class="col-3">
+                <VueDatePicker :model-value="dateFilter" range :enable-time-picker="false" :max-date="maxDate"
+                  ignore-time-validation @update:model-value="filterDate" />
+              </div>
+
+              <div class="col-3">
+                <button type="button" class="btn btn-outline-dark dateBtn" data-toggle="tooltip" data-placement="top"
+                  title="a month ago" @click="dateBeforeAMonth()">
+                  <font-awesome-icon icon="angle-left" /></button>
+                <button type="button" class="btn btn-outline-dark dateBtn" @click="dateToday()">
+                  Today</button>
+                <!-- <button type="button" class="btn btn-outline-dark dateBtn" @click="chooseFiles()">
+                  <font-awesome-icon icon="angle-right" /></button> -->
+              </div>
+
+            </div>
+          </div>
+
+          <!-- 검색어 입력 -->
+          <!-- <div class="col-4">
+            <div class="form">
+              <i class="fa fa-search"></i>
+              <input type="text" class="form-control form-input" placeholder="검색어를 입력하세요.">
+            </div>
+          </div> -->
+
+        </div>
+      </div>
+
       <Suspense>
         <PhotoBook :key="componentKey" @rerender="forceRerender" @imageData="getImageData" />
         <!--  @imageData="getImageData"  -->
@@ -258,7 +308,7 @@
 
 <script>
 import { ErrorMessage, Field, Form } from "vee-validate";
-import { ref, onMounted, VueElement } from "vue";
+import { ref, onMounted, watch } from "vue";
 import * as yup from "yup";
 import AuthService from '../services/auth.service';
 import PhotoBook from "./PhotoBook.vue";
@@ -271,8 +321,14 @@ import PhotoPost from "./PhotoPost.vue";
 
 import { useToast } from "vue-toastification";
 
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css';
+
+import { mapActions, mapState } from "pinia";
+
 
 import $ from "jquery";
+import moment from "moment";
 
 export default {
   name: "Home",
@@ -284,10 +340,113 @@ export default {
     Field,
     ErrorMessage,
     PhotoPost,
+    VueDatePicker,
   },
   setup() {
     const componentKey = ref(0);
     const mainimages = ref([]);
+
+    const store = useStore();
+    const currentUser = store.state.auth.user;
+
+    const photoStore = usePhotoStore();
+
+    //Upload File Button
+    const chooseFiles = () => {
+      document.getElementById("fileUpload").click();
+    }
+
+    // Only Mine Switch
+    const meChecked = ref(false);
+
+
+    const checkSwitch = () => {
+      // console.log(dateFilter.value);
+      if (meChecked.value) {
+        photoStore.setPhotos(photoStore.getAllPhotos.filter(photo => {
+          const photoTime = moment(photo.photoPost.uploadedOn).format("YYYY-MM-DD HH:mm:ss.SSSSSS");
+          return dates[0] <= photoTime && photoTime <= dates[1] && photo.photoPost.user?.id == currentUser.id;
+        }))
+      } else {
+        photoStore.setPhotos(photoStore.getAllPhotos.filter(photo => {
+          const photoTime = moment(photo.photoPost.uploadedOn).format("YYYY-MM-DD HH:mm:ss.SSSSSS");
+          return dates[0] <= photoTime && photoTime <= dates[1];
+        }));
+      }
+      componentKey.value += 1;
+    }
+
+    // vue datepicker
+
+    const startDateFormat = "YYYY-MM-DD 00:00:00.000000"
+    const endDateFormat = "YYYY-MM-DD 11:59:59.999999"
+
+
+    const startDateStr = moment(new Date(new Date().setDate(new Date().getDate() - 7))).format(startDateFormat)
+    const endDateStr = moment(new Date()).format(endDateFormat)
+
+    const dateFilter = ref([startDateStr, endDateStr]);
+    const maxDate = ref(new Date())
+
+
+    var dates = [startDateStr, endDateStr];
+
+    const filterDate = async (modelData) => {
+      dateFilter.value = modelData;
+
+
+      // rerender
+      // componentKey.value += 1;
+    }
+
+    const dateToday = () => {
+      dateFilter.value = [moment(new Date()).format(startDateFormat), moment(new Date()).format(endDateFormat)];
+      // changeDate();
+
+    }
+
+
+    const dateBeforeAMonth = () => {
+      if (moment(dateFilter.value[0]).format("DD") != moment(dateFilter.value[1]).format("DD")) {
+        dateFilter.value[0] = moment(dateFilter.value[1]).subtract("months", 1).format("YYYY-MM-DD 00:00:00.000000");
+        moment(dateFilter.value[1]).add('months', 1);
+
+      } else {
+        dateFilter.value[0] = moment(dateFilter.value[0]).subtract('months', 1).format("YYYY-MM-DD 00:00:00.000000");
+      }
+      changeDate();
+    }
+
+    const changeDate = () => {
+      dates = []
+
+      dates.push(moment(dateFilter.value[0]).format(startDateFormat));
+      dates.push(moment(dateFilter.value[1]).format(endDateFormat));
+
+      checkSwitch();
+    }
+
+
+    watch(() => photoStore.getAllPhotos, () => {
+      checkSwitch();
+      componentKey.value += 1;
+    })
+
+    watch(() => dateFilter.value, (newValue, oldValue) => {
+      console.log(newValue);
+      if (newValue.length == 2) {
+        changeDate();
+      }
+
+    })
+
+
+    onMounted(() => {
+      const endDate = new Date();
+      const startDate = new Date(new Date().setDate(endDate.getDate() - 7));
+      dateFilter.value = [startDate, endDate];
+
+    })
 
 
     // toast
@@ -298,12 +457,20 @@ export default {
     //   timeout: 3000
     // });
 
-    const photoStore = usePhotoStore();
 
     return {
       componentKey,
       mainimages,
       photoStore,
+      dateFilter,
+      maxDate,
+      meChecked,
+
+      filterDate,
+      chooseFiles,
+      checkSwitch,
+      dateToday,
+      dateBeforeAMonth,
     }
   },
   data() {
@@ -399,13 +566,6 @@ export default {
     photoModalEl.addEventListener('hidden.bs.modal', function () {
     })
 
-    // console.log(this.getPhotoModal.style.display)
-    // var photoModalEl = document.getElementById('photoModal')
-    // photoModalEl.addEventListener('shown.bs.modal', function (event) {
-    //   // console.log(event);
-    //   console.log(this.$refs.photoPost);
-    // })
-    // // console.log(this.getPhotoModal.style.display)
   },
   methods: {
     schoolNameRegister() {
@@ -590,5 +750,42 @@ input {
   font-size: 17px;
   font-family: Raleway;
   border: 1px solid #aaaaaa;
+}
+
+
+.topBar {
+  border-bottom: solid;
+  padding-bottom: 5px;
+}
+
+.topBar .searchBar {
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 15px;
+}
+
+.form .fa-search {
+  position: absolute;
+  top: 12px;
+  left: 15px;
+  color: #000000;
+
+}
+
+.form {
+  position: relative;
+  width: fit-content;
+}
+
+.form-input {
+  height: 38px;
+  width: 350px;
+  text-indent: 33px;
+  border-radius: 40px;
+}
+
+.form-input:focus {
+  box-shadow: none;
+  border: none;
 }
 </style>

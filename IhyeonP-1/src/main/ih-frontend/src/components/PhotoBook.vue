@@ -2,39 +2,38 @@
   <div class="container" style="height:fit-content;">
     <!-- gallery -->
     <div v-if="!uploadImages" class="container">
-
       <!-- top bar -->
-      <div class="topBar">
+      <!-- <div class="topBar">
         <div class="row">
           <div class="col">
-            <div class="row">
+            <div class="row"> -->
 
               <!-- upload button -->
-              <div class="col-3">
+              <!-- <div class="col-3">
                 <button type="button" class="btn btn-outline-dark" @click="chooseFiles()">
                   <font-awesome-icon icon="plus" /> 사진 올리기</button>
-              </div>
+              </div> -->
 
               <!-- switch -->
-              <div class="col-3">
+              <!-- <div class="col-3">
                 <div class="form-check form-switch" style="width:fit-content">
                   <input class="form-check-input" type="checkbox" id="meSwitch" v-model="meChecked"
                     v-on:change="checkSwitch">
                   <label class="form-check-label" for="flexSwitchCheckDefault">Only Mine</label>
                 </div>
-              </div>
+              </div> -->
 
               <!-- date picker -->
-              <div class="col-5">
+              <!-- <div class="col-5">
                 <VueDatePicker :model-value="dateFilter" range :enable-time-picker="false" :max-date="maxDate"
                   ignore-time-validation @update:model-value="filterDate" />
               </div>
 
             </div>
-          </div>
+          </div> -->
 
           <!-- 검색어 입력 -->
-          <div class="col-4">
+          <!-- <div class="col-4">
             <div class="form">
               <i class="fa fa-search"></i>
               <input type="text" class="form-control form-input" placeholder="검색어를 입력하세요.">
@@ -42,11 +41,11 @@
           </div>
 
         </div>
-      </div>
+      </div> -->
 
 
       <!-- main splide -->
-      <div class="mainSplide" v-if="!meChecked || !noPhoto">
+      <div class="mainSplide">
         <splide id="splide" class="splide" :options="mainoptions" :extensions="extensions">
           <splide-slide v-for="image of photoStore.getPhotos">
             <div class="item" :style="{ 'background-image': `url(${image.image})` }" @click="clickImage(image)">
@@ -54,10 +53,10 @@
           </splide-slide>
         </splide>
       </div>
-
+<!-- 
       <div class="noMyPhoto" v-if="meChecked && noPhoto" style="padding: 7% 0 0 5%; color: gray">
         <h2>사진이 없습니다.</h2>
-      </div>
+      </div> -->
 
     </div>
 
@@ -131,7 +130,7 @@ import moment from "moment";
 
 
 
-// import '@splidejs/splide/dist/css/themes/splide-default.min.css';
+// import '@splidejs/splide/dist/css/themes/splide-default.min.css';ㅈ
 // import '@splidejs/splide/dist/css/themes/splide-sea-green.min.css';
 // import '@splidejs/splide/dist/css/themes/splide-skyblue.min.css';
 
@@ -160,39 +159,6 @@ export default {
     const currentUser = store.state.auth.user;
 
     const photoStore = usePhotoStore();
-
-    const dateFilter = ref(new Date);
-    const maxDate = ref(new Date())
-
-    const filterDate = async (modelData) => {
-      dateFilter.value = modelData;
-
-      var dates = []
-
-      dates.push(moment(modelData[0]).format("YYYY-MM-DD 00:00:00.000000"))
-      dates.push(moment(modelData[1]).format("YYYY-MM-DD 11:59:59.999999"))
-
-
-      // console.log([dates[0], dates[1]])
-      photoStore.setPhotos(photoStore.getAllPhotos.filter(photo => {
-        const photoTime = moment(photo.photoPost.uploadedOn).format("YYYY-MM-DD HH:mm:ss.SSSSSS");
-        if (dates[0] <= photoTime && photoTime <= dates[1]) {
-          return photo;
-        }
-      }
-      ))
-
-      await PhotoService.getPhotoFilteredDate(dates[0], dates[1]).then((result) => {
-        for (var i = 0; i < result.data.length; i++) {
-          result.data[i].image = "data:image/png;base64," + result.data[i].image
-        }
-        photoStore.setPhotos(result.data);
-        context.emit("rerender", 0);
-      });
-
-    }
-
-    var meChecked = ref(false);
 
     const preoptions = {
       rewind: true,
@@ -311,19 +277,6 @@ export default {
       document.getElementById("photoModalBtn").click();
     }
 
-    const checkSwitch = () => {
-      // console.log(dateFilter.value);
-      if (meChecked.value) {
-        photoStore.setPhotos(photoStore.getAllPhotos.filter(photo => {
-          return photo.photoPost.user?.id == currentUser.id;
-        }))
-      } else {
-        photoStore.setPhotos(photoStore.getAllPhotos);
-        context.emit("rerender", 0);
-      }
-
-    }
-
     const inputHandler = (e) => {
       const target = e.currentTarget;
       const max = e.currentTarget.getAttribute('maxlength');
@@ -333,26 +286,6 @@ export default {
       // customString.value = target.value;
     };
 
-    const noPhoto = ref(false);
-
-    onMounted(() => {
-      const endDate = new Date();
-      const startDate = new Date(new Date().setDate(endDate.getDate() - 7));
-      dateFilter.value = [startDate, endDate];
-    })
-
-    watch(() => photoStore.getAllPhotos, (newValue, oldValue) => {
-      // console.log({ newValue, oldValue });
-      // photoStore.setPhotos(newValue);
-      checkSwitch();
-      context.emit("rerender", 0);
-    })
-
-    watch(() => photoStore.getPhotos, (newValue, oldValue) => {
-      if (newValue?.length == 0) {
-        noPhoto.value = true;
-      }
-    })
 
     return {
       // methods
@@ -361,9 +294,8 @@ export default {
       chooseFiles,
       clickImage,
       cancelPost,
-      checkSwitch,
+      // checkSwitch,
       inputHandler,
-      filterDate,
 
       // splide
       preoptions: preoptions,
@@ -381,10 +313,10 @@ export default {
       uploadImages,
       mainimages,
       imageData,
-      meChecked,
-      noPhoto,
-      dateFilter,
-      maxDate,
+      // meChecked,
+      // noPhoto,
+      // dateFilter,
+      // maxDate,
     };
   },
 }

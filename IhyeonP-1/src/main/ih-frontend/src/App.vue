@@ -103,20 +103,6 @@ export default {
     console.log([startDateStr, endDateStr]);
 
 
-    // var dates = [];
-    // for (const d of [startDate, endDate]) {
-    //   const day = String(d.getDate()).padStart(2, '0');
-    //   const month = String(d.getMonth() + 1).padStart(2, '0');
-    //   const year = d.getFullYear();
-
-    //   dates.push(year + "-" + month + "-" + day)
-    // }
-    // // console.log(dates);
-
-    // console.log([startDateStr, endDateStr]);
-
-    // console.log(photoStore.getAllPhotos);
-
     photoStore.setPhotos(photoStore.getAllPhotos.filter(photo => {
       const photoTime = moment(photo.photoPost.uploadedOn).format("YYYY-MM-DD HH:mm:ss.SSSSSS");
       if (startDateStr <= photoTime && photoTime <= endDateStr) {
@@ -124,13 +110,6 @@ export default {
       }
     }
     ))
-
-    // await PhotoService.getPhotoFilteredDate(startDateStr, endDateStr).then((result) => {
-    //   for (var i = 0; i < result.data.length; i++) {
-    //     result.data[i].image = "data:image/png;base64," + result.data[i].image
-    //   }
-    //   photoStore.setPhotos(result.data);
-    // });
 
   },
   methods: {
