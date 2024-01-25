@@ -13,8 +13,6 @@
             </div>
           </splide-slide>
         </splide>
-        <!-- <p id="imageLength">{{ currentIndex + 1 }} / {{ images.images?.length }}</p> -->
-        <!-- <button id="goIndexBtn" class="btn" @click="goIndex()">눌러</button> -->
       </div>
 
       <!-- info -->
@@ -169,7 +167,6 @@ export default {
       frm.append("text", text.value)
 
       await PhotoService.editPostText(frm).then((result) => {
-        // console.log(result.data.text);
         props.images.post.text = result.data.text;
       });
 
@@ -184,7 +181,6 @@ export default {
 
         var photoIdList = [];
         for (const photo in props.images.images) {
-          // photoIdList.append(photo.id);
           photoIdList.push(props.images.images[photo].id);
         }
         frm.append("photoIdList", photoIdList);
@@ -211,7 +207,6 @@ export default {
     };
 
     const onSplideMoved = (splide) => {
-      // mainSplide = splide;
       currentIndex.value = splide.index;
     }
 

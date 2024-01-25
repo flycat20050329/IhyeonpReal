@@ -1,49 +1,8 @@
 <template>
   <div class="container" style="height:fit-content;">
+
     <!-- gallery -->
     <div v-if="!uploadImages" class="container">
-      <!-- top bar -->
-      <!-- <div class="topBar">
-        <div class="row">
-          <div class="col">
-            <div class="row"> -->
-
-              <!-- upload button -->
-              <!-- <div class="col-3">
-                <button type="button" class="btn btn-outline-dark" @click="chooseFiles()">
-                  <font-awesome-icon icon="plus" /> 사진 올리기</button>
-              </div> -->
-
-              <!-- switch -->
-              <!-- <div class="col-3">
-                <div class="form-check form-switch" style="width:fit-content">
-                  <input class="form-check-input" type="checkbox" id="meSwitch" v-model="meChecked"
-                    v-on:change="checkSwitch">
-                  <label class="form-check-label" for="flexSwitchCheckDefault">Only Mine</label>
-                </div>
-              </div> -->
-
-              <!-- date picker -->
-              <!-- <div class="col-5">
-                <VueDatePicker :model-value="dateFilter" range :enable-time-picker="false" :max-date="maxDate"
-                  ignore-time-validation @update:model-value="filterDate" />
-              </div>
-
-            </div>
-          </div> -->
-
-          <!-- 검색어 입력 -->
-          <!-- <div class="col-4">
-            <div class="form">
-              <i class="fa fa-search"></i>
-              <input type="text" class="form-control form-input" placeholder="검색어를 입력하세요.">
-            </div>
-          </div>
-
-        </div>
-      </div> -->
-
-
       <!-- main splide -->
       <div class="mainSplide">
         <splide id="splide" class="splide" :options="mainoptions" :extensions="extensions">
@@ -53,7 +12,7 @@
           </splide-slide>
         </splide>
       </div>
-<!-- 
+      <!-- 
       <div class="noMyPhoto" v-if="meChecked && noPhoto" style="padding: 7% 0 0 5%; color: gray">
         <h2>사진이 없습니다.</h2>
       </div> -->
@@ -78,7 +37,7 @@
             style="resize: none;"></textarea>
           <p id="lengthText">{{ 100 - text.length }}/100</p>
           <div class="row justify-content-end" style="width:inherit">
-            <div class="col-2">
+            <div class="col-3">
               <button class="btn btn-outline-dark m-3" @click="cancelPost">Cancel</button>
             </div>
             <div class="col-2">
@@ -89,13 +48,6 @@
       </div>
     </div>
     <input id="fileUpload" class="form-control" type="file" @input="pickFile" multiple hidden>
-    <!-- <div class="imagePreviewWrapper" :style="{ 'background-image': `url(${previewImage})` }" @click="getImage" /> -->
-    <!-- <div class="imagePreviewWrapper" :style="{ 'background-image': `url(${uploadImage})` }"></div> -->
-
-    <!-- Button trigger modal -->
-    <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#photoModal">
-      Launch demo modal
-    </button> -->
   </div>
 
   <!-- Button trigger photoModal -->
@@ -110,7 +62,7 @@ import AuthService from '../services/auth.service';
 import PhotoService from '../services/photo.service';
 import { Form } from 'vee-validate';
 
-import { onMounted, ref, watch, computed } from 'vue';
+import { ref } from 'vue';
 import { useStore } from 'vuex';
 
 import { Splide, SplideSlide } from '@splidejs/vue-splide';
@@ -126,7 +78,7 @@ import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import { endOfMonth, endOfYear, startOfMonth, startOfYear, subMonths, startOfWeek, endOfWeek, subWeeks } from 'date-fns';
 
-import moment from "moment";
+// import moment from "moment";
 
 
 
@@ -150,7 +102,7 @@ export default {
     var previewImages = ref([]);
     var text = ref("");
     var images = [];
-    var uploadImages = ref(false);
+    const uploadImages = ref(false);
     var mainimages = ref([]);
     var postId;
 
@@ -218,7 +170,6 @@ export default {
         await PhotoService.uploadPhotoPost(frm).then((result) => {
           postId = result.data;
         });
-        uploadImages.value = false;
         text.value = "";
         await uploadImage();
 
@@ -252,6 +203,8 @@ export default {
         }
         photoStore.setAllPhotos(result.data);
       });
+
+      uploadImages.value = false;
     }
 
     const chooseFiles = () => {
@@ -265,7 +218,7 @@ export default {
       PhotoService.getClickedPhotoData(image.photoPost?.id).then((result) => {
 
         imageData.value.post = result.data.post;
-        imageData.value.post.uploadedOn = imageData.value.post.uploadedOn.split("T").join(" ")
+        imageData.value.post.uploadedOn = moment(imageData.value.post.uploadedOn).format("YYYY년 MM월 DD일 hh시 mm분")
         for (var i = 0; i < result.data.images.length; i++) {
           result.data.images[i].image = "data:image/png;base64," + result.data.images[i].image
         }

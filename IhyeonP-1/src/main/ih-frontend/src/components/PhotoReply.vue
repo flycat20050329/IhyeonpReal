@@ -67,7 +67,7 @@ export default {
     watch(() => props.replyData, () => {
       if (props.replyData) {
         for (var i = 0; i < props.replyData.length; i++) {
-          props.replyData[i].uploadedOn = props.replyData[i].uploadedOn.split("T").join(" ")
+          props.replyData[i].uploadedOn = moment(props.replyData[i].uploadedOn).format("YYYY-MM-DD hh:mm")
         }
         replies.value = props.replyData;
       }

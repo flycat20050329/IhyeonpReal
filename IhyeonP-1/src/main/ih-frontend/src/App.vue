@@ -93,24 +93,6 @@ export default {
       }
       photoStore.setAllPhotos(result.data);
     })
-
-    const startDate = new Date(new Date().setDate(new Date().getDate() - 7));
-    const endDate = new Date();
-
-    const startDateStr = moment(startDate).format('YYYY-MM-DD 00:00:00.000000');
-    const endDateStr = moment(endDate).format('YYYY-MM-DD 11:59:59.999999');
-
-    // console.log([startDateStr, endDateStr]);
-
-
-    photoStore.setPhotos(photoStore.getAllPhotos.filter(photo => {
-      const photoTime = moment(photo.photoPost.uploadedOn).format("YYYY-MM-DD HH:mm:ss.SSSSSS");
-      if (startDateStr <= photoTime && photoTime <= endDateStr) {
-        return photo;
-      }
-    }
-    ))
-
   },
   methods: {
     changePopState() {

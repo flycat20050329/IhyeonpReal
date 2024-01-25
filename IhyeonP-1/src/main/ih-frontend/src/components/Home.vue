@@ -20,7 +20,7 @@
     <div class="section" style="height:fit-content" v-if="currentUser">
 
       <!-- top bar -->
-      <div class="topBar">
+      <div class="topBar" v-if="!uploadImages">
         <div class="row">
           <div class="col">
             <div class="row">
@@ -47,15 +47,14 @@
               </div>
 
               <div class="col-3">
-                <button type="button" class="btn btn-outline-dark dateBtn" data-toggle="tooltip" data-placement="top"
-                  title="a month ago" @click="dateBeforeAMonth()">
-                  <font-awesome-icon icon="angle-left" /></button>
+                <button type="button" class="btn btn-outline-dark dateBtn" @click="dateBeforeAMonth()">
+                  <font-awesome-icon icon="angle-left" /> 한 달 전</button>
                 <button type="button" class="btn btn-outline-dark dateBtn" data-toggle="tooltip" data-placement="top"
                   title="today" @click="dateToday()">
                   Today</button>
                 <button type="button" class="btn btn-outline-dark dateBtn" data-toggle="tooltip" data-placement="top"
                   title="a month later" @click="dateAfterAMonth()">
-                  <font-awesome-icon icon="angle-right" /></button>
+                  한 달 후 <font-awesome-icon icon="angle-right" /></button>
               </div>
 
             </div>
@@ -325,15 +324,11 @@ import { useStore } from 'vuex';
 import { usePhotoStore } from "../store/photo.js";
 import PhotoPost from "./PhotoPost.vue";
 
-import { useToast } from "vue-toastification";
-
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 
 import { mapActions, mapState } from "pinia";
 
-
-import $ from "jquery";
 import moment from "moment";
 
 export default {
@@ -358,6 +353,8 @@ export default {
 
     const photoStore = usePhotoStore();
 
+    const uploadImages = ref(false);
+
     //Upload File Button
     const chooseFiles = () => {
       document.getElementById("fileUpload").click();
@@ -372,12 +369,12 @@ export default {
       if (meChecked.value) {
         photoStore.setPhotos(photoStore.getAllPhotos.filter(photo => {
           const photoTime = moment(photo.photoPost.uploadedOn).format("YYYY-MM-DD HH:mm:ss.SSSSSS");
-          return dates[0] <= photoTime && photoTime <= dates[1] && photo.photoPost.user?.id == currentUser.id;
+          return dateFilter.value[0] <= photoTime && photoTime <= dateFilter.value[1] && photo.photoPost.user?.id == currentUser.id;
         }))
       } else {
         photoStore.setPhotos(photoStore.getAllPhotos.filter(photo => {
           const photoTime = moment(photo.photoPost.uploadedOn).format("YYYY-MM-DD HH:mm:ss.SSSSSS");
-          return dates[0] <= photoTime && photoTime <= dates[1];
+          return dateFilter.value[0] <= photoTime && photoTime <= dateFilter.value[1];
         }));
       }
       componentKey.value += 1;
@@ -386,21 +383,17 @@ export default {
     // vue datepicker
 
     const startDateFormat = "YYYY-MM-DD 00:00:00.000000"
-    const endDateFormat = "YYYY-MM-DD 11:59:59.999999"
+    const endDateFormat = "YYYY-MM-DD 23:59:59.999999"
 
-
-    const startDateStr = moment(new Date(new Date().setDate(new Date().getDate() - 7))).format(startDateFormat)
+    const startDateStr = moment(new Date).subtract('days', 7).format(startDateFormat)
     const endDateStr = moment(new Date()).format(endDateFormat)
 
     const dateFilter = ref([startDateStr, endDateStr]);
-    const maxDate = ref(new Date())
+    const maxDate = ref(endDateStr);
 
-
-    var dates = [startDateStr, endDateStr];
 
     const filterDate = async (modelData) => {
       dateFilter.value = modelData;
-
 
       // rerender
       // componentKey.value += 1;
@@ -408,7 +401,7 @@ export default {
 
     const dateToday = () => {
       dateFilter.value = [moment(new Date()).format(startDateFormat), moment(new Date()).format(endDateFormat)];
-      changeDate();
+      checkSwitch();
 
     }
 
@@ -421,7 +414,7 @@ export default {
       } else {
         dateFilter.value[0] = moment(dateFilter.value[0]).subtract('months', 1).format(startDateFormat);
       }
-      changeDate();
+      checkSwitch();
     }
 
     const dateAfterAMonth = () => {
@@ -431,48 +424,24 @@ export default {
       else {
         dateFilter.value[0] = moment(dateFilter.value[0]).add("months", 1).format(startDateFormat);
       }
-      changeDate();
-    }
-
-    const changeDate = () => {
-      dates = []
-
-      dates.push(moment(dateFilter.value[0]).format(startDateFormat));
-      dates.push(moment(dateFilter.value[1]).format(endDateFormat));
-
       checkSwitch();
     }
-
 
     watch(() => photoStore.getAllPhotos, () => {
       checkSwitch();
-      componentKey.value += 1;
+      // componentKey.value += 1;
     })
 
     watch(() => dateFilter.value, (newValue, oldValue) => {
-      // console.log(newValue);
       if (newValue.length == 2) {
-        changeDate();
+        checkSwitch();
       }
 
     })
 
-
     onMounted(() => {
-      const endDate = new Date();
-      const startDate = new Date(new Date().setDate(endDate.getDate() - 7));
-      dateFilter.value = [startDate, endDate];
-
+      checkSwitch();
     })
-
-
-    // toast
-    // const toast = useToast();
-    // toast.clear();
-    // toast.error("I'm toast!", {
-    //   position: "bottom-right",
-    //   timeout: 3000
-    // });
 
 
     return {
@@ -482,6 +451,7 @@ export default {
       dateFilter,
       maxDate,
       meChecked,
+      uploadImages,
 
       filterDate,
       chooseFiles,
