@@ -96,7 +96,7 @@ export default {
 
   props: {
   },
-  emits: ["rerender", "imageData"],
+  emits: ["changeUploadImages", "imageData"],
 
   async setup(props, context) {
     var previewImages = ref([]);
@@ -143,6 +143,7 @@ export default {
       if (e.target.files[0] && e.target.files.length < 7) {
 
         uploadImages.value = true;
+        context.emit("changeUploadImages", true);
         previewImages.value = [];
 
         var files = e.target.files || e.dataTransfer.files;
@@ -187,6 +188,7 @@ export default {
 
     const cancelPost = () => {
       uploadImages.value = false;
+      context.emit("changeUploadImages", false);
     }
 
     const uploadImage = async () => {
@@ -205,6 +207,7 @@ export default {
       });
 
       uploadImages.value = false;
+      context.emit("changeUploadImages", false);
     }
 
     const chooseFiles = () => {

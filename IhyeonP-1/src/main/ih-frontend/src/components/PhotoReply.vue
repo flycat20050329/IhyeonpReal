@@ -105,6 +105,7 @@ export default {
 
 .title div.username {
   font-family: "Black Han Sans";
+  font-size: 80%;
 }
 
 .title div.date{
@@ -115,6 +116,7 @@ export default {
 
 .content {
   width: 380px;
+  font-size: 90%;
 }
 
 .xMark {

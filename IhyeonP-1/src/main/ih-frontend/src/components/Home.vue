@@ -72,7 +72,7 @@
       </div>
 
       <Suspense>
-        <PhotoBook :key="componentKey" @rerender="forceRerender" @imageData="getImageData" />
+        <PhotoBook :key="componentKey" @changeUploadImages="changeUploadImages" @imageData="getImageData" />
         <!--  @imageData="getImageData"  -->
       </Suspense>
     </div>
@@ -427,6 +427,10 @@ export default {
       checkSwitch();
     }
 
+    const changeUploadImages = (data) => {
+      uploadImages.value = data;
+    }
+
     watch(() => photoStore.getAllPhotos, () => {
       checkSwitch();
       // componentKey.value += 1;
@@ -459,6 +463,7 @@ export default {
       dateToday,
       dateBeforeAMonth,
       dateAfterAMonth,
+      changeUploadImages,
     }
   },
   data() {
@@ -544,8 +549,6 @@ export default {
     };
   },
   mounted() {
-    this.flycat();
-
     var photoModalEl = document.getElementById('photoModal')
     const vm = this;
     photoModalEl.addEventListener('shown.bs.modal', function () {
@@ -632,12 +635,6 @@ export default {
             error.toString();
         }
       );
-    },
-    flycat() {
-
-    },
-    forceRerender() {
-      this.componentKey += 1;
     },
     Please() {
       AuthService.please().then(
