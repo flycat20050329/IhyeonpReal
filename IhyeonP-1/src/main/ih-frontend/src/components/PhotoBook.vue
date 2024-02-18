@@ -223,7 +223,6 @@ export default {
 
         if (files && files[0]) {
           for (var i = 0; i < files.length; i++) {
-<<<<<<< HEAD
             let blob = files[i]
 
             if (blob.type == "image/heic") { // heic 변환
@@ -239,33 +238,16 @@ export default {
             else {
               images.push(blob);
             }
-=======
-            let blob = files[i];
-
-            heic2any({ blob: blob, toType: "image/jpg" })
-              .then(function (resultBlob) {
-                //file에 새로운 파일 데이터를 씌웁니다.
-                let reader = new FileReader;
-                const file = new File([resultBlob], blob.name.split('.')[0] + ".jpg", { type: "image/jpg", lastModified: new Date().getTime() });
-                images.push(file);
-                console.log(file);
-                reader.onload = (event) => {
-                  previewImages.value.push(event.target.result);
-                }
-                reader.readAsDataURL(file);
-              })
-              .catch(function (x) {
-                console.log(x)
-              })
->>>>>>> 25bbdc89f815c347ff40c7ddafa2bc1ac9d1923e
           }
         }
 
         // console.log(images);
+
+        // compress image
         for (var i = 0; i < images.length; i++) {
           const imageFile = images[i]
-          console.log('originalFile instanceof Blob', imageFile instanceof Blob); // true
-          console.log(`originalFile size ${imageFile.size / 1024 / 1024} MB`);
+          // console.log('originalFile instanceof Blob', imageFile instanceof Blob); // true
+          // console.log(`originalFile size ${imageFile.size / 1024 / 1024} MB`);
 
           const options = {
             maxSizeMB: 1,
@@ -274,8 +256,8 @@ export default {
           }
           try {
             const compressedFile = await imageCompression(imageFile, options);
-            console.log('compressedFile instanceof Blob', compressedFile instanceof Blob); // true
-            console.log(`compressedFile size ${compressedFile.size / 1024 / 1024} MB`); // smaller than maxSizeMB
+            // console.log('compressedFile instanceof Blob', compressedFile instanceof Blob); // true
+            // console.log(`compressedFile size ${compressedFile.size / 1024 / 1024} MB`); // smaller than maxSizeMB
 
             images[i] = compressedFile;
 
@@ -315,7 +297,7 @@ export default {
 
     const uploadImage = async () => {
       const frm2 = new FormData();
-      console.log(images)
+      // console.log(images)
       for (const file of images) {
         frm2.append('images', file)
       }
