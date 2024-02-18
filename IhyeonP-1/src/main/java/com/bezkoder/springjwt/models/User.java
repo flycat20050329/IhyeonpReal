@@ -79,6 +79,10 @@ public class User {
 	@NotBlank
 	@Size(max = 2)
 	private String s_class;
+	
+	@NotBlank
+	@Size(max = 2)
+	private String s_number;
 
 	@JsonIgnore
 	@ManyToMany(fetch = FetchType.LAZY)
@@ -92,7 +96,7 @@ public class User {
 	public User() {
 	}
 
-	public User(String locaCode, String code, String username, String email, String password, String grade, String ban) {
+	public User(String locaCode, String code, String username, String email, String password, String grade, String ban, String s_number) {
 		this.locaCode = locaCode;
 		this.schoolCode = code;
 		this.username = username;
@@ -100,5 +104,6 @@ public class User {
 		this.password = password;
 		this.s_grade = grade;
 		this.s_class = ban;
+		this.s_number = s_number;
 	}
 }

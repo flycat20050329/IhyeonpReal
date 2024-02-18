@@ -38,7 +38,7 @@
           <p id="lengthText">{{ 100 - text.length }}/100</p>
           <div class="row justify-content-end" style="width:inherit">
             <div class="col-3">
-              <button class="btn btn-outline-dark m-3" @click="canclePost">Cancel</button>
+              <button class="btn btn-outline-dark m-3" @click="cancelPost">Cancel</button>
             </div>
             <div class="col-2">
               <button class="btn btn-outline-primary m-3" @click="uploadPost">Submit</button>
@@ -115,6 +115,31 @@ export default {
 
     const photoStore = usePhotoStore();
 
+    const dateFilter = ref();
+    const maxDate = ref(new Date())
+
+    const filterDate = async (modelData) => {   //특정 날짜에 올라온 것만 조회
+      dateFilter.value = modelData;
+      var dates = []
+      for (const d of dateFilter.value) {
+        const day = String(d.getDate()).padStart(2, '0');
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const year = d.getFullYear();
+
+        dates.push(year + "-" + month + "-" + day)
+      }
+      await PhotoService.getPhotoFilteredDate(dates[0], dates[1]).then((result) => {
+        for (var i = 0; i < result.data.length; i++) {
+          result.data[i].image = "data:image/png;base64," + result.data[i].image
+        }
+        photoStore.setPhotos(result.data);
+        context.emit("rerender", 0);
+      });
+
+    }
+
+    var meChecked = ref(false);
+
     const preoptions = {
       rewind: true,
       height: 400,
@@ -181,7 +206,6 @@ export default {
       if (e.target.files.length <= 0) {
         return
       }
-
       if (e.target.files[0] && e.target.files.length < 7) {
         var files = e.target.files || e.dataTransfer.files;
         images = [];
@@ -200,7 +224,7 @@ export default {
         if (files && files[0]) {
           for (var i = 0; i < files.length; i++) {
             let blob = files[i];
-            
+
             heic2any({ blob: blob, toType: "image/jpg" })
               .then(function (resultBlob) {
                 //file에 새로운 파일 데이터를 씌웁니다.
@@ -247,7 +271,7 @@ export default {
       }
     }
 
-    const uploadPost = async () => {
+    const uploadPost = async () => {    //글을 최종적으로 올릴 때
       const frm = new FormData();
       frm.append("userId", currentUser.id);
       frm.append("text", text.value)
@@ -257,7 +281,7 @@ export default {
       await uploadImage();
     }
 
-    const canclePost = () => {
+    const cancelPost = () => {
       uploadImages.value = false;
       context.emit("changeUploadImages", false);
     }
@@ -305,7 +329,7 @@ export default {
       // console.log(imageData.value.index);
       context.emit('imageData', imageData);
       document.getElementById("photoModalBtn").click();
-    }
+    };
 
     const inputHandler = (e) => {
       const target = e.currentTarget;
@@ -323,7 +347,7 @@ export default {
       uploadPost,
       chooseFiles,
       clickImage,
-      canclePost,
+      cancelPost: cancelPost,
       // checkSwitch,
       inputHandler,
 
@@ -348,7 +372,7 @@ export default {
       // dateFilter,
       // maxDate,
     };
-  },
+  }
 }
 </script>
 

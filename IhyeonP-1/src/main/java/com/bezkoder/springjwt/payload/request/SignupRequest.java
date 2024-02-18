@@ -31,6 +31,10 @@ public class SignupRequest {
 	@Size(max = 2)
 	private String s_class;
 	
+	@NotBlank
+	@Size(max = 2)
+	private String s_number;
+	
 	public String getSchoolName() {
 		return schoolName;
 	}
@@ -53,6 +57,14 @@ public class SignupRequest {
 
 	public void setS_class(String s_class) {
 		this.s_class = s_class;
+	}
+	
+	public String getS_number() {
+		return s_number;
+	}
+	
+	public void setS_number(String s_number) {
+		this.s_number = s_number;
 	}
 
 	public String getUsername() {

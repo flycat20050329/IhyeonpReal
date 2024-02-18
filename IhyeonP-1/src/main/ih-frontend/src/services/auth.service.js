@@ -31,6 +31,7 @@ class AuthService {
       password: user.password,
       s_grade: user.s_grade,
       s_class: user.s_class,
+      s_number: user.s_number,
     });
   }
 
