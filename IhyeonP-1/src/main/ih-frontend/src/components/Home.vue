@@ -392,8 +392,8 @@ export default {
     const maxDate = ref(endDateStr);
 
 
-    const filterDate = async (modelData) => {
-      dateFilter.value = modelData;
+    const filterDate = (modelData) => {
+      dateFilter.value = [moment(modelData[0]).format(startDateFormat), moment(modelData[1]).format(endDateFormat)];
 
       // rerender
       // componentKey.value += 1;

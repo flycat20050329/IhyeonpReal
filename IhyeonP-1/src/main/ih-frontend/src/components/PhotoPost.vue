@@ -68,7 +68,7 @@
           <p id="lengthText">{{ 100 - text.length }}/100</p>
           <div class="row justify-content-end" style="width:inherit">
             <div class="col-3">
-              <button class="btn btn-outline-dark m-3" @click="editing = !editing">Cancel</button>
+              <button class="btn btn-outline-dark m-3" @click="editing  = !editing">Cancel</button>
             </div>
             <div class="col-2">
               <button class="btn btn-outline-primary m-3" @click="editText">Submit</button>
@@ -190,7 +190,7 @@ export default {
             result.data[i].image = "data:image/png;base64," + result.data[i].image
           }
           photoStore.setAllPhotos(result.data);
-          console.log(alert("삭제되었습니다."))
+          alert("삭제되었습니다.");
           history.go(0);
         });
       } else {
@@ -215,7 +215,7 @@ export default {
 
 
     const openModal = () => {
-      PhotoService.getReplyByPostId(props.images.post.id).then((result) => {
+      PhotoService.getReplyByPostId(props.images.post?.id).then((result) => {
         replyData.value = result.data;
       })
 

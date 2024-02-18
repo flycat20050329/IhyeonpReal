@@ -38,7 +38,7 @@
           <p id="lengthText">{{ 100 - text.length }}/100</p>
           <div class="row justify-content-end" style="width:inherit">
             <div class="col-3">
-              <button class="btn btn-outline-dark m-3" @click="cancelPost">Cancel</button>
+              <button class="btn btn-outline-dark m-3" @click="canclePost">Cancel</button>
             </div>
             <div class="col-2">
               <button class="btn btn-outline-primary m-3" @click="uploadPost">Submit</button>
@@ -47,7 +47,7 @@
         </div>
       </div>
     </div>
-    <input id="fileUpload" class="form-control" type="file" @input="pickFile" multiple hidden>
+    <input id="fileUpload" class="form-control" type="file" accept=".heic" @input="pickFile" multiple hidden>
   </div>
 
   <!-- Button trigger photoModal -->
@@ -76,9 +76,12 @@ import { useToast } from "vue-toastification";
 
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
-import { endOfMonth, endOfYear, startOfMonth, startOfYear, subMonths, startOfWeek, endOfWeek, subWeeks } from 'date-fns';
 
-// import moment from "moment";
+
+import heic2any from "heic2any";
+
+import imageCompression from 'browser-image-compression';
+
 
 
 
@@ -139,60 +142,129 @@ export default {
       },
     };
 
-    const pickFile = (e) => {
+    // const pickFile = (e) => {
+    //   if (e.target.files.length <= 0) {
+    //     return
+    //   }
+
+    //   if (e.target.files[0] && e.target.files.length < 7) {
+    //     var files = e.target.files || e.dataTransfer.files;
+    //     images = files;
+    //     for (const file of files) {
+    //       if (!file.type.includes('image')) {
+    //         alert('이미지(JPG,JPEG,GIF,PNG) 파일만 업로드 가능합니다. \n파일을 다시 한 번 확인해주세요.')
+    //         return
+    //       }
+    //     }
+
+    //     uploadImages.value = true;
+    //     context.emit("changeUploadImages", true);
+    //     previewImages.value = [];
+
+    //     if (files && files[0]) {
+    //       for (var i = 0; i < files.length; i++) {
+    //         let reader = new FileReader;
+    //         reader.onload = e => {
+    //           previewImages.value.push(e.target.result);
+    //         }
+    //         reader.readAsDataURL(files[i])
+    //       }
+    //     }
+    //   }
+    //   else{
+    //     alert("파일은 최대 6개까지만 업로드 가능합니다. \n다시 선택해주세요.")
+    //     return
+    //   }
+    // }
+
+    const pickFile = async (e) => {
+      if (e.target.files.length <= 0) {
+        return
+      }
+
       if (e.target.files[0] && e.target.files.length < 7) {
+        var files = e.target.files || e.dataTransfer.files;
+        images = [];
+        for (const file of files) {
+          if (!file.type.includes('image')) {
+            alert('이미지(JPG,JPEG,GIF,PNG,HEIC) 파일만 업로드 가능합니다. \n파일을 다시 한 번 확인해주세요.')
+            return
+          }
+        }
 
         uploadImages.value = true;
         context.emit("changeUploadImages", true);
         previewImages.value = [];
 
-        var files = e.target.files || e.dataTransfer.files;
-        images = files;
 
         if (files && files[0]) {
           for (var i = 0; i < files.length; i++) {
-            let reader = new FileReader;
-            reader.onload = e => {
-              previewImages.value.push(e.target.result);
-            }
-            reader.readAsDataURL(files[i])
+            let blob = files[i];
+            
+            heic2any({ blob: blob, toType: "image/jpg" })
+              .then(function (resultBlob) {
+                //file에 새로운 파일 데이터를 씌웁니다.
+                let reader = new FileReader;
+                const file = new File([resultBlob], blob.name.split('.')[0] + ".jpg", { type: "image/jpg", lastModified: new Date().getTime() });
+                images.push(file);
+                console.log(file);
+                reader.onload = (event) => {
+                  previewImages.value.push(event.target.result);
+                }
+                reader.readAsDataURL(file);
+              })
+              .catch(function (x) {
+                console.log(x)
+              })
           }
         }
+
+        for (var i = 0; i < images.length; i++) {
+          const imageFile = images[i]
+          console.log('originalFile instanceof Blob', imageFile instanceof Blob); // true
+          console.log(`originalFile size ${imageFile.size / 1024 / 1024} MB`);
+
+          const options = {
+            maxSizeMB: 1,
+            maxWidthOrHeight: 1920,
+            useWebWorker: true,
+          }
+          try {
+            const compressedFile = await imageCompression(imageFile, options);
+            console.log('compressedFile instanceof Blob', compressedFile instanceof Blob); // true
+            console.log(`compressedFile size ${compressedFile.size / 1024 / 1024} MB`); // smaller than maxSizeMB
+
+            images[i] = compressedFile;
+          } catch (error) {
+            console.log(error);
+          }
+
+        }
+      }
+      else {
+        alert("파일은 최대 6개까지만 업로드 가능합니다. \n다시 선택해주세요.")
+        return
       }
     }
-
-    const toast = useToast();
 
     const uploadPost = async () => {
       const frm = new FormData();
       frm.append("userId", currentUser.id);
       frm.append("text", text.value)
-      try {
-        await PhotoService.uploadPhotoPost(frm).then((result) => {
-          postId = result.data;
-        });
-        text.value = "";
-        await uploadImage();
-
-      } catch (error) {
-        if (error.response.status == 401) {
-          toast.clear()
-          toast.error(error.message, {
-            position: "bottom-right",
-            timeout: 30000,
-            toastClassName: "my-custom-toast-class",
-          })
-        };
-      }
+      await PhotoService.uploadPhotoPost(frm).then((result) => {
+        postId = result.data;
+      });
+      await uploadImage();
     }
 
-    const cancelPost = () => {
+    const canclePost = () => {
       uploadImages.value = false;
       context.emit("changeUploadImages", false);
     }
 
     const uploadImage = async () => {
       const frm2 = new FormData();
+      console.log(images)
       for (const file of images) {
         frm2.append('images', file)
       }
@@ -201,11 +273,13 @@ export default {
 
       await PhotoService.uploadPhoto(frm2).then((result) => {
         for (var i = 0; i < result.data.length; i++) {
-          result.data[i].image = "data:image/png;base64," + result.data[i].image
+          result.data[i].image = "data:image/jpeg;base64," + result.data[i].image
         }
         photoStore.setAllPhotos(result.data);
       });
 
+
+      text.value = "";
       uploadImages.value = false;
       context.emit("changeUploadImages", false);
     }
@@ -223,7 +297,7 @@ export default {
         imageData.value.post = result.data.post;
         imageData.value.post.uploadedOn = moment(imageData.value.post.uploadedOn).format("YYYY년 MM월 DD일 hh시 mm분")
         for (var i = 0; i < result.data.images.length; i++) {
-          result.data.images[i].image = "data:image/png;base64," + result.data.images[i].image
+          result.data.images[i].image = "data:image/jpeg;base64," + result.data.images[i].image
         }
         imageData.value.images = result.data.images;
       })
@@ -249,7 +323,7 @@ export default {
       uploadPost,
       chooseFiles,
       clickImage,
-      cancelPost,
+      canclePost,
       // checkSwitch,
       inputHandler,
 
