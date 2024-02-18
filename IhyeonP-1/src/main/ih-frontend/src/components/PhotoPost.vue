@@ -179,11 +179,11 @@ export default {
         const frm = new FormData();
         frm.append("postId", props.images.post?.id);
 
-        var photoIdList = [];
-        for (const photo in props.images.images) {
-          photoIdList.push(props.images.images[photo].id);
-        }
-        frm.append("photoIdList", photoIdList);
+        // var photoIdList = [];
+        // for (const photo in props.images.images) {
+        //   photoIdList.push(props.images.images[photo].id);
+        // }
+        // frm.append("photoIdList", photoIdList);
 
         PhotoService.deletePost(frm).then((result) => {
           for (var i = 0; i < result.data.length; i++) {
@@ -214,8 +214,8 @@ export default {
     const chatText = ref(null);
 
 
-    const openModal = () => {
-      PhotoService.getReplyByPostId(props.images.post?.id).then((result) => {
+    const openModal =  () => {
+      PhotoService.getReplyByPostId(props.images.post.id).then((result) => {
         replyData.value = result.data;
       })
 
@@ -223,9 +223,6 @@ export default {
 
       currentIndex.value = props.images.index;
       mainSplide.value.splide.Components.Controller.go(props.images.index);
-
-
-
     }
 
     const getHeart = () => {

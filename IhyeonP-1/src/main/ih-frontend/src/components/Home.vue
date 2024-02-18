@@ -363,7 +363,6 @@ export default {
     // Only Mine Switch
     const meChecked = ref(false);
 
-
     const checkSwitch = () => {
       // console.log(dateFilter.value);
       if (meChecked.value) {
@@ -552,9 +551,11 @@ export default {
     var photoModalEl = document.getElementById('photoModal')
     const vm = this;
     photoModalEl.addEventListener('shown.bs.modal', function () {
+      fullpage_api.setAllowScrolling(false);
       vm.$refs.photoPost.openModal();
     })
     photoModalEl.addEventListener('hidden.bs.modal', function () {
+      fullpage_api.setAllowScrolling(true);
     })
 
   },

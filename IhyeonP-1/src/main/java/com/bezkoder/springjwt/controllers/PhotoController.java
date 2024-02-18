@@ -1,7 +1,6 @@
 package com.bezkoder.springjwt.controllers;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
@@ -62,7 +61,7 @@ public class PhotoController {
 	public Map<String, Object> getClickedPhotoData(@PathVariable Long id) {
 		Map<String, Object> photoData = new HashMap<String, Object>();
 
-		photoData.put("images", photoRepository.findByPhotoPostId(id));
+		photoData.put("images", photoRepository.findAllByPhotoPostId(id));
 		photoData.put("post", photoPostRepository.findById(id));
 
 		return photoData;
@@ -88,7 +87,7 @@ public class PhotoController {
 	@GetMapping("/getPhotosByPostId/{id}")
 
 	public List<Photo> getPhotosByPostId(@PathVariable Long id) {
-		return photoRepository.findByPhotoPostId(id);
+		return photoRepository.findAllByPhotoPostId(id);
 	}
 
 	@PostMapping("/uploadPhoto")
@@ -138,11 +137,27 @@ public class PhotoController {
 	}
 
 	@PostMapping("/deletePost")
-	public List<Photo> deletePost(@RequestParam() Long postId, @RequestParam() List<Long> photoIdList) {
+	public List<Photo> deletePost(@RequestParam() Long postId) {
 //		System.out.println(photoIdList);
-		for (Long id : photoIdList) {
-			photoRepository.deleteById(id);
+
+//		for (Long id : )
+
+//		for (Long id : photoIdList) {
+//			photoRepository.deleteById(id);
+//		}
+
+		for (Photo photo : photoRepository.findAllByPhotoPostId(postId)) {
+			photoRepository.delete(photo);
 		}
+
+		for (PhotoReply photoReply : photoReplyRepository.findAllByPhotoPostId(postId)) {
+			photoReplyRepository.delete(photoReply);
+		}
+
+		for (PhotoHeart photoHeart : photoHeartRepository.findAllByPhotoPostId(postId)) {
+			photoHeartRepository.delete(photoHeart);
+		}
+
 		photoPostRepository.deleteById(postId);
 
 		return photoRepository.findAll().stream().sorted(Comparator.comparing(Photo::getId).reversed())

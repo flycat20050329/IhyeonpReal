@@ -47,7 +47,7 @@
         </div>
       </div>
     </div>
-    <input id="fileUpload" class="form-control" type="file" accept=".heic" @input="pickFile" multiple hidden>
+    <input id="fileUpload" class="form-control" type="file" accept="" @input="pickFile" multiple hidden>
   </div>
 
   <!-- Button trigger photoModal -->
@@ -199,26 +199,25 @@ export default {
 
         if (files && files[0]) {
           for (var i = 0; i < files.length; i++) {
-            let blob = files[i];
-            
-            heic2any({ blob: blob, toType: "image/jpg" })
-              .then(function (resultBlob) {
-                //file에 새로운 파일 데이터를 씌웁니다.
-                let reader = new FileReader;
-                const file = new File([resultBlob], blob.name.split('.')[0] + ".jpg", { type: "image/jpg", lastModified: new Date().getTime() });
-                images.push(file);
-                console.log(file);
-                reader.onload = (event) => {
-                  previewImages.value.push(event.target.result);
-                }
-                reader.readAsDataURL(file);
-              })
-              .catch(function (x) {
-                console.log(x)
-              })
+            let blob = files[i]
+
+            if (blob.type == "image/heic") { // heic 변환
+              await heic2any({ blob: blob, toType: "image/jpg" })
+                .then(function (resultBlob) {
+                  const file = new File([resultBlob], blob.name.split('.')[0] + ".jpg", { type: "image/jpg", lastModified: new Date().getTime() });
+                  images.push(file);
+                })
+                .catch(function (x) {
+                  console.log(x)
+                })
+            }
+            else {
+              images.push(blob);
+            }
           }
         }
 
+        // console.log(images);
         for (var i = 0; i < images.length; i++) {
           const imageFile = images[i]
           console.log('originalFile instanceof Blob', imageFile instanceof Blob); // true
@@ -235,9 +234,17 @@ export default {
             console.log(`compressedFile size ${compressedFile.size / 1024 / 1024} MB`); // smaller than maxSizeMB
 
             images[i] = compressedFile;
+
+            let reader = new FileReader;
+            reader.onload = e => {
+              previewImages.value.push(e.target.result);
+            }
+            reader.readAsDataURL(compressedFile);
+
           } catch (error) {
             console.log(error);
           }
+
 
         }
       }
@@ -292,7 +299,7 @@ export default {
 
     const clickImage = async (image) => {
       imageData.value.index = image.index;
-      PhotoService.getClickedPhotoData(image.photoPost?.id).then((result) => {
+      await PhotoService.getClickedPhotoData(image.photoPost?.id).then((result) => {
 
         imageData.value.post = result.data.post;
         imageData.value.post.uploadedOn = moment(imageData.value.post.uploadedOn).format("YYYY년 MM월 DD일 hh시 mm분")
