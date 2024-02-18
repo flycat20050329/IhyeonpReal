@@ -91,7 +91,7 @@ public class AuthController {
 		// Create new user's account
 		User user = new User(schoolInfo.GetLocationCode(signUpRequest.getSchoolName()),
 				schoolInfo.GetSchoolcode(signUpRequest.getSchoolName()), signUpRequest.getUsername(), signUpRequest.getEmail(),
-				encoder.encode(signUpRequest.getPassword()), signUpRequest.getS_grade(), signUpRequest.getS_class());
+				encoder.encode(signUpRequest.getPassword()), signUpRequest.getS_grade(), signUpRequest.getS_class(), signUpRequest.getS_number());
 
 		Set<String> strRoles = signUpRequest.getRole();
 		Set<Role> roles = new HashSet<>();

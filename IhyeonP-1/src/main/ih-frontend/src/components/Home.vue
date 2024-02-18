@@ -88,7 +88,7 @@
     </div> -->
 
     <div class="section" v-if="currentUser">
-      <h2>현재는 동아리 신청 기간이 아닙니다.</h2>
+      <ClubList />
     </div>
 
     <div class="section" v-if="currentUser">
@@ -100,6 +100,54 @@
     </div>
 
   </full-page>
+
+  <div class="modal fade" id="clubRegister" tabindex="-1" aria-labelledby="clubRegisterLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="clubRegisterLabel">Modal title</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          kskssssqefnioenfwefuiojwenkhdifuhwjioedfnihurjionvwheirjivowenbhifuowej
+          kskssssqefnioenfwefuiojwenkhdifuhwjioedfnihurjionvwheirjivowenbhifuowej
+          kskssssqefnioenfwefuiojwenkhdifuhwjioedfnihurjionvwheirjivowenbhifuowej
+          kskssssqefnioenfwefuiojwenkhdifuhwjioedfnihurjionvwheirjivowenbhifuowej
+          kskssssqefnioenfwefuiojwenkhdifuhwjioedfnihurjionvwheirjivowenbhifuowej
+          kskssssqefnioenfwefuiojwenkhdifuhwjioedfnihurjionvwheirjivowenbhifuowej
+          kskssssqefnioenfwefuiojwenkhdifuhwjioedfnihurjionvwheirjivowenbhifuowej
+          kskssssqefnioenfwefuiojwenkhdifuhwjioedfnihurjionvwheirjivowenbhifuowej
+          kskssssqefnioenfwefuiojwenkhdifuhwjioedfnihurjionvwheirjivowenbhifuowej
+          kskssssqefnioenfwefuiojwenkhdifuhwjioedfnihurjionvwheirjivowenbhifuowej
+          kskssssqefnioenfwefuiojwenkhdifuhwjioedfnihurjionvwheirjivowenbhifuowej
+          kskssssqefnioenfwefuiojwenkhdifuhwjioedfnihurjionvwheirjivowenbhifuowej
+          kskssssqefnioenfwefuiojwenkhdifuhwjioedfnihurjionvwheirjivowenbhifuowej
+          kskssssqefnioenfwefuiojwenkhdifuhwjioedfnihurjionvwheirjivowenbhifuowej
+          kskssssqefnioenfwefuiojwenkhdifuhwjioedfnihurjionvwheirjivowenbhifuowej
+          kskssssqefnioenfwefuiojwenkhdifuhwjioedfnihurjionvwheirjivowenbhifuowej
+          kskssssqefnioenfwefuiojwenkhdifuhwjioedfnihurjionvwheirjivowenbhifuowej
+          kskssssqefnioenfwefuiojwenkhdifuhwjioedfnihurjionvwheirjivowenbhifuowej
+          kskssssqefnioenfwefuiojwenkhdifuhwjioedfnihurjionvwheirjivowenbhifuowej
+          kskssssqefnioenfwefuiojwenkhdifuhwjioedfnihurjionvwheirjivowenbhifuowej
+          kskssssqefnioenfwefuiojwenkhdifuhwjioedfnihurjionvwheirjivowenbhifuowej
+          kskssssqefnioenfwefuiojwenkhdifuhwjioedfnihurjionvwheirjivowenbhifuowej
+          kskssssqefnioenfwefuiojwenkhdifuhwjioedfnihurjionvwheirjivowenbhifuowej
+          kskssssqefnioenfwefuiojwenkhdifuhwjioedfnihurjionvwheirjivowenbhifuowej
+          kskssssqefnioenfwefuiojwenkhdifuhwjioedfnihurjionvwheirjivowenbhifuowej
+          kskssssqefnioenfwefuiojwenkhdifuhwjioedfnihurjionvwheirjivowenbhifuowej
+          kskssssqefnioenfwefuiojwenkhdifuhwjioedfnihurjionvwheirjivowenbhifuowej
+          kskssssqefnioenfwefuiojwenkhdifuhwjioedfnihurjionvwheirjivowenbhifuowej
+          kskssssqefnioenfwefuiojwenkhdifuhwjioedfnihurjionvwheirjivowenbhifuowej
+          kskssssqefnioenfwefuiojwenkhdifuhwjioedfnihurjionvwheirjivowenbhifuowej
+          kskssssqefnioenfwefuiojwenkhdifuhwjioedfnihurjionvwheirjivowenbhifuowej
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Login Modal -->
   <div class="modal fade" ref="loginModal" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel"
@@ -272,6 +320,11 @@
                 <Field name="s_class" id="s_class" type="number" class="form-control" />
                 <ErrorMessage name="s_class" class="error-feedback" />
               </div>
+              <div class="form-group">
+                <label for="s_number">번호</label>
+                <Field name="s_number" id="s_number" type="number" class="form-control" />
+                <ErrorMessage name="s_number" class="error-feedback" />
+              </div>
               <div class="row">
                 <div class="col-1">
                   <div class="form-check">
@@ -330,6 +383,9 @@ import '@vuepic/vue-datepicker/dist/main.css';
 import { mapActions, mapState } from "pinia";
 
 import moment from "moment";
+import $ from "jquery";
+import ClubList from "./ClubList.vue";
+import useClubStore from "../store/club";
 
 export default {
   name: "Home",
@@ -343,6 +399,8 @@ export default {
     PhotoPost,
     VueDatePicker,
     Lunch,
+    ClubList,
+    moment
   },
   setup() {
     const componentKey = ref(0);
@@ -352,8 +410,10 @@ export default {
     const currentUser = store.state.auth.user;
 
     const photoStore = usePhotoStore();
+    const clubStore = useClubStore();
 
     const uploadImages = ref(false);
+    const isUploading = ref(false);
 
     //Upload File Button
     const chooseFiles = () => {
@@ -430,6 +490,11 @@ export default {
       uploadImages.value = data;
     }
 
+    const toggleUpload = () => {
+            isUploading = !isUploading;
+            context.emit("changeUploadImages", isUploading);
+        };
+
     watch(() => photoStore.getAllPhotos, () => {
       checkSwitch();
       // componentKey.value += 1;
@@ -455,6 +520,8 @@ export default {
       maxDate,
       meChecked,
       uploadImages,
+      isUploading,
+      clubStore,
 
       filterDate,
       chooseFiles,
@@ -463,6 +530,7 @@ export default {
       dateBeforeAMonth,
       dateAfterAMonth,
       changeUploadImages,
+      toggleUpload,
     }
   },
   data() {
@@ -496,6 +564,9 @@ export default {
       s_class: yup
         .string()
         .required("몇 반인지 적어주세요!"),
+      s_number: yup
+        .string()
+        .required("번호를 적어주세요!"),
     });
 
     return {
@@ -509,6 +580,7 @@ export default {
         anchors: ['page1', 'page2', 'page3', 'page4', 'page5', 'page6'],
         sectionsColor: ['#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff',],
         controlArrows: false,
+        credits: { enabled: false, label: "생각 많이 한 광고입니다 사실 광고는 아니구요 생각도 안 했습니다. 감사합니다.", position: 'right' },
       },
       schoolNameList: [],
       loading: false,
@@ -557,7 +629,13 @@ export default {
     photoModalEl.addEventListener('hidden.bs.modal', function () {
       fullpage_api.setAllowScrolling(true);
     })
-
+    // console.log(this.getPhotoModal.style.display)
+    // var photoModalEl = document.getElementById('photoModal')
+    // photoModalEl.addEventListener('shown.bs.modal', function (event) {
+    //   // console.log(event);
+    //   console.log(this.$refs.photoPost);
+    // })
+    // // console.log(this.getPhotoModal.style.display)
   },
   methods: {
     schoolNameRegister() {
@@ -773,5 +851,9 @@ input {
 .form-input:focus {
   box-shadow: none;
   border: none;
+
+  full-page {
+    position: fixed;
+  }
 }
 </style>
