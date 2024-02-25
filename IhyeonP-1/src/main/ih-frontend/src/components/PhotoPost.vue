@@ -232,14 +232,19 @@ export default {
     }
 
     const sendReply = () => {
+      if(!chatText.value){
+        alert("내용을 입력해주세요.");
+        return;
+      }
       const frm = new FormData();
       frm.append("text", chatText.value);
       frm.append("userId", currentUser.id);
       frm.append("postId", props.images.post.id);
+
       PhotoService.uploadReply(frm).then((result) => {
         replyData.value = result.data;
       })
-
+      
       chatText.value = null;
     }
 

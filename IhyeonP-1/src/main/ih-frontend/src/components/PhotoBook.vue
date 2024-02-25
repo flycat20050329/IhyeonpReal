@@ -21,9 +21,14 @@
 
 
     <!-- image upload -->
-    <div class="container" style=" height: fit-content" v-if="uploadImages">
+    <div class="container uploadBox" style=" height: fit-content" v-if="uploadImages">
       <div class="row justify-content-end">
         <div class="col-7">
+          <!-- <div class="progress">
+            <div class="progress-bar" id="progressbar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0"
+              aria-valuemax="100">25%</div>
+          </div> -->
+          <LoadingSpinner id="loadingSpinner" v-if="isLoading"></LoadingSpinner>
           <!-- imagePreview -->
           <splide :options="preoptions">
             <splide-slide v-for="image in previewImages">
@@ -82,7 +87,7 @@ import heic2any from "heic2any";
 
 import imageCompression from 'browser-image-compression';
 
-
+import LoadingSpinner from "./LoadingSpinner.vue"
 
 
 // import '@splidejs/splide/dist/css/themes/splide-default.min.css';ㅈ
@@ -95,6 +100,7 @@ export default {
     Splide,
     SplideSlide,
     VueDatePicker,
+    LoadingSpinner,
   },
 
   props: {
@@ -108,6 +114,8 @@ export default {
     const uploadImages = ref(false);
     var mainimages = ref([]);
     var postId;
+
+    const isLoading = ref(true);
 
 
     const store = useStore();
@@ -207,6 +215,7 @@ export default {
         return
       }
       if (e.target.files[0] && e.target.files.length < 7) {
+        isLoading.value = true;
         var files = e.target.files || e.dataTransfer.files;
         images = [];
         for (const file of files) {
@@ -270,9 +279,8 @@ export default {
           } catch (error) {
             console.log(error);
           }
-
-
         }
+        isLoading.value = false;
       }
       else {
         alert("파일은 최대 6개까지만 업로드 가능합니다. \n다시 선택해주세요.")
@@ -281,6 +289,11 @@ export default {
     }
 
     const uploadPost = async () => {    //글을 최종적으로 올릴 때
+      if(isLoading.value){
+        alert("아직 사진이 로딩되지 않았습니다.\n잠시 후 다시 시도해주세요.")
+        return
+      }
+
       const frm = new FormData();
       frm.append("userId", currentUser.id);
       frm.append("text", text.value)
@@ -304,7 +317,7 @@ export default {
 
       frm2.append("postId", postId);
 
-      await PhotoService.uploadPhoto(frm2).then((result) => {
+      PhotoService.uploadPhoto(frm2).then((result) => {
         for (var i = 0; i < result.data.length; i++) {
           result.data[i].image = "data:image/jpeg;base64," + result.data[i].image
         }
@@ -376,6 +389,7 @@ export default {
       uploadImages,
       mainimages,
       imageData,
+      isLoading,
       // meChecked,
       // noPhoto,
       // dateFilter,
@@ -463,5 +477,21 @@ export default {
   margin-right: 10px;
   padding-right: 1%;
   color: gray;
+}
+
+.uploadBox {
+  z-index: 1;
+  position: relative;
+}
+
+#loadingSpinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: inherit;
+
+  z-index: 2;
+  position: absolute;
 }
 </style>

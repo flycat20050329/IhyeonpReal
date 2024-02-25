@@ -34,7 +34,7 @@
         </li>
         <li :class="currentUser ? 'col-2' : 'col-7'">
           <a class="btn text-dark" href="#page6" @click="Please()" role="button">
-            문의
+            공지사항
           </a>
         </li>
         <li class="col-2" v-if="!currentUser">

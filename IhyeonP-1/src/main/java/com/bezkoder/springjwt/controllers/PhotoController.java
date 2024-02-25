@@ -145,18 +145,18 @@ public class PhotoController {
 //		for (Long id : photoIdList) {
 //			photoRepository.deleteById(id);
 //		}
-
-		for (Photo photo : photoRepository.findAllByPhotoPostId(postId)) {
-			photoRepository.delete(photo);
-		}
-
-		for (PhotoReply photoReply : photoReplyRepository.findAllByPhotoPostId(postId)) {
-			photoReplyRepository.delete(photoReply);
-		}
-
-		for (PhotoHeart photoHeart : photoHeartRepository.findAllByPhotoPostId(postId)) {
-			photoHeartRepository.delete(photoHeart);
-		}
+//
+//		for (Photo photo : photoRepository.findAllByPhotoPostId(postId)) {
+//			photoRepository.delete(photo);
+//		}
+//
+//		for (PhotoReply photoReply : photoReplyRepository.findAllByPhotoPostId(postId)) {
+//			photoReplyRepository.delete(photoReply);
+//		}
+//
+//		for (PhotoHeart photoHeart : photoHeartRepository.findAllByPhotoPostId(postId)) {
+//			photoHeartRepository.delete(photoHeart);
+//		}
 
 		photoPostRepository.deleteById(postId);
 

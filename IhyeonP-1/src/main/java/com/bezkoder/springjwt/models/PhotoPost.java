@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -45,12 +46,16 @@ public class PhotoPost {
 	private LocalDateTime uploadedOn;
 
 	@JsonIgnore
-	@OneToMany(mappedBy = "photoPost")
+	@OneToMany(mappedBy = "photoPost", cascade = CascadeType.ALL)
 	private Set<Photo> Images = new HashSet<>();
 
 	@JsonIgnore
-	@OneToMany(mappedBy = "photoPost")
+	@OneToMany(mappedBy = "photoPost", cascade = CascadeType.ALL)
 	private Set<PhotoReply> Replys = new HashSet<>();
+
+	@JsonIgnore
+	@OneToMany(mappedBy = "photoPost", cascade = CascadeType.ALL)
+	private Set<PhotoHeart> Hearts = new HashSet<>();
 
 	public PhotoPost() {
 	}
