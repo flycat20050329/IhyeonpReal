@@ -1,5 +1,6 @@
 <template>
   <div class="container" style="height:fit-content;">
+    <Button label="Show" @click="show()" />
 
     <!-- gallery -->
     <div v-if="!uploadImages" class="container">
@@ -12,25 +13,23 @@
           </splide-slide>
         </splide>
       </div>
-      <!-- 
-      <div class="noMyPhoto" v-if="meChecked && noPhoto" style="padding: 7% 0 0 5%; color: gray">
-        <h2>사진이 없습니다.</h2>
-      </div> -->
-
     </div>
 
 
     <!-- image upload -->
     <div class="container uploadBox" style=" height: fit-content" v-if="uploadImages">
       <div class="row justify-content-end">
-        <div class="col-7">
-          <!-- <div class="progress">
-            <div class="progress-bar" id="progressbar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0"
-              aria-valuemax="100">25%</div>
-          </div> -->
+        <!-- progress bar -->
+        <div class="progress" style="height: 3px;" v-if="isUploadingPhoto">
+          <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0"
+            aria-valuemax="100"></div>
+        </div>
+
+        <div class="col-7 previewBox">
+          <!-- spinner -->
           <LoadingSpinner id="loadingSpinner" v-if="isLoading"></LoadingSpinner>
           <!-- imagePreview -->
-          <splide :options="preoptions">
+          <splide :options="preoptions" ref="previewSplide">
             <splide-slide v-for="image in previewImages">
               <div class="imagePreviewWrapper" :style="{ 'background-image': `url(${image})` }" @click="chooseFiles()">
               </div>
@@ -39,14 +38,14 @@
         </div>
         <div class="col">
           <textarea @input="inputHandler" maxlength="100" class="form-control" rows="12" v-model="text"
-            style="resize: none;"></textarea>
+            style="resize: none;" id="textBox"></textarea>
           <p id="lengthText">{{ 100 - text.length }}/100</p>
           <div class="row justify-content-end" style="width:inherit">
             <div class="col-3">
-              <button class="btn btn-outline-dark m-3" @click="cancelPost">Cancel</button>
+              <button class="btn btn-outline-dark m-3" id="Cancel" @click="cancelPost">Cancel</button>
             </div>
             <div class="col-2">
-              <button class="btn btn-outline-primary m-3" @click="uploadPost">Submit</button>
+              <button class="btn btn-outline-primary m-3" id="Submit" @click="uploadPost">Submit</button>
             </div>
           </div>
         </div>
@@ -59,6 +58,8 @@
   <button type="button" id="photoModalBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#photoModal"
     style="display:none;">
   </button>
+
+  <Toast position="bottom-right" />
 </template>
  
 <script>
@@ -77,8 +78,6 @@ import vueFullpageUmd from 'vue-fullpage.js';
 
 import { usePhotoStore } from '../store/photo.js';
 
-import { useToast } from "vue-toastification";
-
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 
@@ -88,6 +87,10 @@ import heic2any from "heic2any";
 import imageCompression from 'browser-image-compression';
 
 import LoadingSpinner from "./LoadingSpinner.vue"
+
+import Toast from 'primevue/toast';
+import Button from 'primevue/button';
+import { useToast } from 'primevue/usetoast';
 
 
 // import '@splidejs/splide/dist/css/themes/splide-default.min.css';ㅈ
@@ -101,6 +104,8 @@ export default {
     SplideSlide,
     VueDatePicker,
     LoadingSpinner,
+    Toast,
+    Button,
   },
 
   props: {
@@ -116,6 +121,7 @@ export default {
     var postId;
 
     const isLoading = ref(true);
+    const isUploadingPhoto = ref(false);
 
 
     const store = useStore();
@@ -123,30 +129,32 @@ export default {
 
     const photoStore = usePhotoStore();
 
-    const dateFilter = ref();
-    const maxDate = ref(new Date())
+    const toast = useToast();
 
-    const filterDate = async (modelData) => {   //특정 날짜에 올라온 것만 조회
-      dateFilter.value = modelData;
-      var dates = []
-      for (const d of dateFilter.value) {
-        const day = String(d.getDate()).padStart(2, '0');
-        const month = String(d.getMonth() + 1).padStart(2, '0');
-        const year = d.getFullYear();
+    // const dateFilter = ref();
+    // const maxDate = ref(new Date())
 
-        dates.push(year + "-" + month + "-" + day)
-      }
-      await PhotoService.getPhotoFilteredDate(dates[0], dates[1]).then((result) => {
-        for (var i = 0; i < result.data.length; i++) {
-          result.data[i].image = "data:image/png;base64," + result.data[i].image
-        }
-        photoStore.setPhotos(result.data);
-        context.emit("rerender", 0);
-      });
+    // const filterDate = async (modelData) => {   //특정 날짜에 올라온 것만 조회
+    //   dateFilter.value = modelData;
+    //   var dates = []
+    //   for (const d of dateFilter.value) {
+    //     const day = String(d.getDate()).padStart(2, '0');
+    //     const month = String(d.getMonth() + 1).padStart(2, '0');
+    //     const year = d.getFullYear();
 
-    }
+    //     dates.push(year + "-" + month + "-" + day)
+    //   }
+    //   await PhotoService.getPhotoFilteredDate(dates[0], dates[1]).then((result) => {
+    //     for (var i = 0; i < result.data.length; i++) {
+    //       result.data[i].image = "data:image/png;base64," + result.data[i].image
+    //     }
+    //     photoStore.setPhotos(result.data);
+    //     context.emit("rerender", 0);
+    //   });
 
-    var meChecked = ref(false);
+    // }
+
+    // var meChecked = ref(false);
 
     const preoptions = {
       rewind: true,
@@ -210,17 +218,19 @@ export default {
     //   }
     // }
 
+    const previewSplide = ref(null);
+
     const pickFile = async (e) => {
       if (e.target.files.length <= 0) {
         return
       }
-      if (e.target.files[0] && e.target.files.length < 7) {
+      if (e.target.files[0] && e.target.files.length < 5) {
         isLoading.value = true;
         var files = e.target.files || e.dataTransfer.files;
         images = [];
         for (const file of files) {
           if (!file.type.includes('image')) {
-            alert('이미지(JPG,JPEG,GIF,PNG,HEIC) 파일만 업로드 가능합니다. \n파일을 다시 한 번 확인해주세요.')
+            alert('이미지(JPG,JPEG,GIF,PNG,HEIC) 파일만 업로드 가능합니다.\n파일을 다시 한 번 확인해주세요.')
             return
           }
         }
@@ -268,13 +278,16 @@ export default {
             // console.log('compressedFile instanceof Blob', compressedFile instanceof Blob); // true
             // console.log(`compressedFile size ${compressedFile.size / 1024 / 1024} MB`); // smaller than maxSizeMB
 
-            images[i] = compressedFile;
 
             let reader = new FileReader;
             reader.onload = e => {
               previewImages.value.push(e.target.result);
             }
             reader.readAsDataURL(compressedFile);
+
+            images[i] = compressedFile;
+
+            previewSplide.value.splide.Components.Controller.setIndex(i)
 
           } catch (error) {
             console.log(error);
@@ -283,16 +296,22 @@ export default {
         isLoading.value = false;
       }
       else {
-        alert("파일은 최대 6개까지만 업로드 가능합니다. \n다시 선택해주세요.")
+        alert("파일은 최대 4개까지만 업로드 가능합니다.\n다시 선택해주세요.")
         return
       }
     }
 
     const uploadPost = async () => {    //글을 최종적으로 올릴 때
-      if(isLoading.value){
-        alert("아직 사진이 로딩되지 않았습니다.\n잠시 후 다시 시도해주세요.")
+      if (isLoading.value) {
+        alert("사진이 모두 변환될 떄까지 기다려주세요")
         return
       }
+
+      isUploadingPhoto.value = true;
+
+      document.getElementById("Submit").disabled = true;
+      document.getElementById("Cancel").disabled = true;
+      document.getElementById("textBox").siabled = true;
 
       const frm = new FormData();
       frm.append("userId", currentUser.id);
@@ -300,12 +319,15 @@ export default {
       await PhotoService.uploadPhotoPost(frm).then((result) => {
         postId = result.data;
       });
-      await uploadImage();
+      uploadImage();
     }
 
     const cancelPost = () => {
       uploadImages.value = false;
       context.emit("changeUploadImages", false);
+      text.value = "";
+
+
     }
 
     const uploadImage = async () => {
@@ -317,17 +339,22 @@ export default {
 
       frm2.append("postId", postId);
 
-      PhotoService.uploadPhoto(frm2).then((result) => {
+      await PhotoService.uploadPhoto(frm2).then((result) => {
         for (var i = 0; i < result.data.length; i++) {
           result.data[i].image = "data:image/jpeg;base64," + result.data[i].image
         }
         photoStore.setAllPhotos(result.data);
       });
 
-
       text.value = "";
       uploadImages.value = false;
       context.emit("changeUploadImages", false);
+
+      document.getElementById("Submit").disabled = false;
+      document.getElementById("Cancel").disabled = false;
+      document.getElementById("textBox").siabled = false;
+      isUploadingPhoto.value = false;
+
     }
 
     const chooseFiles = () => {
@@ -337,7 +364,9 @@ export default {
     var imageData = ref({ index: null, images: null, post: null, });
 
     const clickImage = async (image) => {
+      toast.show();
       imageData.value.index = image.index;
+
       await PhotoService.getClickedPhotoData(image.photoPost?.id).then((result) => {
 
         imageData.value.post = result.data.post;
@@ -351,6 +380,7 @@ export default {
       // console.log(imageData.value.index);
       context.emit('imageData', imageData);
       document.getElementById("photoModalBtn").click();
+
     };
 
     const inputHandler = (e) => {
@@ -360,6 +390,10 @@ export default {
         target.value = target.value.slice(0, max);
       }
       // customString.value = target.value;
+    };
+
+    const show = () => {
+      toast.add({ severity: 'info', summary: 'Info', detail: 'Message Content', life: 3000 });
     };
 
 
@@ -372,8 +406,9 @@ export default {
       cancelPost: cancelPost,
       // checkSwitch,
       inputHandler,
+      show,
 
-      // splide
+      // splide options
       preoptions: preoptions,
       mainoptions: mainoptions,
       extensions: {
@@ -390,6 +425,8 @@ export default {
       mainimages,
       imageData,
       isLoading,
+      previewSplide,
+      isUploadingPhoto,
       // meChecked,
       // noPhoto,
       // dateFilter,
@@ -484,12 +521,16 @@ export default {
   position: relative;
 }
 
-#loadingSpinner {
+.previewBox {
+
   display: flex;
   align-items: center;
   justify-content: center;
 
-  width: inherit;
+}
+
+#loadingSpinner {
+  width: fit-content;
 
   z-index: 2;
   position: absolute;

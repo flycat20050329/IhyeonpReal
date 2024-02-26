@@ -29,6 +29,7 @@
     "jquery": "^3.7.1",
     "moment": "^1.1.0",
     "pinia": "^2.1.7",
+    "primevue": "^3.49.1",
     "sass": "^1.63.6",
     "swiper": "^10.0.4",
     "vee-validate": "^4.9.6",

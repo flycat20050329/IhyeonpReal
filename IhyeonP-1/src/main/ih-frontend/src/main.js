@@ -15,6 +15,12 @@ import VueFullPage from 'vue-fullpage.js'
 import Toast from "vue-toastification";
 import "vue-toastification/dist/index.css";
 
+//PrimeVue
+import PrimeVue from 'primevue/config';
+import ToastService from 'primevue/toastservice';
+
+import 'primevue/resources/themes/aura-light-green/theme.css'
+
 
 const pinia = createPinia()
 
@@ -24,10 +30,7 @@ createApp(App)
   .use(store)
   .use(VueFullPage)
   .use(pinia)
-  .use(Toast, {
-    transition: "Vue-Toastification__bounce",
-    maxToasts: 5,
-    newestOnTop: true,
-  })
+  .use(PrimeVue)
+  .use(ToastService)
   .component("font-awesome-icon", FontAwesomeIcon)
   .mount("#app");

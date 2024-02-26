@@ -5,7 +5,7 @@
 
       <!-- photo viewer -->
       <div class="col-7">
-        <splide :options="preoptions" @splide:mounted="onSplideMounted" @splide:move="onSplideMoved" id="photoSplide"
+        <splide :options="preoptions" @splide:move="onSplideMoved" id="photoSplide"
           ref="mainSplide">
           <splide-slide v-for="image in images.images" :key="image.index">
             <div class="imagePreviewWrapper" :style="{ 'background-image': `url(${image.image})` }"
@@ -199,12 +199,8 @@ export default {
     }
 
     var currentIndex = ref(1);
-    var mainSplide = ref(null);
+    const mainSplide = ref(null);
     var heart = ref(0);
-
-    const onSplideMounted = (splide) => {
-      // mainSplide = splide
-    };
 
     const onSplideMoved = (splide) => {
       currentIndex.value = splide.index;
@@ -256,7 +252,6 @@ export default {
       // methods
       editPost,
       editText,
-      onSplideMounted,
       openModal,
       onSplideMoved,
       deletePost,
