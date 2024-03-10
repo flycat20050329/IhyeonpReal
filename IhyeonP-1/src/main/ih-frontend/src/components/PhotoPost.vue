@@ -53,10 +53,10 @@
 
         <!-- text -->
         <div id="textBox" class="row md-3" style="padding-left: 5%;" v-if="!editing">
-          <div class="overflow-hidden" style="max-height: 100px; width:95%">{{ images.post?.text }}
+          <div class="overflow-hidden" style="max-height: 100px; width:95%; min-height: 40px">{{ images.post?.text }}
           </div>
-          <p style="font-size: 70%; padding-top: 3%;" class="text-secondary">{{ images.post?.uploadedOn
-            }}</p>
+          <p style="font-size: 70%;" class="text-secondary">{{ images.post?.uploadedOn }}</p>
+
         </div>
 
         <!-- text editing box -->
@@ -74,7 +74,7 @@
           </div>
         </div>
 
-        <div id="viewReply" v-if="!editing">
+        <div id="replyViewer" v-if="!editing">
           <!-- 댓글이 있을 곳입니다. -->
           <perfect-scrollbar :options="{ suppressScrollX: true }">
             <PhotoReply :replyData="replyData"></PhotoReply>
@@ -290,7 +290,11 @@ export default {
 
     const sendReply = () => {
       if (!chatText.value) {
-        alert("내용을 입력해주세요.");
+        toast("내용을 입력해주세요", {
+          type: "warning",
+          position: "top-center",
+          timeout: 1000,
+        })
         return;
       }
       const frm = new FormData();
@@ -350,7 +354,7 @@ export default {
 }
 
 #textBox {
-  padding: 5px 10px 5px 0;
+  padding: 5px 10px 0 0;
 }
 
 
@@ -372,7 +376,7 @@ export default {
   padding: 0 3% 3% 0;
   border-top: 0.1rem solid whitesmoke;
   background-color: white;
-  
+
 }
 
 .detailContainer {
@@ -403,11 +407,11 @@ button {
   cursor: pointer;
 }
 
-.ps {
-  height: 250px;
+#replyViewer {
+  padding-top: 1%;
 }
 
-#viewReply{
-  height: 300px;
+.ps {
+  height: 210px;
 }
 </style>

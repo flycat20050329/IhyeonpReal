@@ -106,7 +106,8 @@ export default {
 } */
 
 .replyViewer {
-  height: 270px;
+  height: 210px;
+  /* display: block; */
 }
 
 .replies {

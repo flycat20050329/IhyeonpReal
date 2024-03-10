@@ -44,9 +44,9 @@
           </splide>
         </div>
         <div class="col">
-          <textarea @input="inputHandler" maxlength="150" class="form-control" rows="12" v-model="text"
+          <textarea @input="inputHandler" maxlength="100" class="form-control" rows="12" v-model="text"
             style="resize: none;" id="textBox" placeholder="사진이 변환되는 동안 멋진 글을 작성해보세요!"></textarea>
-          <p id="lengthText">{{ 150 - text.length }}/150</p>
+          <p id="lengthText">{{ 100 - text.length }}/100</p>
           <div class="row justify-content-end" style="width:inherit">
             <!-- <div class="col-3">
               <button class="btn btn-outline-dark m-3" id="Cancel" @click="cancelPost">Cancel</button>
