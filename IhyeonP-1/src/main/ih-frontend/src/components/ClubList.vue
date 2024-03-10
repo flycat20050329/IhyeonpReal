@@ -112,7 +112,6 @@ export default {
             // customString.value = target.value;
         };
 
-<<<<<<< HEAD
         const cancelClubPost = () => {
             isUploading.value = false;
             context.emit("toggleUpload", false);
@@ -135,19 +134,6 @@ export default {
             clubInputHandler,
             cancelClubPost,
             uploadClubPost,
-=======
-        const toggleUpload = () => {
-            isUploading.value = !isUploading.value;
-            context.emit("changeUploadImages", isUploading);
-        };
-        return {
-            pickFile,
-            chooseFiles,
-            uploadPost,
-            cancelPost,
-            inputHandler,
-            toggleUpload,
->>>>>>> cbdc1ed05e5ddb73007d46a87fd2739b8ab8e90d
 
             isUploading,
             previewImages,
