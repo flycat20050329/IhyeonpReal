@@ -38,7 +38,7 @@ public class PhotoPost {
 	@JoinColumn(name = "user")
 	private User user;
 
-	@Size(max = 150)
+	@Size(max = 200)
 	private String text;
 
 	@CreationTimestamp

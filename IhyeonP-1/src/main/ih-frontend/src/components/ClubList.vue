@@ -179,7 +179,7 @@ export default {
         };
 
         const toggleUpload = () => {
-            isUploading = !isUploading;
+            isUploading.value = !isUploading.value;
             context.emit("changeUploadImages", isUploading);
         };
         return {

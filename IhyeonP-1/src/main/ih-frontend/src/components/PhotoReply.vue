@@ -32,7 +32,13 @@ import { useStore } from 'vuex';
 
 import PhotoService from "../services/photo.service.js";
 
-import usePhotoStore from '../store/photo';
+import { usePhotoStore } from '../store/photo';
+
+import moment from 'moment';
+
+import { useToast } from "vue-toastification";
+
+
 
 export default {
   components: {
@@ -44,11 +50,13 @@ export default {
     const store = useStore();
     const currentUser = store.state.auth.user;
 
+    const toast = useToast();
+
     var replies = ref(null);
 
     const deleteReply = (reply) => {
       // alert("정말 삭제하시겠습니까?");
-      if (confirm('삭제하시면 복구할수 없습니다. \n 정말로 삭제하시겠습니까??')) {
+      if (confirm('삭제하시면 복구할수 없습니다.\n정말로 삭제하시겠습니까??')) {
         const frm = new FormData();
         frm.append("id", reply.id);
 
@@ -59,6 +67,12 @@ export default {
           });
           // replies.value = result.data;
         })
+        toast(
+          "삭제되었습니다.", {
+          type: "error",
+          timeout: 1000,
+        }
+        )
       } else {
         console.log("취소함");
       }
@@ -108,7 +122,7 @@ export default {
   font-size: 80%;
 }
 
-.title div.date{
+.title div.date {
   font-size: 60%;
   vertical-align: bottom;
   color: rgb(191, 191, 191);

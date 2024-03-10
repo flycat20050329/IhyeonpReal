@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.im4java.core.ConvertCmd;
+import org.im4java.core.IM4JavaException;
+import org.im4java.core.IMOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -89,6 +92,7 @@ public class PhotoController {
 	public List<Photo> getPhotosByPostId(@PathVariable Long id) {
 		return photoRepository.findAllByPhotoPostId(id);
 	}
+
 
 	@PostMapping("/uploadPhoto")
 	public List<Photo> uploadPhoto(@RequestParam() List<MultipartFile> images, @RequestParam() Long postId)

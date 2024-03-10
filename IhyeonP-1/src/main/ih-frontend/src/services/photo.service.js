@@ -20,6 +20,14 @@ class PhotoService {
     })
   }
 
+  convertHeic(frm){
+    return axios.post(API_URL + 'convertHeictoJpg', frm, {
+      headers: {
+        'Content-Type' : 'multipart/form-data'
+      }
+    })
+  }
+
   getAllPhoto() {
     return axios.get(API_URL + 'getAllPhoto')
   }

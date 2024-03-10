@@ -1,12 +1,11 @@
 <template>
+  <!-- 게시물 하나 -->
   <!-- imageViewer -->
   <div class="container">
     <div class="row">
-
       <!-- photo viewer -->
       <div class="col-7">
-        <splide :options="preoptions" @splide:move="onSplideMoved" id="photoSplide"
-          ref="mainSplide">
+        <splide :options="preoptions" @splide:move="onSplideMoved" id="photoSplide" ref="mainSplide">
           <splide-slide v-for="image in images.images" :key="image.index">
             <div class="imagePreviewWrapper" :style="{ 'background-image': `url(${image.image})` }"
               @click="editing = false">
@@ -49,7 +48,6 @@
               </ul>
             </div>
           </div>
-
         </div>
 
 
@@ -58,7 +56,7 @@
           <div class="overflow-hidden" style="max-height: 100px; width:95%">{{ images.post?.text }}
           </div>
           <p style="font-size: 70%; padding-top: 3%;" class="text-secondary">{{ images.post?.uploadedOn
-          }}</p>
+            }}</p>
         </div>
 
         <!-- text editing box -->
@@ -68,7 +66,7 @@
           <p id="lengthText">{{ 100 - text.length }}/100</p>
           <div class="row justify-content-end" style="width:inherit">
             <div class="col-3">
-              <button class="btn btn-outline-dark m-3" @click="editing  = !editing">Cancel</button>
+              <button class="btn btn-outline-dark m-3" @click="editing = !editing">Cancel</button>
             </div>
             <div class="col-2">
               <button class="btn btn-outline-primary m-3" @click="editText">Submit</button>
@@ -94,8 +92,8 @@
 
           <!-- reply chat -->
           <div class="input-group">
-            <textarea class="form-control mt-1 ml-3" id="textArea" rows="1" placeholder="댓글을 입력하세요." style="resize: none;"
-              v-model="chatText"></textarea>
+            <textarea class="form-control mt-1 ml-3" id="textArea" rows="1" placeholder="댓글을 입력하세요."
+              style="resize: none;" v-model="chatText"></textarea>
             <span class="input-group-addon btn text-primary" @click="sendReply">게시</span>
           </div>
         </div>
@@ -120,6 +118,11 @@ import PhotoReply from "./PhotoReply.vue";
 
 import { PerfectScrollbar } from "vue3-perfect-scrollbar";
 import 'vue3-perfect-scrollbar/dist/vue3-perfect-scrollbar.css'
+
+import { useToast } from "vue-toastification";
+
+import ConfirmToast from "./ConfirmToast.vue";
+
 
 export default {
   name: "PhotoPost",
@@ -156,6 +159,9 @@ export default {
 
     var text = ref("");
 
+    const toast = useToast();
+
+
     const editPost = () => {
       editing.value = true;
       text.value = props.images.post?.text;
@@ -173,9 +179,57 @@ export default {
       editing.value = false;
     };
 
+
+    const content = {
+      // Your component or JSX template
+      component: ConfirmToast,
+
+      // Props are just regular props, but these won't be reactive
+      props: {
+        text: "삭제하시겠습니까?",
+      },
+
+      // Listeners will listen to and execute on event emission
+      listeners: {
+        click: (check) => {
+          if (check) {
+            const frm = new FormData();
+            frm.append("postId", props.images.post?.id);
+
+            // var photoIdList = [];
+            // for (const photo in props.images.images) {
+            //   photoIdList.push(props.images.images[photo].id);
+            // }
+            // frm.append("photoIdList", photoIdList);
+
+            PhotoService.deletePost(frm).then((result) => {
+              for (var i = 0; i < result.data.length; i++) {
+                result.data[i].image = "data:image/png;base64," + result.data[i].image
+              }
+              photoStore.setAllPhotos(result.data);
+              toast("삭제되었습니다.", {
+                type: 'error', // success, error, default, info, warning
+                position: 'top-right',
+              })
+
+            });
+
+            history.go(0);
+          } else {
+            console.log("취소함");
+          }
+        },
+      }
+    };
+
     const deletePost = () => {
-      // alert("정말 삭제하시겠습니까?");
-      if (confirm('삭제하시면 복구할수 없습니다. \n 정말로 삭제하시겠습니까??')) {
+      // toast(content, {
+      //   closeButton: false,
+      //   type: "warning",
+      //   timeout: 50000
+      // });
+
+      if (confirm("삭제하시면 복구할수 없습니다.\n정말 삭제하시겠습니까??")) {
         const frm = new FormData();
         frm.append("postId", props.images.post?.id);
 
@@ -190,9 +244,16 @@ export default {
             result.data[i].image = "data:image/png;base64," + result.data[i].image
           }
           photoStore.setAllPhotos(result.data);
-          alert("삭제되었습니다.");
-          history.go(0);
         });
+        alert("성공적으로 삭제되었습니다.")
+        history.go(0);
+
+        // toast("삭제되었습니다.", {
+        //   type: 'error', // success, error, default, info, warning
+        //   position: 'top-right',
+        // })
+
+
       } else {
         console.log("취소함");
       }
@@ -210,7 +271,7 @@ export default {
     const chatText = ref(null);
 
 
-    const openModal =  () => {
+    const openModal = () => {
       PhotoService.getReplyByPostId(props.images.post.id).then((result) => {
         replyData.value = result.data;
       })
@@ -228,7 +289,7 @@ export default {
     }
 
     const sendReply = () => {
-      if(!chatText.value){
+      if (!chatText.value) {
         alert("내용을 입력해주세요.");
         return;
       }
@@ -240,7 +301,7 @@ export default {
       PhotoService.uploadReply(frm).then((result) => {
         replyData.value = result.data;
       })
-      
+
       chatText.value = null;
     }
 
@@ -309,7 +370,9 @@ export default {
   bottom: 0;
   width: inherit;
   padding: 0 3% 3% 0;
-  border-top: 0.1rem solid whitesmoke
+  border-top: 0.1rem solid whitesmoke;
+  background-color: white;
+  
 }
 
 .detailContainer {
@@ -342,5 +405,9 @@ button {
 
 .ps {
   height: 250px;
+}
+
+#viewReply{
+  height: 300px;
 }
 </style>

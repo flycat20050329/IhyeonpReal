@@ -387,6 +387,7 @@ import $ from "jquery";
 import ClubList from "./ClubList.vue";
 import useClubStore from "../store/club";
 
+
 export default {
   name: "Home",
   components: {
@@ -400,7 +401,6 @@ export default {
     VueDatePicker,
     Lunch,
     ClubList,
-    moment
   },
   setup() {
     const componentKey = ref(0);
@@ -414,6 +414,7 @@ export default {
 
     const uploadImages = ref(false);
     const isUploading = ref(false);
+
 
     //Upload File Button
     const chooseFiles = () => {
@@ -491,9 +492,10 @@ export default {
     }
 
     const toggleUpload = () => {
-            isUploading.value = !isUploading.value;
-            context.emit("changeUploadImages", isUploading);
-        };
+      isUploading.value = !isUploading.value;
+
+      // context.emit("changeUploadImages", isUploading);
+    };
 
     watch(() => photoStore.getAllPhotos, () => {
       checkSwitch();
@@ -531,6 +533,7 @@ export default {
       dateAfterAMonth,
       changeUploadImages,
       toggleUpload,
+      moment,
     }
   },
   data() {
@@ -629,13 +632,6 @@ export default {
     photoModalEl.addEventListener('hidden.bs.modal', function () {
       fullpage_api.setAllowScrolling(true);
     })
-    // console.log(this.getPhotoModal.style.display)
-    // var photoModalEl = document.getElementById('photoModal')
-    // photoModalEl.addEventListener('shown.bs.modal', function (event) {
-    //   // console.log(event);
-    //   console.log(this.$refs.photoPost);
-    // })
-    // // console.log(this.getPhotoModal.style.display)
   },
   methods: {
     schoolNameRegister() {
