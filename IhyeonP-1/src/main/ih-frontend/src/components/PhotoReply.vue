@@ -32,13 +32,13 @@ import { useStore } from 'vuex';
 
 import PhotoService from "../services/photo.service.js";
 
+import moment from "moment";
+import usePhotoStore from '../store/photo';
 import { usePhotoStore } from '../store/photo';
 
 import moment from 'moment';
 
 import { useToast } from "vue-toastification";
-
-
 
 export default {
   components: {

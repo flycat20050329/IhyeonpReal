@@ -27,6 +27,8 @@ const options = {
   toastClassName: "toastCustomStyle",
 };
 
+import moment from "moment";
+
 
 const pinia = createPinia()
 
@@ -36,6 +38,13 @@ createApp(App)
   .use(store)
   .use(VueFullPage)
   .use(pinia)
+  .use(Toast, options)
+  .use(moment)
+  .use(Toast, {
+    transition: "Vue-Toastification__bounce",
+    maxToasts: 5,
+    newestOnTop: true,
+  })
   .use(Toast, options)
   .component("font-awesome-icon", FontAwesomeIcon)
   .mount("#app");

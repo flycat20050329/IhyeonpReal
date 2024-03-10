@@ -5,19 +5,6 @@
         <button type="button" class="btn btn-primary" v-on:click="chooseFiles()">button</button>
     </label> -->
 
-        <!-- gallery -->
-        <div v-if="!isUploading" class="container">
-            <!-- main splide -->
-            <div class="mainSplide">
-                <splide id="splide" class="splide" :options="mainoptions" :extensions="extensions">
-                    <splide-slide v-for="image of clubStore.getClub">
-                        <div class="item" :style="{ 'background-image': `url(${image.image})` }">
-                        </div>
-                    </splide-slide>
-                </splide>
-            </div>
-        </div>
-
         <!-- image upload -->
         <div class="container" style=" height: fit-content" v-if="isUploading">
             <div class="row justify-content-end">
@@ -26,50 +13,42 @@
                     <splide :options="preoptions">
                         <splide-slide v-for="image in previewImages">
                             <div class="imagePreviewWrapper" :style="{ 'background-image': `url(${image})` }"
-                                @click="chooseFiles()">
+                                @click="chooseClubFiles()">
                             </div>
                         </splide-slide>
                     </splide>
                 </div>
                 <div class="col">
-                    <textarea @input="inputHandler" maxlength="100" class="form-control" rows="12" v-model="text"
+                    <textarea @input="clubInputHandler" maxlength="1000" class="form-control" rows="12" v-model="clubText"
                         style="resize: none;"></textarea>
-                    <p id="lengthText">{{ 100 - text.length }}/100</p>
+                    <p id="lengthText">{{ 1000 - clubText.length }}/1000</p>
                     <div class="row justify-content-end" style="width:inherit">
-                        <div class="col-3">
-                            <button class="btn btn-outline-dark m-3" @click="cancelPost">Cancel</button>
-                        </div>
-                        <div class="col-2">
-                            <button class="btn btn-outline-primary m-3" @click="uploadPost">Submit</button>
-                        </div>
+                    </div>
+                    <div class="col-3">
+                        <button class="btn btn-outline-dark m-3" @click="cancelClubPost">Cancel</button>
+                    </div>
+                    <div class="col-2">
+                        <button class="btn btn-outline-primary m-3" @click="uploadClubPost">Upload</button>
                     </div>
                 </div>
             </div>
         </div>
-        <input id="fileUpload" class="form-control" type="file" @input="pickFile" multiple hidden>
+        <input id="clubFileUpload" class="form-control" type="file" @input="clubPickFile" multiple hidden>
     </div>
-    <button class="btn btn-primary" v-on:click="chooseFiles()">ㅇㅅㅇ</button>
 </template>
 
 <script>
-import axios from 'axios';
-import AuthService from '../services/auth.service';
-import PhotoService from '../services/photo.service';
-import { Form } from 'vee-validate';
-
 import { onMounted, ref } from 'vue';
 import { useStore } from 'vuex';
 
 import { Splide, SplideSlide } from '@splidejs/vue-splide';
-import { Grid } from '@splidejs/splide-extension-grid';
 import "@splidejs/splide/dist/css/splide.min.css";
-import vueFullpageUmd from 'vue-fullpage.js';
 
 import { useClubStore } from '../store/club.js';
+import ClubService from "../services/club.service";
 
+import moment from "moment";
 import { useToast } from "vue-toastification";
-
-import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 
 export default {
@@ -78,53 +57,28 @@ export default {
         SplideSlide,
     },
     name: "ClubList",
-    emits: ["changeUploadImages", "imageData"],
+    emits: ["toggleUpload", "imageData"],
 
     setup(props, context) {
+        var images = [];
         var previewImages = ref([]);
-        var uploadImages = false;
-        const isUploading = ref(false);
+        var isUploading = ref(false);
         var clubStore;
+        var clubText = ref("");
+        var postId;
 
         const store = useStore();
         clubStore = useClubStore();
+        const currentUser = store.state.auth.user;
 
         const toast = useToast();
 
-        const preoptions = {
-            rewind: true,
-            height: 400,
-            gap: '1rem',
-            perMove: 1,
-            perPage: 1,
-            pagination: true,
-            postId: null,
-        };
-
-        const mainoptions = {
-            // drag: "free",
-            // autoWidth: true,
-            perPage: 7,
-            pagination: true,
-            arrows: false,
-            gap: 10,
-            grid: {
-                rows: 2,
-                cols: 1,
-                gap: {
-                    row: "1rem",
-                    col: "1.5rem",
-                },
-            },
-        };
-
-        const pickFile = (e) => {   //사진 파일 선택할 때
+        const clubPickFile = (e) => {   //사진 파일 선택할 때
             if (e.target.files[0] && e.target.files.length < 7) {
 
-                toggleUpload();
+                toggleUpload(true);
+                context.emit("toggleUpload", true);
                 previewImages.value = [];
-
-                console.log("asfrg");
 
                 var files = e.target.files || e.dataTransfer.files;
                 images = files;
@@ -140,36 +94,16 @@ export default {
                 }
             }
         }
-        const chooseFiles = () => {
-            document.getElementById("fileUpload").click();
-        }
-        const uploadPost = async () => {    //글을 최종적으로 올릴 때
-            const frm = new FormData();
-            frm.append("userId", currentUser.id);
-            frm.append("text", text.value)
-            try {
-                await PhotoService.uploadPhotoPost(frm).then((result) => {
-                    postId = result.data;
-                });
-                text.value = "";
-                await uploadImage();
 
-            } catch (error) {
-                if (error.response.status == 401) {
-                    toast.clear()
-                    toast.error(error.message, {
-                        position: "bottom-right",
-                        timeout: 30000,
-                        toastClassName: "my-custom-toast-class",
-                    })
-                };
-            }
-        }
-        const cancelPost = () => {
-            toggleUpload();
-        }
+        const toggleUpload = (data) => {
+            isUploading.value = data;
+        };
 
-        const inputHandler = (e) => {
+        const chooseClubFiles = () => {
+            document.getElementById("clubFileUpload").click();
+        };
+
+        const clubInputHandler = (e) => {
             const target = e.currentTarget;
             const max = e.currentTarget.getAttribute('maxlength');
             if (target.value.length > max) {
@@ -178,6 +112,30 @@ export default {
             // customString.value = target.value;
         };
 
+<<<<<<< HEAD
+        const cancelClubPost = () => {
+            isUploading.value = false;
+            context.emit("toggleUpload", false);
+        }
+
+        const uploadClubPost = () => {
+            var clubPostData = new FormData();
+            clubPostData.append("id", currentUser.id);
+            clubPostData.append("text", clubText.value);
+
+            ClubService.uploadClubPost(clubPostData).then((result) => {
+                postId = result.data;
+            });
+        }
+
+        return {
+            clubPickFile,
+            toggleUpload,
+            chooseClubFiles,
+            clubInputHandler,
+            cancelClubPost,
+            uploadClubPost,
+=======
         const toggleUpload = () => {
             isUploading.value = !isUploading.value;
             context.emit("changeUploadImages", isUploading);
@@ -189,17 +147,15 @@ export default {
             cancelPost,
             inputHandler,
             toggleUpload,
+>>>>>>> cbdc1ed05e5ddb73007d46a87fd2739b8ab8e90d
 
-            uploadImages,
             isUploading,
             previewImages,
             clubStore,
+            clubText,
+            currentUser,
+            postId,
 
-            preoptions: preoptions,
-            mainoptions: mainoptions,
-            extensions: {
-                Grid,
-            },
         }
     },
     mounted() {
